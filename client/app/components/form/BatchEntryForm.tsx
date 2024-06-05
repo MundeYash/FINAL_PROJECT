@@ -104,6 +104,7 @@ export default function Component() {
     handleScroll();
     console.log(response);
   }
+  const [venue, setVenue] = useState("");
 
   return (
     <>
@@ -133,212 +134,250 @@ export default function Component() {
         </div>
       </header>
 
-      <Card
-        style={{ paddingTop: "20px", paddingBottom: "20px" }}
-        className="mt-6 p-6"
-      >
-        <CardHeader className="text-center">
-          <img
-            alt="Header Logo"
-            className="mx-auto h-12 w-auto"
-            src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
-          />
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 py-6">
+        <div className="w-11/12 sm:w-3/4 lg:w-2/3 xl:w-2/3 bg-white p-8 rounded-lg shadow-lg">
+          
+          
+          <CardHeader className="text-center">
+            <img
+              alt="Header Logo"
+              className="mx-auto h-12 w-auto"
+              src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
+            />
 
-          <h1 className="text-2xl font-bold  mt-4 ">Batch Entry Form </h1>
-        </CardHeader>
+            <h1 className="text-2xl font-bold  mt-4 ">Batch Entry Form </h1>
+          </CardHeader>
 
-        <CardContent>
-          <div className="grid grid-cols-1 gap-6">
-            <div
-              style={{ display: "flex" }}
-              className="grid grid-cols-1 gap-4 md:grid-cols-2"
-            >
-              <div className="space-y-2" style={{ width: "50%" }}>
-                <Label htmlFor="batchCode">Batch code</Label>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-6">
+              <div
+                style={{ display: "flex" }}
+                className="grid grid-cols-1 gap-4 md:grid-cols-2"
+              >
+                <div className="space-y-2" style={{ width: "50%" }}>
+                  <Label htmlFor="batchCode">Batch code</Label>
 
-                {batchCode !== null && (
+                  {batchCode !== null && (
+                    <Input
+                      id="batchCode"
+                      type="text"
+                      disabled
+                      value={batchCode}
+                    />
+                  )}
+                </div>
+
+                <div
+                  className="space-y-2"
+                  style={{ width: "50%", marginLeft: "20px" }}
+                >
+                  <Label htmlFor="batchDescription">Department Name</Label>
                   <Input
-                    id="batchCode"
+                    id="batchDescription"
                     type="text"
-                    disabled
-                    value={batchCode}
+                    onChange={handleChange}
+                    placeholder="Enter Name of the Department"
                   />
-                )}
+                </div>
               </div>
 
-              <div
-                className="space-y-2"
-                style={{ width: "50%", marginLeft: "20px" }}
+              {/* ADDING THE ADDRESS SECTION  */}
+              <div className="space-y-2">
+                <Label htmlFor="departmentAddress">Address of Department</Label>
+                <Input
+                  id="departmentAddress"
+                  type="text"
+                  onChange={handleChange}
+                  placeholder="Enter departmental address"
+                />
+              </div>
+
+              {/* ADDING MODE OF TRAINING SECTION AND VENUE OF TRAINING   */}
+              <div style={{ display: "flex" }}>
+                <div className="space-y-2" style={{ width: "50%" }}>
+                  <Label htmlFor="trainingMode">Mode of Training :</Label>
+                  <select
+                    id="trainingMode"
+                    className="select-field"
+                    value={formData.trainingMode || "offline"}
+                    onChange={handleChange}
+                  >
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
+                    <option value="hybrid">Hybrid</option>
+                  </select>
+                </div>
+
+
+                <div className="space-y-2" style={{ width: "50%" }}>
+                  <Label htmlFor="venueOfTraining" >Venue of Training :</Label>
+                  <select
+                    id="venueOfTraining"
+                    className="select-field"
+                    value={formData.venueOfTraining || "NIELIT"}
+                    onChange={handleChange}
+                  >
+                    <option value="NIELIT">NIELIT</option>
+                    <option value="outside">Outside NIELIT</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="venue"
               >
-                <Label htmlFor="batchDescription">Department Name</Label>
-                <Input
-                  id="batchDescription"
-                  type="text"
-                  onChange={handleChange}
-                  placeholder="Enter Name of the Department"
-                />
-              </div>
-            </div>
-
-            {/* ADDING THE ADDRESS SECTION  */}
-            <div className="space-y-2">
-              <Label htmlFor="departmentAddress">Address of Department</Label>
-              <Input
-                id="departmentAddress"
-                type="text"
-                onChange={handleChange}
-                placeholder="Enter departmental address"
-              />
-            </div>
-
-            {/* ADDING MODE OF TRAINING SECTION AND VENUE OF TRAINING   */}
-            <div style={{ display: "flex" }}>
-              <div className="space-y-2" style={{ width: "50%" }}>
-                <Label htmlFor="trainingMode">Mode of Training :</Label>
-                <select
-                  id="trainingMode"
-                  className="select-field"
-                  value={formData.trainingMode || "offline"}
-                  onChange={handleChange}
-                >
-                  <option value="online">Online</option>
-                  <option value="offline">Offline</option>
-                  <option value="hybrid">Hybrid</option>
-                </select>
-              </div>
-              <div className="space-y-2" style={{ width: "50%" }}>
-                <Label htmlFor="venueOfTraining">Venue of Training :</Label>
-                <select
-                  id="venueOfTraining"
-                  className="select-field"
-                  value={formData.venueOfTraining || "NIELIT"}
-                  onChange={handleChange}
-                >
-                  <option value="NIELIT">NIELIT</option>
-                  <option value="outside">Outside NIELIT</option>
-                </select>
-              </div>
-            </div>
-
-            <div style={{ display: "flex" }}>
-              {/* ADDING THE COURSE NAME SECTION  */}
-              <div className="space-y-2" style={{ width: "50%" }}>
-                <Label htmlFor="courseName">Course name</Label>
-                <Input
-                  id="courseName"
-                  type="text"
-                  onChange={handleChange}
-                  placeholder="Enter your course name"
-                />
-              </div>
-
-              {/* ADDING THE TECHNOLOGY SECTION  */}
-              <div
-                className="space-y-2"
-                style={{ width: "50%", marginLeft: "20px" }}
-              >
-                <Label htmlFor="technologyName">Technology</Label>
-                <Input
-                  id="technologyName"
-                  type="text"
-                  onChange={handleChange}
-                  placeholder="Enter Name of Technology"
-                />
-              </div>
-            </div>
-
-            {/* ADDING REVENUE OF BATCH SECTION  */}
-            <div className="space-y-2">
-              <Label htmlFor="revenueOfBatch">Revenue of Batch </Label>
-              <Input
-                id="revenueOfBatch"
-                type="text"
-                onChange={handleChange}
-                placeholder="Enter Batch Revenue"
-              />
-            </div>
-
-            <div className="space-y-2   ">
-              <Label htmlFor="courseDuration">Course duration :</Label>
+                Venue of Training
+              </label>
               <select
-                id="courseDurationFormat"
-                value={formData.courseDuration.format}
-                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="venue"
+                onChange={(e) => setVenue(e.target.value)}
               >
-                <option value="days">Days</option>
-                <option value="months">Months</option>
-                <option value="hours">Hours</option>
-                <option value="weeks">Weeks</option>
+                <option>NIELIT</option>
+                <option>Outside NIELIT</option>
               </select>
-              <Input
-                id="courseDurationValue"
-                type="number"
-                value={formData.courseDuration.value}
-                onChange={handleChange}
-                placeholder={`Enter your course duration in ${formData.courseDuration.format}`}
-              />
             </div>
+            {venue === "Outside NIELIT" && (
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="locationOfCentre"
+                >
+                  Location of Centre
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="locationOfCentre"
+                  type="text"
+                  placeholder="Enter location of centre"
+                />
+              </div>
+            )}
 
-            <div style={{ display: "flex" }}>
-              <div
-                className="space-y-2"
-                style={{ width: "50%", marginRight: "20px" }}
-              >
-                <Label htmlFor="startDate">Start date</Label>
-                <Input id="startDate" type="date" onChange={handleChange} />
+              <div style={{ display: "flex" }}>
+                {/* ADDING THE COURSE NAME SECTION  */}
+                <div className="space-y-2" style={{ width: "50%" }}>
+                  <Label htmlFor="courseName">Course name</Label>
+                  <Input
+                    id="courseName"
+                    type="text"
+                    onChange={handleChange}
+                    placeholder="Enter your course name"
+                  />
+                </div>
+
+                {/* ADDING THE TECHNOLOGY SECTION  */}
+                <div
+                  className="space-y-2"
+                  style={{ width: "50%", marginLeft: "20px" }}
+                >
+                  <Label htmlFor="technologyName">Technology</Label>
+                  <Input
+                    id="technologyName"
+                    type="text"
+                    onChange={handleChange}
+                    placeholder="Enter Name of Technology"
+                  />
+                </div>
               </div>
 
-              <div
-                className="space-y-2"
-                style={{ width: "50%", marginLeft: "20px" }}
-              >
-                <Label htmlFor="endDate">End date</Label>
-                <Input id="endDate" type="date" onChange={handleChange} />
+              {/* ADDING REVENUE OF BATCH SECTION  */}
+              <div className="space-y-2">
+                <Label htmlFor="revenueOfBatch">Revenue of Batch </Label>
+                <Input
+                  id="revenueOfBatch"
+                  type="text"
+                  onChange={handleChange}
+                  placeholder="Enter Batch Revenue"
+                />
+              </div>
+
+              <div className="space-y-2   ">
+                <Label htmlFor="courseDuration">Course duration :</Label>
+                <select
+                  id="courseDurationFormat"
+                  value={formData.courseDuration.format}
+                  onChange={handleChange}
+                >
+                  <option value="days">Days</option>
+                  <option value="months">Months</option>
+                  <option value="hours">Hours</option>
+                  <option value="weeks">Weeks</option>
+                </select>
+                <Input
+                  id="courseDurationValue"
+                  type="number"
+                  value={formData.courseDuration.value}
+                  onChange={handleChange}
+                  placeholder={`Enter your course duration in ${formData.courseDuration.format}`}
+                />
+              </div>
+
+              <div style={{ display: "flex" }}>
+                <div
+                  className="space-y-2"
+                  style={{ width: "50%", marginRight: "20px" }}
+                >
+                  <Label htmlFor="startDate">Start date</Label>
+                  <Input id="startDate" type="date" onChange={handleChange} />
+                </div>
+
+                <div
+                  className="space-y-2"
+                  style={{ width: "50%", marginLeft: "20px" }}
+                >
+                  <Label htmlFor="endDate">End date</Label>
+                  <Input id="endDate" type="date" onChange={handleChange} />
+                </div>
+              </div>
+
+              {/* ADDING TOTAL NUMBER OF PARTICIPANTS  */}
+              <div className="space-y-2">
+                <Label htmlFor="participantsNo">
+                  Total Number of Participants{" "}
+                </Label>
+                <Input
+                  id="participantsNo"
+                  type="number"
+                  onChange={handleChange}
+                  placeholder="Enter Number of Participants"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="remarks">Remarks</Label>
+                <Textarea
+                  className="min-h-[100px]"
+                  id="remarks"
+                  placeholder="Enter your remarks"
+                  onChange={handleChange}
+                />
               </div>
             </div>
+          </CardContent>
 
-            {/* ADDING TOTAL NUMBER OF PARTICIPANTS  */}
-            <div className="space-y-2">
-              <Label htmlFor="participantsNo">
-                Total Number of Participants{" "}
-              </Label>
-              <Input
-                id="participantsNo"
-                type="number"
-                onChange={handleChange}
-                placeholder="Enter Number of Participants"
-              />
-            </div>
+          <CardFooter className="flex justify-end">
+            <Button variant="outline" style={{ marginRight: "20px" }}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} type="submit">
+              Submit
+            </Button>
+          </CardFooter>
 
-            <div className="space-y-2">
-              <Label htmlFor="remarks">Remarks</Label>
-              <Textarea
-                className="min-h-[100px]"
-                id="remarks"
-                placeholder="Enter your remarks"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-        </CardContent>
-
-        <CardFooter className="flex justify-end">
-          <Button variant="outline" style={{ marginRight: "20px" }}>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} type="submit">
-            Submit
-          </Button>
-        </CardFooter>
-        {alert2 && (
-          <Alert
-            severity="info"
-            className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg"
-          >
-            Batch Added Successfully.
-          </Alert>
-        )}
-      </Card>
+          {alert2 && (
+            <Alert
+              severity="info"
+              className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg"
+            >
+              Batch Added Successfully.
+            </Alert>
+          )}
+        </div>
+      </div>
 
       <footer className="bg-[#1f316e] text-white py-4 px-4 flex items-center justify-center">
         <div className="flex items-center gap-4 text-sm">

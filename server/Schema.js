@@ -19,16 +19,11 @@ const batchCodeSchema = new mongoose.Schema({
   endDate: Date,
   participantsNo: Number,
   remarks: String
-
 });
-
-
 
 
 // Create a Mongoose model from the schema
 const Batch = mongoose.model("batchCodeData", batchCodeSchema);
-
-
 
 // Define the employee schema
 const employeeSchema = new mongoose.Schema({

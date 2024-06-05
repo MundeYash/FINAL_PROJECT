@@ -183,8 +183,12 @@ export default function Component() {
         </div>
       </header>
 
+
+        <div className="py-8 rounded-md">
+
+          
       <Card
-        style={{ paddingTop: "20px", paddingBottom: "20px" }}
+        
         className="w-full max-w-lg mx-auto py-8 px-6  "
       >
         <CardHeader className="text-center">
@@ -328,7 +332,7 @@ export default function Component() {
             }}
             type="submit"
           >
-            Add Candidate
+            Submit
           </Button>
         </CardFooter>
         {alert2 && (
@@ -340,6 +344,8 @@ export default function Component() {
           </Alert>
         )}
       </Card>
+
+        </div>
 
       <Card className="py-8 px-8 ">
         <CardContent>

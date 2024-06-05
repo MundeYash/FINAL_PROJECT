@@ -28,15 +28,78 @@ import { useState } from "react";
 
 export default function Admin() {
   const [data, setData] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+
+  const [selectedBatchCode, setSelectedBatchCode] = useState("");
+  const [selectedBatchDescription, setSelectedBatchDescription] = useState("");
+  const [selectedCourseName, setSelectedCourseName] = useState("");
+  const [selectedDuration, setSelectedDuration] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   async function fetchData() {
     const response = await axios.get("http://localhost:4000/data");
     console.log(response.data);
     setData(response.data);
   }
-  console.log(data);
+
   useEffect(() => {
     fetchData();
+    fetchCandidatesData();
   }, []);
+
+  const handleBatchCodeChange = (value) => setSelectedBatchCode(value);
+  const handleBatchDescriptionChange = (value) =>
+    setSelectedBatchDescription(value);
+  const handleCourseNameChange = (value) => setSelectedCourseName(value);
+  const handleDurationChange = (value) => setSelectedDuration(value);
+  const handleStartDateChange = (e) => setStartDate(e.target.value);
+  const handleEndDateChange = (e) => setEndDate(e.target.value);
+
+  async function fetchCandidatesData() {
+    const response = await axios.get("http://localhost:4000/candidates");
+    console.log(response.data);
+    setFilteredData(response.data);
+  }
+
+  const applyFilters = () => {
+    if (!filteredData) return;
+
+    const filtered = filteredData.filter((item) => {
+      const batchCodeMatch = selectedBatchCode
+        ? item.batchCode === selectedBatchCode
+        : true;
+      const batchDescriptionMatch = selectedBatchDescription
+        ? item.batchDescription === selectedBatchDescription
+        : true;
+      const courseNameMatch = selectedCourseName
+        ? item.courseName === selectedCourseName
+        : true;
+      const durationMatch = selectedDuration
+        ? item.duration === selectedDuration
+        : true;
+      const startDateMatch = startDate
+        ? new Date(item.startDate) >= new Date(startDate)
+        : true;
+      const endDateMatch = endDate
+        ? new Date(item.endDate) <= new Date(endDate)
+        : true;
+
+      return (
+        batchCodeMatch &&
+        batchDescriptionMatch &&
+        courseNameMatch &&
+        durationMatch &&
+        startDateMatch &&
+        endDateMatch
+      );
+    });
+
+    setFilteredData(filtered);
+  };
+
+  console.log(`filteredData`, filteredData);
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
@@ -54,7 +117,7 @@ export default function Admin() {
         </div>
 
         <nav className="flex items-center gap-6">
-          <Link className="hover:underline" href="#">
+          <Link className="hover:underline" href="../">
             Home
           </Link>
 
@@ -92,13 +155,13 @@ export default function Admin() {
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Filters</h2>
-          <Button>Apply Filters</Button>
+          <Button onClick={applyFilters}>Apply Filters</Button>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           {/* Filter selection options  */}
 
-          <Select>
+          <Select onValueChange={handleBatchCodeChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Batch Code " />
             </SelectTrigger>
@@ -107,7 +170,7 @@ export default function Admin() {
                 {data &&
                   data?.code?.map((item, index) => {
                     return (
-                      <SelectItem key={index} value={`batch${index}`}>
+                      <SelectItem key={index} value={item}>
                         {item}
                       </SelectItem>
                     );
@@ -216,32 +279,18 @@ export default function Admin() {
             </TableHeader>
 
             <TableBody>
-              <TableRow>
-                <TableCell>203</TableCell>
-                <TableCell>203819</TableCell>
-                <TableCell>8293221</TableCell>
+              {filteredData?.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.batchCode}</TableCell>
+                  <TableCell>{item.rollNumber}</TableCell>
+                  <TableCell>{item.certificateNumber}</TableCell>
 
-                <TableCell>Aman Kumar</TableCell>
-                <TableCell>Associate Professor </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>209</TableCell>
-                <TableCell>29321</TableCell>
-                <TableCell>6728281</TableCell>
-
-                <TableCell>Dr. P. Bhalla</TableCell>
-                <TableCell>Director Professor </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>210</TableCell>
-                <TableCell>203819</TableCell>
-                <TableCell>8293221</TableCell>
-
-                <TableCell>Aman Kumar</TableCell>
-                <TableCell>Associate Professor </TableCell>
-              </TableRow>
+                  <TableCell>
+                    {item.firstName} {item.lastName}
+                  </TableCell>
+                  <TableCell>{item.designation}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

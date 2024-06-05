@@ -26,7 +26,7 @@ async function update(req,res,next) {
       remarks: decryptedObj.remarks,
     });
   console.log(result);
-  res.status(201).send({message:"CAndidate details updated successfully"});}
+  res.status(201).send({message:"Candidate details updated successfully"});}
   catch(error)
   {
     res.status(500).send(error);
@@ -61,4 +61,14 @@ async function getDetails(req,res,next){
     res.status(400).json(err);
   } 
 }
-module.exports = { update, remove ,getDetails};
+
+async function getAllCanditates(req, res) {
+  try {
+    const data = await Employee.find();
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).send({ message: "Error getting employee" });
+  }
+}
+
+module.exports = { update, remove ,getDetails, getAllCanditates};

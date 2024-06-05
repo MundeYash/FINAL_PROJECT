@@ -11,9 +11,7 @@ const { Batch } = require("./Schema");
 const { Employee } = require("./Schema");
 
 
-const { remove } = require("./candidateServices/candidate");
-const { update } = require("./candidateServices/candidate");
-const { getDetails } = require("./candidateServices/candidate");
+const { remove, update, getDetails, getAllCanditates } = require("./candidateServices/candidate");
 const authRoutes = require('./routes/auth');
 const app = express();
 dotenv.config();
@@ -132,6 +130,7 @@ app.post("/signin", (req, res) => {
   console.log(formdata);
 });
 //candidate services for update and delete
+app.get("/candidates", getAllCanditates);
 app.put("/candidate/update", update);
 app.delete("/candidate/delete/:id", remove);
 app.get("/candidate/:id", getDetails);
