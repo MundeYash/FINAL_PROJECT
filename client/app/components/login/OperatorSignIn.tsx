@@ -8,31 +8,7 @@ import Link from "next/link";
 export default function Operator() {
   return (
     <>
-      <header className="flex items-center justify-between bg-[#1f316e] px-4 py-3 text-white sm:px-6 lg:px-8">
-        <div className="flex items-center">
-          <img
-            alt="NIELIT Logo"
-            className="h-8 w-auto"
-            src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
-          />
-          <div className="ml-4 text-lg font-bold">
-            National Institute of Electronics and Information Technology
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="mr-4 text-sm">
-            Ministry of Electronics and Information Technology
-            <br />
-            Government of India
-          </div>
-
-          <img
-            alt="Indian Emblem"
-            className="h-8 w-auto"
-            src="https://imgs.search.brave.com/5pd2BEDPcnDaUv_M-HSA9QSwyQthxDYGJeZ-Qo4Hokw/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9zZWVr/bG9nby5jb20vaW1h/Z2VzL0UvRW1ibGVt/X29mX0luZGlhLWxv/Z28tRTRDNkMwRkY2/Mi1zZWVrbG9nby5j/b20ucG5n"
-          />
-        </div>
-      </header>
+      <Header/>
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -157,11 +133,7 @@ export default function Operator() {
         </div>
       </div>
 
-      <footer className="bg-[#1f316e] text-white py-4 px-4 flex items-center justify-center">
-        <div className="flex items-center gap-4 text-sm">
-          @CC: Developed and Maintained by NIELIT Delhi
-        </div>
-      </footer>
+     <Footer/>
     </>
   );
 }

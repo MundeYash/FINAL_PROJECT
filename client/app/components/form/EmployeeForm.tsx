@@ -1,4 +1,7 @@
 "use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CryptoJS from "crypto-js";
 import Alert from "@mui/material/Alert";
 import {
   CardTitle,
@@ -10,200 +13,200 @@ import {
 } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import {
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectContent,
-  SelectGroup,
-} from "../ui/select";
-import Link from "next/link";
-import * as React from "react";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import CloseIcon from '@mui/icons-material/Close';
-// import "../app/EmployeeForm.css"
-import { useState } from "react";
-import axios from "axios";
-import CryptoJS from "crypto-js";
-import { useEffect } from "react";
-import { Car } from "lucide-react";
+import { IoCloseCircle } from "react-icons/io5";
 import CandidateUpdate from "./CandidateUpdate";
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
+import { FormData, Candidate } from "./lib/types";
+import validateForm from "./lib/validate";
 
 export default function Component() {
-  const [batchCode, setBatchCode] = useState("");
-  const [formData, setFormData] = useState({});
-  const [data, setData] = useState(null);
-  const [candidates, setCandidates] = useState();
+  const [batchCode, setBatchCode] = useState<string | null>(null);
+  const [formData, setFormData] = useState<FormData>({});
+  const [data, setData] = useState<any>(null);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(false);
-  const [alert2, setAlert2] = useState(false);
-  const [editform, seteditForm] = useState(false);
-  const [editData, setEditData] = useState({});
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [editForm, setEditForm] = useState(false);
+  const [editData, setEditData] = useState<Partial<Candidate>>({});
+  const [errors, setErrors] = useState<FormData>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (batchCode) {
+      fetchEmployeeData(batchCode);
+    }
+  }, [batchCode]);
+
   const handleScroll = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
     });
   };
+  
+  function validateForm() {
+    let isValid = true;
+    const newErrors: FormData = {};
 
-  async function fetchData() {
-    const response = await axios.get("http://localhost:4000/data");
-    console.log(response.data);
-    setData(response.data);
-  }
+    if (!formData.firstName) {
+      isValid = false;
+      newErrors.firstName = "First name is required.";
+    }
 
-  async function fetchCandidateDetails(id: string) {
-    try{
+    if (!formData.rollNumber) {
+      isValid = false;
+      newErrors.rollNumber = "Roll number is required.";
+    } else if (!/^\d+$/.test(formData.rollNumber)) {
+      isValid = false;
+      newErrors.rollNumber = "Roll number must be numeric.";
+    }
+
+    if (!formData.phoneNumber) {
+      isValid = false;
+      newErrors.phoneNumber = "Phone number is required.";
+    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      isValid = false;
+      newErrors.phoneNumber = "Phone number must be numeric and 10 digits long.";
+    }
+
+    if (!formData.email) {
+      isValid = false;
+      newErrors.email = "Email is required.";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      isValid = false;
+      newErrors.email = "Email must be in a valid format.";
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/data");
+      setData(response.data);
+    } catch (err) {
+      console.error("Error fetching data", err);
+    }
+  };
+
+  const fetchCandidateDetails = async (id: string) => {
+    try {
       setLoading(true);
       const response = await axios.get(`http://localhost:4000/candidate/${id}`);
       setEditData(response.data);
-      seteditForm(true);
-      console.log(response.data);
+      setEditForm(true);
       setLoading(false);
-    }
-    catch(err){
+    } catch (err) {
       setLoading(false);
-      console.log(err);
+      console.error("Error fetching candidate details", err);
     }
-  }
-  function handleChange(e) {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
-  }
-  async function fetchEmployeeData(id: string) {
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [id]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [id]: '' }));
+  };
+
+  const fetchEmployeeData = async (id: string) => {
     try {
-      // setLoading(true);
-      if (id !== "") {
-        const response = await axios.get(
-          `http://localhost:4000/employees/${id}`
-        );
-        // console.log(response.data);
+      if (id) {
+        const response = await axios.get(`http://localhost:4000/employees/${id}`);
         setCandidates(response.data);
       }
-      // setLoading(false);
     } catch (err) {
-      setLoading(false);
-      console.log(err);
+      console.error("Error fetching employee data", err);
     }
-    // setData(response.data);
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
-  useEffect(() => {
-    fetchEmployeeData(batchCode);
-    console.log(candidates);
-  }, [batchCode]);
-
-  const handleCodeChange = (event) => {
-    setBatchCode(event.target.value);
   };
-  async function handleSubmit() {
-    // console.log("submit");
-    setFormData({ batchCode: batchCode, ...formData });
-    const encryptedData = CryptoJS.AES.encrypt(
-      JSON.stringify(formData),
-      "secretKey"
-    ).toString();
-    console.log(encryptedData);
 
-    const response = await axios.post("http://localhost:4000/submit/employee", {
-      encryptedData: encryptedData,
-    });
-    setAlert2(true);
-    setTimeout(() => {
-      setAlert2(false);
-    }, 3000);
-    handleScroll();
-    console.log(response);
-  }
+  const handleCodeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setBatchCode(event.target.value as string);
+  };
 
-  async function handleEdit(id:string) {
-    fetchCandidateDetails(id);
-  }
+  const handleSubmit = async () => {
+    if (!batchCode) {
+      setAlert({ type: 'error', message: 'Batch code is required.' });
+      return;
+    }
 
-  async function handleDelete(id: string) {
+    if (!validateForm()) {
+      return;
+    }
+
+    const updatedFormData = { batchCode, ...formData };
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(updatedFormData), "secretKey").toString();
+
     try {
-      const response = await axios.delete(
-        `http://localhost:4000/candidate/delete/${id}`
-      );
+      await axios.post("http://localhost:4000/submit/employee", { encryptedData });
+      setAlert({ type: 'success', message: 'Candidate details submitted successfully.' });
       fetchEmployeeData(batchCode);
-      setAlert(true);
-      setTimeout(() => {
-        setAlert(false);
-      }, 3000);
+      handleScroll();
+      setFormData({});
+    } catch (err) {
+      console.error("Error submitting form", err);
+    }
+  };
+
+  const handleEdit = async (id: string) => {
+    setIsModalOpen(true);
+    await fetchCandidateDetails(id);
+    batchCode && fetchEmployeeData(batchCode);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:4000/candidate/delete/${id}`);
+      fetchEmployeeData(batchCode);
+      setAlert({ type: 'success', message: 'Candidate deleted successfully.' });
       handleScroll();
     } catch (err) {
-      console.log(err);
+      console.error("Error deleting record", err);
     }
-  }
+  };
 
   if (loading) return <h1>Loading...</h1>;
 
   return (
     <>
-  
-    {editform &&
-    <div className="w-[700px] h-auto bg-gray-400">
-      <CloseIcon className="z-20 absolute right-1/4 " onClick={()=> {seteditForm(false); fetchEmployeeData(batchCode);}}/>
-      <CandidateUpdate>{editData}</CandidateUpdate>
-    </div>
-      }
-      <header className="flex items-center justify-between bg-[#1f316e] px-4 py-5 text-white sm:px-6 lg:px-8">
-        <div className="flex items-center">
-          <img
-            alt="NIELIT Logo"
-            className="h-8 w-auto"
-            src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
+      {editForm && (
+        <div className="w-[700px] h-auto bg-gray-400 relative">
+          <IoCloseCircle
+            className="absolute top-0 right-0 z-40 w-10 h-10 cursor-pointer"
+            onClick={() => {
+              setEditForm(false);
+              fetchEmployeeData(batchCode);
+            }}
           />
-          <div className="ml-4 text-lg font-bold">
-            National Institute of Electronics and Information Technology
-          </div>
+          <CandidateUpdate>{editData}</CandidateUpdate>
         </div>
-        <div className="flex items-center">
-          <div className="mr-4 text-sm">
-            Ministry of Electronics and Information Technology
-            <br />
-            Government of India
-          </div>
+      )}
 
-          <img
-            alt="Indian Emblem"
-            className="h-8 w-auto"
-            src="https://imgs.search.brave.com/5pd2BEDPcnDaUv_M-HSA9QSwyQthxDYGJeZ-Qo4Hokw/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9zZWVr/bG9nby5jb20vaW1h/Z2VzL0UvRW1ibGVt/X29mX0luZGlhLWxv/Z28tRTRDNkMwRkY2/Mi1zZWVrbG9nby5j/b20ucG5n"
-          />
-        </div>
-      </header>
+      <Header />
 
-
-        <div className="py-8 rounded-md">
-
-          
-      <Card
-        
-        className="w-full max-w-lg mx-auto py-8 px-6  "
-      >
+      <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
           <img
             alt="Header Logo"
             className="mx-auto h-12 w-auto"
             src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
           />
-
           <CardTitle className="text-2xl">Candidate Entry Form</CardTitle>
-          <CardDescription></CardDescription>
         </CardHeader>
 
         <CardContent>
-          <div className="grid grid-cols-1 gap-6">
+          {/* <div className="grid grid-cols-1 gap-6">
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
@@ -232,16 +235,20 @@ export default function Component() {
                 <Input
                   id="firstName"
                   type="text"
+                  value={formData.firstName || ""}
                   onChange={handleChange}
                   placeholder="Enter your first name"
                 />
+                {errors.firstName && (
+                  <Alert severity="error">{errors.firstName}</Alert>
+                )}
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="lastName">Last name</Label>
                 <Input
                   id="lastName"
                   type="text"
+                  value={formData.lastName || ""}
                   onChange={handleChange}
                   placeholder="Enter your last name"
                 />
@@ -249,20 +256,25 @@ export default function Component() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="rollNumber">Roll number</Label>
+              <Label htmlFor="rollNumber">Roll Number</Label>
               <Input
                 id="rollNumber"
                 type="text"
+                value={formData.rollNumber || ""}
                 onChange={handleChange}
                 placeholder="Enter your roll number"
               />
+              {errors.rollNumber && (
+                <Alert severity="error">{errors.rollNumber}</Alert>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="certificateNumber">Certificate number</Label>
+              <Label htmlFor="certificateNumber">Certificate Number</Label>
               <Input
                 id="certificateNumber"
                 type="text"
+                value={formData.certificateNumber || ""}
                 onChange={handleChange}
                 placeholder="Enter your certificate number"
               />
@@ -273,167 +285,263 @@ export default function Component() {
               <Input
                 id="designation"
                 type="text"
+                value={formData.designation || ""}
                 onChange={handleChange}
                 placeholder="Enter your designation"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="employeeId">Employee ID</Label>
+              <Label htmlFor="employeeId">Employee Id</Label>
               <Input
                 id="employeeId"
                 type="text"
+                value={formData.employeeId || ""}
                 onChange={handleChange}
-                placeholder="Enter your employee ID"
+                placeholder="Enter your employee id"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Phone number</Label>
-
+              <Label htmlFor="phoneNumber">Phone Number</Label>
               <Input
                 id="phoneNumber"
-                type="numeric"
+                type="text"
+                value={formData.phoneNumber || ""}
                 onChange={handleChange}
                 placeholder="Enter your phone number"
               />
+              {errors.phoneNumber && (
+                <Alert severity="error">{errors.phoneNumber}</Alert>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                placeholder="Enter your email"
                 type="email"
+                value={formData.email || ""}
                 onChange={handleChange}
+                placeholder="Enter your email"
               />
+              {errors.email && <Alert severity="error">{errors.email}</Alert>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="remarks">Remarks</Label>
               <Textarea
-                className="min-h-[100px]"
                 id="remarks"
-                placeholder="Enter your message"
+                value={formData.remarks || ""}
                 onChange={handleChange}
+                placeholder="Enter remarks"
+              />
+            </div>
+          </div> */}
+
+          <div className="grid grid-cols-1 gap-6">
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Select Batch Code
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={batchCode}
+                  label="Select Batch Code"
+                  onChange={handleCodeChange}
+                >
+                  {data &&
+                    data.code.map((item, index) => (
+                      <MenuItem key={index} value={item}>
+                        {item}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Box>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  placeholder="First Name"
+                  value={formData.firstName || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+                {errors.firstName && (
+                  <p className="text-red-500 text-sm">{errors.firstName}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Last Name"
+                  value={formData.lastName || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="rollNumber">Roll Number</Label>
+                <Input
+                  id="rollNumber"
+                  placeholder="Roll Number"
+                  value={formData.rollNumber || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+                {errors.rollNumber && (
+                  <p className="text-red-500 text-sm">{errors.rollNumber}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="certificateNumber">Certificate Number</Label>
+                <Input
+                  id="certificateNumber"
+                  placeholder="Certificate Number"
+                  value={formData.certificateNumber || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="designation">Designation</Label>
+                <Input
+                  id="designation"
+                  placeholder="Designation"
+                  value={formData.designation || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="employeeId">Employee ID</Label>
+                <Input
+                  id="employeeId"
+                  placeholder="Employee ID"
+                  value={formData.employeeId || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Input
+                  id="phoneNumber"
+                  placeholder="Phone Number"
+                  value={formData.phoneNumber || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  placeholder="Email"
+                  value={formData.email || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="remarks">Remarks</Label>
+              <Textarea
+                id="remarks"
+                placeholder="Remarks"
+                value={formData.remarks || ""}
+                onChange={handleChange}
+                className="mt-1 block w-full"
               />
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end  ">
-          <Button variant="outline" style={{ marginRight: "20px" }}>
-            Cancel
-          </Button>
 
-          <Button
-            className="  bg-[#2c3658] text-white border-none py-2 px-4 text-center no-underline inline-block text-lg my-1 cursor-pointer rounded-lg"
-            onClick={() => {
-              handleSubmit();
-            }}
-            type="submit"
-          >
-            Submit
-          </Button>
+        <CardFooter className="flex justify-center">
+          <Button onClick={handleSubmit}>Submit</Button>
         </CardFooter>
-        {alert2 && (
-          <Alert
-            severity="info"
-            className="mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded shadow-lg"
-          >
-            Record Added Successfully.
-          </Alert>
-        )}
       </Card>
 
-        </div>
+      {alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
 
-      <Card className="py-8 px-8 ">
-        <CardContent>
-          <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
-              <span className="">Candidates of Batch</span>
-            </h2>
-
-            <table className="table-auto w-full border-collapse">
-              <thead className="bg-gray-800 text-white">
-                <tr>
-                  <th className="px-4 py-2">S. No.</th>
-                  <th className="px-4 py-2">Name</th>
-                  <th className="px-4 py-2">Roll Number</th>
-                  <th className="px-4 py-2">Certificate Number</th>
-                  <th className="px-4 py-2">Designation</th>
-                  <th className="px-4 py-2">Employee Id</th>
-                  <th className="px-4 py-2">Email</th>
-                  <th className="px-4 py-2">Phone Number</th>
-                  <th className="px-4 py-2">Remarks</th>
-                  <th className="px-4 py-2">Update </th>
-                  <th className="px-4 py-2">Delete </th>
-                  {/* Add more table headers for other fields if needed */}
+      {batchCode && (
+        <div className="container my-8 mx-auto p-4 bg-white rounded shadow">
+          <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border">S. No.</th>
+                <th className="py-2 px-4 border">First Name</th>
+                <th className="py-2 px-4 border">Last Name</th>
+                <th className="py-2 px-4 border">Roll Number</th>
+                <th className="py-2 px-4 border">Certificate Number</th>
+                <th className="py-2 px-4 border">Designation</th>
+                <th className="py-2 px-4 border">Employee ID</th>
+                <th className="py-2 px-4 border">Phone Number</th>
+                <th className="py-2 px-4 border">Email</th>
+                <th className="py-2 px-4 border">Remarks</th>
+                <th className="py-2 px-4 border">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {candidates.map((candidate, index) => (
+                <tr key={candidate._id}>
+                  <td className="border px-4 py-2">{index + 1}</td>
+                  <td className="py-2 px-4 border">{candidate.firstName}</td>
+                  <td className="py-2 px-4 border">{candidate.lastName}</td>
+                  <td className="py-2 px-4 border">{candidate.rollNumber}</td>
+                  <td className="py-2 px-4 border">
+                    {candidate.certificateNumber}
+                  </td>
+                  <td className="py-2 px-4 border">{candidate.designation}</td>
+                  <td className="py-2 px-4 border">{candidate.employeeId}</td>
+                  <td className="py-2 px-4 border">{candidate.phoneNumber}</td>
+                  <td className="py-2 px-4 border">{candidate.email}</td>
+                  <td className="py-2 px-4 border">{candidate.remarks}</td>
+                  <td className="py-2 px-4 border">
+                    <div className="flex space-x-2">
+                      <Button onClick={() => handleEdit(candidate._id)}>
+                        Edit
+                      </Button>
+                      <Button onClick={() => handleDelete(candidate._id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-
-              <tbody className="text-gray-700">
-                {candidates &&
-                  candidates.map((candidate, index) => (
-                    <tr key={candidate._id}>
-                      <td className="border px-4 py-2">{index + 1}</td>
-                      <td className="border px-4 py-2">{`${candidate.firstName} ${candidate.lastName}`}</td>
-                      <td className="border px-4 py-2">
-                        {candidate.rollNumber}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {candidate.certificateNumber}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {candidate.designation}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {candidate.employeeId}
-                      </td>
-
-                      <td className="border px-4 py-2">{candidate.email}</td>
-                      <td className="border px-4 py-2">
-                        {candidate.phoneNumber}
-                      </td>
-                      <td className="border px-4 py-2">{candidate.remarks}</td>
-                      <td className="border px-4 py-2">
-                        <Button className="bg-green-500 text-white border-none py-2 px-4 text-center no-underline inline-block text-lg my-1 cursor-pointer rounded-lg"
-                        onClick={()=>{                            
-                          handleEdit(candidate._id);
-                        }}>
-                          Edit
-                        </Button>
-                      </td>
-
-                      <td className="border px-4 py-2">
-                        <Button
-                          onClick={() => handleDelete(candidate._id)}
-                          className="bg-red-500 text-white border-none py-2 px-4 text-center no-underline inline-block text-lg my-1 cursor-pointer rounded-lg"
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-            {alert && (
-              <Alert
-                severity="success"
-                className="mr-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
-              >
-                Record Deleted Successfully.
-              </Alert>
-            )}
-          </section>
-        </CardContent>
-      </Card>
-
-      <footer className="bg-[#1f316e] text-white py-4 px-4 flex items-center justify-center">
-        <div className="flex items-center gap-4 text-sm">
-          @CC: Developed and Maintained by NIELIT Delhi
+              ))}
+            </tbody>
+          </table>
         </div>
-      </footer>
+      )}
+
+      <Footer />
     </>
   );
 }

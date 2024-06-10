@@ -1,14 +1,10 @@
-const jwt = require('jsonwebtoken');
-module.exports = (req, res, next) => {
-  const token = req.header('x-auth-token');
-  if (!token) {
-    return res.status(401).json({ msg: 'No token, authorization denied' });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.user;
-    next();
-  } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
-  }
-};
+const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware');
+const router = express.Router();
+
+router.get('/protected', authMiddleware, (req, res) => {
+  // This route is protected, the user's information is available in req.user
+  res.json({ message: 'This is a protected route' });
+});
+
+module.exports = router;

@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 
-import Dashboard from '../../../components/dashBoard/OperatorDashboard'
+// import Dashboard from '../../../components/dashBoard/OperatorDashboard'
+import Dashboard from '../../../components/dashBoard/Test'
 
 import { buttonVariants } from '../../../components/ui/button';
 
@@ -11,7 +12,7 @@ import { buttonVariants } from '../../../components/ui/button';
 export default function AdminDashboard(){
 
 
-    const [mode , setMode ] = useState(0);
+    
 
     
     return(

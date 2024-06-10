@@ -1,7 +1,286 @@
+// "use client";
+
+// import Alert from "@mui/material/Alert";
+// import { useEffect, useState } from "react";
+// import {
+//   CardTitle,
+//   CardDescription,
+//   CardHeader,
+//   CardContent,
+//   CardFooter,
+//   Card,
+// } from "../ui/card";
+// import { Label } from "../ui/label";
+// import { Input } from "../ui/input";
+// import {
+//   SelectValue,
+//   SelectTrigger,
+//   SelectItem,
+//   SelectContent,
+//   Select,
+// } from "../ui/select";
+// import { Textarea } from "../ui/textarea";
+// import { Button } from "../ui/button";
+// import axios from "axios";
+// import CryptoJS from "crypto-js";
+// import Header from "../header/Header";
+// import Footer from "../footer/Footer";
+// export default function Component() {
+//   const [alert2, setAlert2] = useState(false);
+//   const [batchCode, setBatchCode] = useState<number | null>(null);
+//   const [formData, setFormData] = useState({
+//     courseDuration: {
+//       value: "",
+//       format: "weeks",
+//     },
+//     trainingMode: "offline",
+//     venueOfTraining: "NIELIT",
+//   });
+
+//   async function fetchBatchCode() {
+//     try {
+//       const response = await axios.get("http://localhost:4000/batchCode");
+//       setBatchCode(parseInt(response.data[0].maxBatchCode) + 1);
+//     } catch (error) {
+//       console.error("Error fetching batch code:", error);
+//     }
+//   }
+
+//   useEffect(() => {
+//     fetchBatchCode();
+//   }, []);
+
+//   const handleChange = (e) => {
+//     const { id, value } = e.target;
+//     if (id === "courseDurationValue" || id === "courseDurationFormat") {
+//       setFormData((prevFormData) => ({
+//         ...prevFormData,
+//         courseDuration: {
+//           ...prevFormData.courseDuration,
+//           [id === "courseDurationValue" ? "value" : "format"]: value,
+//         },
+//       }));
+//     } else {
+//       setFormData((prevFormData) => ({
+//         ...prevFormData,
+//         [id]: value,
+//       }));
+//     }
+//   };
+
+//   async function handleSubmit() {
+//     if (batchCode === null) {
+//       console.error("Batch code is not set.");
+//       return;
+//     }
+//     const dataToSubmit = { ...formData, batchCode };
+//     console.log(dataToSubmit);
+//     const encryptedData = CryptoJS.AES.encrypt(
+//       JSON.stringify(dataToSubmit),
+//       "secretKey"
+//     ).toString();
+
+//     try {
+//       const response = await axios.post("http://localhost:4000/submit/batch", {
+//         encryptedData,
+//       });
+//       console.log(response);
+//       setAlert2(true);
+//       setTimeout(() => {
+//         setAlert2(false);
+//       }, 3000);
+//     } catch (error) {
+//       console.error("Error submitting form:", error);
+//     }
+//   }
+
+//   return (
+//     <>
+      
+//       <Header/>
+
+//       <Card className="mt-6 mb-6 bg-blue-100 shadow-lg">
+//         <CardHeader className="text-center">
+//           <img
+//             alt="Header Logo"
+//             className="mx-auto h-12 w-auto"
+//             src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
+//           />
+//           <h1 className="text-2xl font-bold mt-4">Batch Entry Form</h1>
+//         </CardHeader>
+
+//         <CardContent>
+//           <div className="grid grid-cols-1 gap-6">
+//             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+//               <div className="space-y-2" style={{ width: "50%" }}>
+//                 <Label htmlFor="batchCode">Batch code</Label>
+//                 {batchCode !== null && (
+//                   <Input id="batchCode" type="text" disabled value={batchCode} />
+//                 )}
+//               </div>
+//               <div className="space-y-2" style={{ width: "50%", marginLeft: "20px" }}>
+//                 <Label htmlFor="batchDescription">Department Name</Label>
+//                 <Input
+//                   id="batchDescription"
+//                   type="text"
+//                   onChange={handleChange}
+//                   placeholder="Enter Name of the Department"
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="space-y-2">
+//               <Label htmlFor="departmentAddress">Address of Department</Label>
+//               <Input
+//                 id="departmentAddress"
+//                 type="text"
+//                 onChange={handleChange}
+//                 placeholder="Enter departmental address"
+//               />
+//             </div>
+
+//             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+//               <div className="space-y-2" style={{ width: "50%" }}>
+//                 <Label htmlFor="trainingMode">Mode of Training :</Label>
+//                 <select
+//                   id="trainingMode"
+//                   className="select-field"
+//                   value={formData.trainingMode}
+//                   onChange={handleChange}
+//                 >
+//                   <option value="online">Online</option>
+//                   <option value="offline">Offline</option>
+//                   <option value="hybrid">Hybrid</option>
+//                 </select>
+//               </div>
+//               <div className="space-y-2" style={{ width: "50%" }}>
+//                 <Label htmlFor="venueOfTraining">Venue of Training :</Label>
+//                 <select
+//                   id="venueOfTraining"
+//                   className="select-field"
+//                   value={formData.venueOfTraining}
+//                   onChange={handleChange}
+//                 >
+//                   <option value="NIELIT">NIELIT</option>
+//                   <option value="outside">Outside NIELIT</option>
+//                 </select>
+//               </div>
+//             </div>
+
+//             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+//               <div className="space-y-2" style={{ width: "50%" }}>
+//                 <Label htmlFor="courseName">Course name</Label>
+//                 <Input
+//                   id="courseName"
+//                   type="text"
+//                   onChange={handleChange}
+//                   placeholder="Enter your course name"
+//                 />
+//               </div>
+//               <div className="space-y-2" style={{ width: "50%", marginLeft: "20px" }}>
+//                 <Label htmlFor="technologyName">Technology</Label>
+//                 <Input
+//                   id="technologyName"
+//                   type="text"
+//                   onChange={handleChange}
+//                   placeholder="Enter Name of Technology"
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="space-y-2">
+//               <Label htmlFor="revenueOfBatch">Revenue of Batch</Label>
+//               <Input
+//                 id="revenueOfBatch"
+//                 type="text"
+//                 onChange={handleChange}
+//                 placeholder="Enter Batch Revenue"
+//               />
+//             </div>
+
+//             <div className="space-y-2">
+//               <Label htmlFor="courseDuration">Course duration :</Label>
+//               <select
+//                 id="courseDurationFormat"
+//                 value={formData.courseDuration.format}
+//                 onChange={handleChange}
+//               >
+//                 <option value="days">Days</option>
+//                 <option value="months">Months</option>
+//                 <option value="hours">Hours</option>
+//                 <option value="weeks">Weeks</option>
+//               </select>
+//               <Input
+//                 id="courseDurationValue"
+//                 type="number"
+//                 value={formData.courseDuration.value}
+//                 onChange={handleChange}
+//                 placeholder={`Enter your course duration in ${formData.courseDuration.format}`}
+//               />
+//             </div>
+
+//             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+//               <div className="space-y-2" style={{ width: "50%", marginRight: "20px" }}>
+//                 <Label htmlFor="startDate">Start date</Label>
+//                 <Input id="startDate" type="date" onChange={handleChange} />
+//               </div>
+//               <div className="space-y-2" style={{ width: "50%", marginLeft: "20px" }}>
+//                 <Label htmlFor="endDate">End date</Label>
+//                 <Input id="endDate" type="date" onChange={handleChange} />
+//               </div>
+//             </div>
+
+//             <div className="space-y-2">
+//               <Label htmlFor="participantsNo">Total Number of Participants</Label>
+//               <Input
+//                 id="participantsNo"
+//                 type="number"
+//                 onChange={handleChange}
+//                 placeholder="Enter Number of Participants"
+//               />
+//             </div>
+
+//             <div className="space-y-2">
+//               <Label htmlFor="remarks">Remarks</Label>
+//               <Textarea
+//                 className="min-h-[100px]"
+//                 id="remarks"
+//                 placeholder="Enter your remarks"
+//                 onChange={handleChange}
+//               />
+//             </div>
+//           </div>
+//         </CardContent>
+
+//         <CardFooter className="flex justify-end">
+//           <Button variant="outline" style={{ marginRight: "20px" }}>
+//             Cancel
+//           </Button>
+//           <Button onClick={handleSubmit} type="submit">
+//             Submit
+//           </Button>
+//         </CardFooter>
+//         {alert2 && (
+//           <Alert
+//             severity="info"
+//             className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg"
+//           >
+//             Batch Added Successfully.
+//           </Alert>
+//         )}
+//       </Card>
+
+//      <Footer />
+//     </>
+//   );
+// }
+
+
+
 "use client";
 
 import Alert from "@mui/material/Alert";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   CardTitle,
   CardDescription,
@@ -19,371 +298,450 @@ import {
   SelectContent,
   Select,
 } from "../ui/select";
-
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import axios from "axios";
 import CryptoJS from "crypto-js";
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
 
 export default function Component() {
   const [alert2, setAlert2] = useState(false);
-  const [batchCode, setbatchCode] = useState(null);
-
+  const [batchCode, setBatchCode] = useState<number | null>(null);
+  const [batchCodes, setBatchCodes] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    batchDescription: "",
+    departmentAddress: "",
+    trainingMode: "offline",
+    venueOfTraining: "NIELIT",
+    courseName: "",
+    technologyName: "",
+    revenueOfBatch: "",
     courseDuration: {
       value: "",
       format: "weeks",
     },
-    trainingMode: "offline", // Initialize trainingMode with default value
-    venueOfTraining: "NIELIT", // Initialize venueOfTraining with default value
+    startDate: "",
+    endDate: "",
+    participantsNo: "",
+    remarks: "",
+    venueDetails: "",
   });
+  const [errors, setErrors] = useState({});
 
   async function fetchBatchCode() {
     try {
       const response = await axios.get("http://localhost:4000/batchCode");
-
-      console.log(response);
-
-      setbatchCode(parseInt(response.data[0].maxBatchCode) + 1);
+      setBatchCode(parseInt(response.data[0].maxBatchCode) + 1);
     } catch (error) {
-      console.log("error");
+      console.error("Error fetching batch code:", error);
     }
   }
 
   useEffect(() => {
     fetchBatchCode();
-    console.log("use effect running");
   }, []);
 
-  const [durationFormat, setDurationFormat] = useState("weeks");
-  const [numericValue, setNumericValue] = useState("");
-
-  const [address, setAddress] = useState("");
-
-  const [trainingMode, setTrainingMode] = useState("online");
-
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { id, value } = e.target;
     if (id === "courseDurationValue" || id === "courseDurationFormat") {
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         courseDuration: {
-          ...formData.courseDuration,
+          ...prevFormData.courseDuration,
           [id === "courseDurationValue" ? "value" : "format"]: value,
         },
-      });
+      }));
     } else {
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         [id]: value,
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.batchDescription) newErrors.batchDescription = "Batch description is required.";
+    if (!formData.departmentAddress) newErrors.departmentAddress = "Department address is required.";
+    if (!formData.trainingMode) newErrors.trainingMode = "Training mode is required.";
+    if (!formData.venueOfTraining) newErrors.venueOfTraining = "Venue of training is required.";
+    if (formData.venueOfTraining === "outside" && !formData.venueDetails)
+      newErrors.venueDetails = "Venue details are required for outside NIELIT.";
+    if (!formData.courseName) newErrors.courseName = "Course name is required.";
+    if (!formData.technologyName) newErrors.technologyName = "Technology name is required.";
+    if (!formData.revenueOfBatch) {
+      newErrors.revenueOfBatch = "Revenue of batch is required.";
+    } else if (parseInt(formData.revenueOfBatch) < 0) {
+      newErrors.revenueOfBatch = "Revenue cannot be negative.";
+    }
+    if (!formData.courseDuration.value) newErrors.courseDuration = "Course duration value is required.";
+    if (!formData.startDate) newErrors.startDate = "Start date is required.";
+    if (!formData.endDate) newErrors.endDate = "End date is required.";
+    if (!formData.participantsNo) newErrors.participantsNo = "Number of participants is required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const resetForm = () => {
+    setFormData({
+      batchDescription: "",
+      departmentAddress: "",
+      trainingMode: "offline",
+      venueOfTraining: "NIELIT",
+      courseName: "",
+      technologyName: "",
+      revenueOfBatch: "",
+      courseDuration: {
+        value: "",
+        format: "weeks",
+      },
+      startDate: "",
+      endDate: "",
+      participantsNo: "",
+      remarks: "",
+      venueDetails: "",
+    });
+  };
+
+
+  
+  useEffect(() => {
+    fetchBatchCodes();
+  }, []);
+
+  const fetchBatchCodes = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:4000/data");
+      console.log(response.data);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching batch codes', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+  async function handleSubmit() {
+    if (batchCode === null) {
+      console.error("Batch code is not set.");
+      return;
+    }
+    if (!validateForm()) {
+      return;
+    }
+    const dataToSubmit = { ...formData, batchCode };
+    console.log(dataToSubmit);
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(dataToSubmit),
+      "secretKey"
+    ).toString();
+
+    try {
+      const response = await axios.post("http://localhost:4000/submit/batch", {
+        encryptedData,
       });
+      console.log(response);
+      setAlert2(true);
+      setTimeout(() => {
+        setAlert2(false);
+      }, 3000);
+      resetForm();
+
+      fetchBatchCodes(); // Fetch updated list of batch codes
+      setBatchCode(''); // Reset input field
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   }
 
-  // AFTER CHANGES
-
-  async function handleSubmit() {
-    // console.log("submit");
-    batchCode && setFormData({ ...formData, batchCode: batchCode });
-    console.log(formData);
-    const encryptedData = CryptoJS.AES.encrypt(
-      JSON.stringify(formData),
-      "secretKey"
-    ).toString();
-    // console.log(encryptedData);
-
-    const response = await axios.post("http://localhost:4000/submit/batch", {
-      encryptedData: encryptedData,
-    });
-
-    setAlert2(true);
-    setTimeout(() => {
-      setAlert2(false);
-    }, 3000);
-    handleScroll();
-    console.log(response);
-  }
-  const [venue, setVenue] = useState("");
-
   return (
     <>
-      <header className="flex items-center justify-between bg-[#1f316e] px-4 py-3 text-white sm:px-6 lg:px-8">
-        <div className="flex items-center">
+      <Header />
+
+      <Card className="mt-6 mb-6 bg-blue-100 shadow-lg">
+        <CardHeader className="text-center">
           <img
-            alt="NIELIT Logo"
-            className="h-8 w-auto"
+            alt="Header Logo"
+            className="mx-auto h-12 w-auto"
             src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
           />
-          <div className="ml-4 text-lg font-bold">
-            National Institute of Electronics and Information Technology
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="mr-4 text-sm">
-            Ministry of Electronics and Information Technology
-            <br />
-            Government of India
-          </div>
+          <h1 className="text-2xl font-bold mt-4">Batch Entry Form</h1>
+        </CardHeader>
 
-          <img
-            alt="Indian Emblem"
-            className="h-8 w-auto"
-            src="https://imgs.search.brave.com/5pd2BEDPcnDaUv_M-HSA9QSwyQthxDYGJeZ-Qo4Hokw/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9zZWVr/bG9nby5jb20vaW1h/Z2VzL0UvRW1ibGVt/X29mX0luZGlhLWxv/Z28tRTRDNkMwRkY2/Mi1zZWVrbG9nby5j/b20ucG5n"
-          />
-        </div>
-      </header>
-
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 py-6">
-        <div className="w-11/12 sm:w-3/4 lg:w-2/3 xl:w-2/3 bg-white p-8 rounded-lg shadow-lg">
-          
-          
-          <CardHeader className="text-center">
-            <img
-              alt="Header Logo"
-              className="mx-auto h-12 w-auto"
-              src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
-            />
-
-            <h1 className="text-2xl font-bold  mt-4 ">Batch Entry Form </h1>
-          </CardHeader>
-
-          <CardContent>
-            <div className="grid grid-cols-1 gap-6">
-              <div
-                style={{ display: "flex" }}
-                className="grid grid-cols-1 gap-4 md:grid-cols-2"
-              >
-                <div className="space-y-2" style={{ width: "50%" }}>
-                  <Label htmlFor="batchCode">Batch code</Label>
-
-                  {batchCode !== null && (
-                    <Input
-                      id="batchCode"
-                      type="text"
-                      disabled
-                      value={batchCode}
-                    />
-                  )}
-                </div>
-
-                <div
-                  className="space-y-2"
-                  style={{ width: "50%", marginLeft: "20px" }}
-                >
-                  <Label htmlFor="batchDescription">Department Name</Label>
-                  <Input
-                    id="batchDescription"
-                    type="text"
-                    onChange={handleChange}
-                    placeholder="Enter Name of the Department"
-                  />
-                </div>
-              </div>
-
-              {/* ADDING THE ADDRESS SECTION  */}
+        <CardContent>
+          <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="departmentAddress">Address of Department</Label>
+                <Label htmlFor="batchCode">Batch code</Label>
+                {batchCode !== null && (
+                  <Input id="batchCode" type="text" disabled value={batchCode} />
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="batchDescription">
+                  Batch Description <span className="text-red-500">*</span>
+                </Label>
                 <Input
-                  id="departmentAddress"
+                  id="batchDescription"
                   type="text"
                   onChange={handleChange}
-                  placeholder="Enter departmental address"
+                  value={formData.batchDescription}
+                  placeholder="Enter batch description"
                 />
+                {errors.batchDescription && (
+                  <Alert severity="error">{errors.batchDescription}</Alert>
+                )}
               </div>
-
-              {/* ADDING MODE OF TRAINING SECTION AND VENUE OF TRAINING   */}
-              <div style={{ display: "flex" }}>
-                <div className="space-y-2" style={{ width: "50%" }}>
-                  <Label htmlFor="trainingMode">Mode of Training :</Label>
-                  <select
-                    id="trainingMode"
-                    className="select-field"
-                    value={formData.trainingMode || "offline"}
-                    onChange={handleChange}
-                  >
-                    <option value="online">Online</option>
-                    <option value="offline">Offline</option>
-                    <option value="hybrid">Hybrid</option>
-                  </select>
-                </div>
-
-
-                <div className="space-y-2" style={{ width: "50%" }}>
-                  <Label htmlFor="venueOfTraining" >Venue of Training :</Label>
-                  <select
-                    id="venueOfTraining"
-                    className="select-field"
-                    value={formData.venueOfTraining || "NIELIT"}
-                    onChange={handleChange}
-                  >
-                    <option value="NIELIT">NIELIT</option>
-                    <option value="outside">Outside NIELIT</option>
-                  </select>
-                </div>
-              </div>
-
-
-              <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="venue"
-              >
-                Venue of Training
-              </label>
-              <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="venue"
-                onChange={(e) => setVenue(e.target.value)}
-              >
-                <option>NIELIT</option>
-                <option>Outside NIELIT</option>
-              </select>
             </div>
-            {venue === "Outside NIELIT" && (
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="locationOfCentre"
+
+            <div className="space-y-2">
+              <Label htmlFor="departmentAddress">
+                Address of Department <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="departmentAddress"
+                type="text"
+                onChange={handleChange}
+                value={formData.departmentAddress}
+                placeholder="Enter departmental address"
+              />
+              {errors.departmentAddress && (
+                <Alert severity="error">{errors.departmentAddress}</Alert>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="trainingMode">
+                  Mode of Training <span className="text-red-500">*</span>
+                </Label>
+                <select
+                  id="trainingMode"
+                  className="select-field"
+                  value={formData.trainingMode}
+                  onChange={handleChange}
                 >
-                  Location of Centre
-                </label>
-                <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="locationOfCentre"
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+                {errors.trainingMode && (
+                  <Alert severity="error">{errors.trainingMode}</Alert>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="venueOfTraining">
+                  Venue of Training <span className="text-red-500">*</span>
+                </Label>
+                <select
+                  id="venueOfTraining"
+                  className="select-field"
+                  value={formData.venueOfTraining}
+                  onChange={handleChange}
+                >
+                  <option value="NIELIT">NIELIT</option>
+                  <option value="outside">Outside NIELIT</option>
+                </select>
+                {errors.venueOfTraining && (
+                  <Alert severity="error">{errors.venueOfTraining}</Alert>
+                )}
+              </div>
+            </div>
+
+            {formData.venueOfTraining === "outside" && (
+              <div className="space-y-2">
+                <Label htmlFor="venueDetails">
+                  Venue Details <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="venueDetails"
                   type="text"
-                  placeholder="Enter location of centre"
+                  onChange={handleChange}
+                  value={formData.venueDetails}
+                  placeholder="Enter venue details"
                 />
+                {errors.venueDetails && (
+                  <Alert severity="error">{errors.venueDetails}</Alert>
+                )}
               </div>
             )}
 
-              <div style={{ display: "flex" }}>
-                {/* ADDING THE COURSE NAME SECTION  */}
-                <div className="space-y-2" style={{ width: "50%" }}>
-                  <Label htmlFor="courseName">Course name</Label>
-                  <Input
-                    id="courseName"
-                    type="text"
-                    onChange={handleChange}
-                    placeholder="Enter your course name"
-                  />
-                </div>
-
-                {/* ADDING THE TECHNOLOGY SECTION  */}
-                <div
-                  className="space-y-2"
-                  style={{ width: "50%", marginLeft: "20px" }}
-                >
-                  <Label htmlFor="technologyName">Technology</Label>
-                  <Input
-                    id="technologyName"
-                    type="text"
-                    onChange={handleChange}
-                    placeholder="Enter Name of Technology"
-                  />
-                </div>
-              </div>
-
-              {/* ADDING REVENUE OF BATCH SECTION  */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="revenueOfBatch">Revenue of Batch </Label>
+                <Label htmlFor="courseName">
+                  Course Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
-                  id="revenueOfBatch"
+                  id="courseName"
                   type="text"
                   onChange={handleChange}
-                  placeholder="Enter Batch Revenue"
+                  value={formData.courseName}
+                  placeholder="Enter course name"
+                />
+                {errors.courseName && (
+                  <Alert severity="error">{errors.courseName}</Alert>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="technologyName">
+                  Technology Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="technologyName"
+                  type="text"
+                  onChange={handleChange}
+                  value={formData.technologyName}
+                  placeholder="Enter technology name"
+                />
+                {errors.technologyName && (
+                  <Alert severity="error">{errors.technologyName}</Alert>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="revenueOfBatch">
+                Revenue of Batch <span className="text-red-500">*</span>
+              </Label>
+              <div className="flex items-center">
+                <span className="mr-2">₹</span>
+                <Input
+                  id="revenueOfBatch"
+                  type="number"
+                  min="0"
+                  onChange={handleChange}
+                  value={formData.revenueOfBatch}
+                  placeholder="Enter batch revenue"
                 />
               </div>
+              {errors.revenueOfBatch && (
+                <Alert severity="error">{errors.revenueOfBatch}</Alert>
+              )}
+            </div>
 
-              <div className="space-y-2   ">
-                <Label htmlFor="courseDuration">Course duration :</Label>
-                <select
-                  id="courseDurationFormat"
-                  value={formData.courseDuration.format}
-                  onChange={handleChange}
-                >
-                  <option value="days">Days</option>
-                  <option value="months">Months</option>
-                  <option value="hours">Hours</option>
-                  <option value="weeks">Weeks</option>
-                </select>
+            <div className="space-y-2">
+              <Label htmlFor="courseDuration">
+                Course Duration <span className="text-red-500">*</span>
+              </Label>
+              <div className="flex space-x-2">
                 <Input
                   id="courseDurationValue"
                   type="number"
-                  value={formData.courseDuration.value}
+                  min="0"
                   onChange={handleChange}
-                  placeholder={`Enter your course duration in ${formData.courseDuration.format}`}
+                  value={formData.courseDuration.value}
+                  placeholder="Enter Duration"
                 />
-              </div>
-
-              <div style={{ display: "flex" }}>
-                <div
-                  className="space-y-2"
-                  style={{ width: "50%", marginRight: "20px" }}
+                <select
+                  id="courseDurationFormat"
+                  className="select-field"
+                  value={formData.courseDuration.format}
+                  onChange={handleChange}
                 >
-                  <Label htmlFor="startDate">Start date</Label>
-                  <Input id="startDate" type="date" onChange={handleChange} />
-                </div>
-
-                <div
-                  className="space-y-2"
-                  style={{ width: "50%", marginLeft: "20px" }}
-                >
-                  <Label htmlFor="endDate">End date</Label>
-                  <Input id="endDate" type="date" onChange={handleChange} />
-                </div>
+                  <option value="weeks">Weeks</option>
+                  <option value="months">Months</option>
+                  <option value="hours">Hours</option>
+                  <option value="days">Days</option>
+                </select>
               </div>
+              {errors.courseDuration && (
+                <Alert severity="error">{errors.courseDuration}</Alert>
+              )}
+            </div>
 
-              {/* ADDING TOTAL NUMBER OF PARTICIPANTS  */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="participantsNo">
-                  Total Number of Participants{" "}
+                <Label htmlFor="startDate">
+                  Start Date <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="participantsNo"
-                  type="number"
+                  id="startDate"
+                  type="date"
                   onChange={handleChange}
-                  placeholder="Enter Number of Participants"
+                  value={formData.startDate}
                 />
+                {errors.startDate && (
+                  <Alert severity="error">{errors.startDate}</Alert>
+                )}
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="remarks">Remarks</Label>
-                <Textarea
-                  className="min-h-[100px]"
-                  id="remarks"
-                  placeholder="Enter your remarks"
+                <Label htmlFor="endDate">
+                  End Date <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="endDate"
+                  type="date"
                   onChange={handleChange}
+                  value={formData.endDate}
                 />
+                {errors.endDate && (
+                  <Alert severity="error">{errors.endDate}</Alert>
+                )}
               </div>
             </div>
-          </CardContent>
 
-          <CardFooter className="flex justify-end">
-            <Button variant="outline" style={{ marginRight: "20px" }}>
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit} type="submit">
-              Submit
-            </Button>
-          </CardFooter>
+            <div className="space-y-2">
+              <Label htmlFor="participantsNo">
+                Total Number of Participants <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="participantsNo"
+                type="number"
+                min="0"
+                onChange={handleChange}
+                value={formData.participantsNo}
+                placeholder="Enter number of participants"
+              />
+              {errors.participantsNo && (
+                <Alert severity="error">{errors.participantsNo}</Alert>
+              )}
+            </div>
 
-          {alert2 && (
-            <Alert
-              severity="info"
-              className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg"
-            >
-              Batch Added Successfully.
-            </Alert>
-          )}
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="remarks">Remarks</Label>
+              <Textarea
+                id="remarks"
+                onChange={handleChange}
+                value={formData.remarks}
+                placeholder="Enter remarks"
+              />
+            </div>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-end">
+          <Button onClick={handleSubmit}>Submit</Button>
+        </CardFooter>
+      </Card>
+
+      <div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Batch Codes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {batchCodes.map((code, index) => (
+              <tr key={index}>
+                <td>{code}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       </div>
 
-      <footer className="bg-[#1f316e] text-white py-4 px-4 flex items-center justify-center">
-        <div className="flex items-center gap-4 text-sm">
-          @CC: Developed and Maintained by NIELIT Delhi
-        </div>
-      </footer>
+      <Footer />
+      {alert2 && <Alert severity="success">Form submitted successfully!</Alert>}
     </>
   );
 }

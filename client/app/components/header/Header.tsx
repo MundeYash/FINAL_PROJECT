@@ -1,8 +1,9 @@
 
 export default function Header(){
+  return  (
     <>
     
-    <header className="flex items-center justify-between bg-gray-900 px-4 py-3 text-white sm:px-6 lg:px-8">
+    <header className="flex items-center justify-between  bg-[#1f316e] px-4 py-3 text-white sm:px-6 lg:px-8">
         <div className="flex items-center">
           <img
             alt="NIELIT Logo"
@@ -19,7 +20,6 @@ export default function Header(){
             <br />
             Government of India
           </div>
-
           <img
             alt="Indian Emblem"
             className="h-8 w-auto"
@@ -29,4 +29,6 @@ export default function Header(){
       </header>
 
     </>
-}
+
+   );
+};

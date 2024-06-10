@@ -1,4 +1,11 @@
 "use client";
+import jsPDF from "jspdf";
+
+import html2canvas from "html2canvas";
+
+import * as XLSX from "xlsx";
+import ExcelExportButton from "../format/ExcelExportButton";
+import DataTable from "../dataTable/DataTable";
 
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -29,6 +36,7 @@ import { useState } from "react";
 export default function Admin() {
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
+  const [candidatesData, setCandidatesData] = useState([]);
 
   const [selectedBatchCode, setSelectedBatchCode] = useState("");
   const [selectedBatchDescription, setSelectedBatchDescription] = useState("");
@@ -48,6 +56,7 @@ export default function Admin() {
     fetchCandidatesData();
   }, []);
 
+  console.log(candidatesData);
   const handleBatchCodeChange = (value) => setSelectedBatchCode(value);
   const handleBatchDescriptionChange = (value) =>
     setSelectedBatchDescription(value);
@@ -64,44 +73,101 @@ export default function Admin() {
 
   const applyFilters = () => {
     if (!filteredData) return;
+    console.log(`filteredData`, filteredData);
+    console.log(`selectedBatchCode`, selectedBatchCode);
+    console.log(`selectedBatchDescription`, selectedBatchDescription);
+    console.log(`selectedCourseName`, selectedCourseName);
+    console.log(`selectedDuration`, selectedDuration);
+    console.log(`startDate`, startDate);
+    console.log(`endDate`, endDate);
 
-    const filtered = filteredData.filter((item) => {
-      const batchCodeMatch = selectedBatchCode
-        ? item.batchCode === selectedBatchCode
-        : true;
-      const batchDescriptionMatch = selectedBatchDescription
-        ? item.batchDescription === selectedBatchDescription
-        : true;
-      const courseNameMatch = selectedCourseName
-        ? item.courseName === selectedCourseName
-        : true;
-      const durationMatch = selectedDuration
-        ? item.duration === selectedDuration
-        : true;
-      const startDateMatch = startDate
-        ? new Date(item.startDate) >= new Date(startDate)
-        : true;
-      const endDateMatch = endDate
-        ? new Date(item.endDate) <= new Date(endDate)
-        : true;
+    const filteredBatchCodes = filteredData.batchData
+      ?.filter((item) => {
+        const batchCodeMatch = selectedBatchCode
+          ? item.batchCode === selectedBatchCode
+          : true;
+        const batchDescriptionMatch = selectedBatchDescription
+          ? item.batchDescription === selectedBatchDescription
+          : true;
+        const courseNameMatch = selectedCourseName
+          ? item.courseName === selectedCourseName
+          : true;
+        const durationMatch = selectedDuration
+          ? item.courseDuration.value === selectedDuration.value &&
+            item.courseDuration.format === selectedDuration.format
+          : true;
+        const startDateMatch = startDate
+          ? new Date(item.startDate) >= new Date(startDate)
+          : true;
+        const endDateMatch = endDate
+          ? new Date(item.endDate) <= new Date(endDate)
+          : true;
 
-      return (
-        batchCodeMatch &&
-        batchDescriptionMatch &&
-        courseNameMatch &&
-        durationMatch &&
-        startDateMatch &&
-        endDateMatch
-      );
-    });
+        return (
+          batchCodeMatch &&
+          batchDescriptionMatch &&
+          courseNameMatch &&
+          durationMatch &&
+          startDateMatch &&
+          endDateMatch
+        );
+      })
+      .map((item) => item.batchCode);
+    const filteredCandidates = filteredData.employeeData.filter((candidate) =>
+      filteredBatchCodes.includes(candidate.batchCode)
+    );
 
-    setFilteredData(filtered);
+    setCandidatesData(filteredCandidates);
   };
 
-  console.log(`filteredData`, filteredData);
+  // function for clearing all the filters (remaing to be implemented)
+  const clearFilters = () => {
+    setSelectedBatchCode("");
+    setSelectedBatchDescription("");
+    setSelectedCourseName("");
+    setSelectedDuration("");
+    setStartDate("");
+    setEndDate("");
+    // Add any other states that need to be cleared
+  };
+
+  const handleGeneratePDF = () => {
+    // Create a new jsPDF instance
+    const doc = new jsPDF();
+
+    // Define a height for the table
+    const tableHeight = 10 + candidatesData.length * 10; // Adjust the multiplier based on the number of rows
+
+    // Use html2canvas to capture the table and convert it to a canvas
+    html2canvas(document.querySelector("#pdfTable"), { scale: 1 }).then(
+      (canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+
+        // Add an image to the PDF
+        doc.addImage(imgData, "PNG", 10, 10, 180, tableHeight);
+
+        // Save the PDF
+        doc.save("table.pdf");
+      }
+    );
+  };
+
+  const handleExport = () => {
+    // Creating a new workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Creating a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(candidatesData);
+
+    // Adding the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates Data");
+
+    // Exporting the workbook as an Excel file
+    XLSX.writeFile(workbook, "candidates_data.xlsx");
+  };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen mt-2 mb-8">
       <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -117,7 +183,7 @@ export default function Admin() {
         </div>
 
         <nav className="flex items-center gap-6">
-          <Link className="hover:underline" href="../">
+          <Link className="hover:underline" href="/">
             Home
           </Link>
 
@@ -146,20 +212,51 @@ export default function Admin() {
           </div>
         </div>
 
-        <Button variant="outline">
-          <LogOutIcon className="h-5 w-5 mr-2  text-black  bg-[#ebebf9]" />
-          Logout
-        </Button>
+        <Link
+          href="/login/admin"
+          className="font-medium text-[#080808c5] flex justify-center"
+        >
+          <Button variant="outline">
+            <LogOutIcon className="h-5 w-5 mr-2  text-black  bg-[#ebebf9]" />
+            Logout
+          </Button>
+        </Link>
       </header>
 
-      <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
+      <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4 mt-6 mb-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Filters</h2>
-          <Button onClick={applyFilters}>Apply Filters</Button>
+          <div className="flex space-x-2">
+            <Button onClick={applyFilters}>Apply Filters</Button>
+            <Button onClick={() => window.location.reload()}>Clear </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           {/* Filter selection options  */}
+
+          <div className="flex items-center gap-2">
+            <div>
+              {" "}
+              Start Date
+              <Input
+                className="w-full"
+                type="date"
+                onClick={handleStartDateChange}
+              />
+            </div>
+
+            <span>-</span>
+
+            <div>
+              End Date
+              <Input
+                className="w-full"
+                type="date"
+                onClick={handleEndDateChange}
+              />
+            </div>
+          </div>
 
           <Select onValueChange={handleBatchCodeChange}>
             <SelectTrigger className="w-full">
@@ -179,7 +276,7 @@ export default function Admin() {
             </SelectContent>
           </Select>
 
-          <Select>
+          <Select onValueChange={handleBatchDescriptionChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Batch Description " />
             </SelectTrigger>
@@ -189,7 +286,7 @@ export default function Admin() {
                 {data &&
                   data?.description?.map((item, index) => {
                     return (
-                      <SelectItem key={index} value={`batch${index}`}>
+                      <SelectItem key={index} value={item}>
                         {item}
                       </SelectItem>
                     );
@@ -198,7 +295,7 @@ export default function Admin() {
             </SelectContent>
           </Select>
 
-          <Select>
+          <Select onValueChange={handleCourseNameChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Course Content/Name" />
             </SelectTrigger>
@@ -207,7 +304,7 @@ export default function Admin() {
                 {data &&
                   data?.name?.map((item, index) => {
                     return (
-                      <SelectItem key={index} value={`batch${index}`}>
+                      <SelectItem key={index} value={item}>
                         {item}
                       </SelectItem>
                     );
@@ -216,7 +313,7 @@ export default function Admin() {
             </SelectContent>
           </Select>
 
-          <Select>
+          <Select onValueChange={handleDurationChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Duration in weeks" />
             </SelectTrigger>
@@ -226,7 +323,7 @@ export default function Admin() {
                 {data &&
                   data?.duration?.map((item, index) => {
                     return (
-                      <SelectItem key={index} value={`duration${index}`}>
+                      <SelectItem key={index} value={item}>
                         {item.value + " " + item.format}
                       </SelectItem>
                     );
@@ -234,21 +331,6 @@ export default function Admin() {
               </SelectGroup>
             </SelectContent>
           </Select>
-
-          <div className="flex items-center gap-2">
-            <div>
-              {" "}
-              Start Date
-              <Input className="w-full" type="date" />
-            </div>
-
-            <span>-</span>
-
-            <div>
-              End Date
-              <Input className="w-full" type="date" />
-            </div>
-          </div>
         </div>
       </section>
 
@@ -258,41 +340,14 @@ export default function Admin() {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold"> Report Data</h2>
 
-          <div className="flex items-center gap-4">
-            <Button>PDF</Button>
-            <Button>Excel</Button>
-            <Button>Doc</Button>
-            <Button>Download</Button>
-          </div>
+          {/* <div className="flex items-center gap-4">
+            <Button onClick={handleGeneratePDF}>PDF</Button>
+            <Button onClick={handleExport}>Excel</Button>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Batch Code</TableHead>
-                <TableHead>Roll No</TableHead>
-                <TableHead>Certificate Number</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Designation</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {filteredData?.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.batchCode}</TableCell>
-                  <TableCell>{item.rollNumber}</TableCell>
-                  <TableCell>{item.certificateNumber}</TableCell>
-
-                  <TableCell>
-                    {item.firstName} {item.lastName}
-                  </TableCell>
-                  <TableCell>{item.designation}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <DataTable candidatesData={candidatesData} />
         </div>
       </section>
 
@@ -321,13 +376,13 @@ export default function Admin() {
 
       {/* footer section  */}
 
-      <footer className="bg-[#1f316e] text-white py-4 px-6 flex items-center justify-between">
+      <footer className="bg-[#1f316e] text-white py-4 px-6 mb-0 flex items-center justify-between">
         <span className="flex items-center justify-center">
           @CC: Developed and Maintained by NIELIT Delhi
         </span>
 
         {/* social media Links  */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mb-0">
           <Link className="hover:underline" href="#">
             <TwitterIcon className="h-6 w-6" />
           </Link>

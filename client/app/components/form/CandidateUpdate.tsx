@@ -93,8 +93,11 @@ export default function CandidateUpdate({children}) {
     <>
      
       <Card
-        style={{ paddingTop: "20px", paddingBottom: "20px" }}
-        className="w-full max-w-lg mx-auto py-8 px-6 absolute z-10 left-1/3"
+       
+        className="w-full max-w-lg mx-auto py-8 px-6 absolute z-10 right-0 mt-6 ml-auto bg-gray-100 shadow-lg "
+    //     className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 absolute top-0 right-0"
+    // style={{ zIndex: 35 }}
+      
       >
         <CardHeader className="text-center">
           <img
@@ -222,19 +225,20 @@ export default function CandidateUpdate({children}) {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end  ">
-          <Button variant="outline" style={{ marginRight: "20px" }}>
-            Cancel
-          </Button>
+        <div className="flex space-x-2">
+        <Button onClick={() => window.location.reload()}>Cancel </Button>
 
           <Button
-            className=" bg-indigo-900 text-white border-none py-2 px-4 text-center no-underline inline-block text-lg my-1 cursor-pointer rounded-lg"
+            
             onClick={() => {
               handleSubmit();
             }}
             type="submit"
           >
-            Update Record
+            Update 
           </Button>
+
+        </div>
         </CardFooter>
         {alert && (
           <Alert

@@ -1,4 +1,5 @@
 const {Employee} = require('../Schema.js')
+const {Batch} = require('../Schema.js')
 const CryptoJS = require("crypto-js");
 
 async function update(req,res,next) {
@@ -65,7 +66,8 @@ async function getDetails(req,res,next){
 async function getAllCanditates(req, res) {
   try {
     const data = await Employee.find();
-    res.status(200).json(data);
+    const batchdata = await Batch.find();
+    res.status(200).json({employeeData: data, batchData: batchdata});
   } catch (error) {
     res.status(500).send({ message: "Error getting employee" });
   }
