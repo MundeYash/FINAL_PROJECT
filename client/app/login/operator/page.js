@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 
-import BatchEntryForm from '../../components/form/BatchEntryForm'
-import EmployeeForm from '../../components/form/EmployeeForm'
+
 import { buttonVariants } from '../../components/ui/button';
 
 import OperatorSignIn from '../../components/login/OperatorSignIn'
@@ -17,8 +16,7 @@ export default function Operator(){
     return(
             <>
             
-            {/* <BatchEntryForm/> */}
-            {/* <EmployeeForm/> */}
+          
             <OperatorSignIn/>
 
             </>

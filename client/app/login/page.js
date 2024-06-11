@@ -1,34 +1,14 @@
 import Link from "next/link";
 import BatchEntryForm from "../components/form/BatchEntryForm";
 import EmployeeEntryForm from "../components/form/EmployeeForm";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
 
 export default function login() {
   return (
     <>
-      <header className="flex items-center justify-between bg-[#1f316e] px-4 py-3 text-white sm:px-6 lg:px-8">
-        <div className="flex items-center">
-          <img
-            alt="NIELIT Logo"
-            className="h-12 w-auto"
-            src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
-          />
-          <div className="ml-4 text-2xl font-bold">
-            National Institute of Electronics and Information Technology
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="mr-4 text-lg">
-            Ministry of Electronics and Information Technology
-            <br />
-            Government of India
-          </div>
-          <img
-            alt="Indian Emblem"
-            className="h-12 w-auto"
-            src="https://imgs.search.brave.com/5pd2BEDPcnDaUv_M-HSA9QSwyQthxDYGJeZ-Qo4Hokw/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9zZWVr/bG9nby5jb20vaW1h/Z2VzL0UvRW1ibGVt/X29mX0luZGlhLWxv/Z28tRTRDNkMwRkY2/Mi1zZWVrbG9nby5j/b20ucG5n"
-          />
-        </div>
-      </header>
+    <Header/>
+     
 
       <main className=" bg-white p-4 md:p-12  ">
         <section className="border-20 ">
@@ -112,13 +92,9 @@ export default function login() {
           </div>
         </section>
       </main>
+      <Footer/>
 
-      <footer className="bg-[#1f316e] text-white py-4 px-4 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-sm">
-          <p>Developed and Maintained by NIELIT Delhi</p>
-          <p>Contact us at: info@nielit.gov.in</p>
-        </div>
-      </footer>
+     
     </>
   );
 }

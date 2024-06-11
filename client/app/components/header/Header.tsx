@@ -3,7 +3,7 @@ export default function Header(){
   return  (
     <>
     
-    <header className="flex items-center justify-between  bg-[#1f316e] px-4 py-3 text-white sm:px-6 lg:px-8">
+    <header className="flex items-center justify-between  bg-[#1f316e] px-4 py-3 text-white sm:px-6 lg:px-8 mb-1">
         <div className="flex items-center">
           <img
             alt="NIELIT Logo"

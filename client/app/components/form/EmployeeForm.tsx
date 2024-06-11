@@ -25,7 +25,7 @@ import CandidateUpdate from "./CandidateUpdate";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import { FormData, Candidate } from "./lib/types";
-import validateForm from "./lib/validate";
+import BatchLabel from "../certificate/ShowBatchDetails";
 
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
@@ -38,6 +38,7 @@ export default function Component() {
   const [editData, setEditData] = useState<Partial<Candidate>>({});
   const [errors, setErrors] = useState<FormData>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [batchDetails, setBatchDetails] = useState<any | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -49,13 +50,29 @@ export default function Component() {
     }
   }, [batchCode]);
 
+  useEffect(() => {
+    if (data && batchCode) {
+      const index = data.code.indexOf(batchCode);
+      if (index !== -1) {
+        setBatchDetails({
+          batchCode: data.code[index],
+          batchDescription: data.description[index],
+          courseName: data.name[index],
+          startDate: data.startDate[index],
+          endDate: data.endDate[index],
+          courseDuration: data.duration[index] || { value: 0, format: "days" },
+        });
+      }
+    }
+  }, [batchCode, data]);
+
   const handleScroll = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
     });
   };
-  
+
   function validateForm() {
     let isValid = true;
     const newErrors: FormData = {};
@@ -73,12 +90,18 @@ export default function Component() {
       newErrors.rollNumber = "Roll number must be numeric.";
     }
 
+    if (!formData.designation) {
+      isValid = false;
+      newErrors.designation = "Designation is required.";
+    }
+
     if (!formData.phoneNumber) {
       isValid = false;
       newErrors.phoneNumber = "Phone number is required.";
     } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
       isValid = false;
-      newErrors.phoneNumber = "Phone number must be numeric and 10 digits long.";
+      newErrors.phoneNumber =
+        "Phone number must be numeric and 10 digits long.";
     }
 
     if (!formData.email) {
@@ -91,7 +114,7 @@ export default function Component() {
 
     setErrors(newErrors);
     return isValid;
-  };
+  }
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:4000/data");
@@ -114,16 +137,22 @@ export default function Component() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [id]: value }));
-    setErrors((prevErrors) => ({ ...prevErrors, [id]: '' }));
+    setErrors((prevErrors) => ({ ...prevErrors, [id]: "" }));
   };
 
   const fetchEmployeeData = async (id: string) => {
     try {
       if (id) {
-        const response = await axios.get(`http://localhost:4000/employees/${id}`);
+        const response = await axios.get(
+          `http://localhost:4000/employees/${id}`
+        );
         setCandidates(response.data);
       }
     } catch (err) {
@@ -137,7 +166,7 @@ export default function Component() {
 
   const handleSubmit = async () => {
     if (!batchCode) {
-      setAlert({ type: 'error', message: 'Batch code is required.' });
+      setAlert({ type: "error", message: "Batch code is required." });
       return;
     }
 
@@ -146,11 +175,19 @@ export default function Component() {
     }
 
     const updatedFormData = { batchCode, ...formData };
-    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(updatedFormData), "secretKey").toString();
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(updatedFormData),
+      "secretKey"
+    ).toString();
 
     try {
-      await axios.post("http://localhost:4000/submit/employee", { encryptedData });
-      setAlert({ type: 'success', message: 'Candidate details submitted successfully.' });
+      await axios.post("http://localhost:4000/submit/employee", {
+        encryptedData,
+      });
+      setAlert({
+        type: "success",
+        message: "Candidate details submitted successfully.",
+      });
       fetchEmployeeData(batchCode);
       handleScroll();
       setFormData({});
@@ -169,7 +206,7 @@ export default function Component() {
     try {
       await axios.delete(`http://localhost:4000/candidate/delete/${id}`);
       fetchEmployeeData(batchCode);
-      setAlert({ type: 'success', message: 'Candidate deleted successfully.' });
+      setAlert({ type: "success", message: "Candidate deleted successfully." });
       handleScroll();
     } catch (err) {
       console.error("Error deleting record", err);
@@ -195,6 +232,8 @@ export default function Component() {
 
       <Header />
 
+      <BatchLabel batchCode={batchCode} />
+
       <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
           <img
@@ -206,139 +245,6 @@ export default function Component() {
         </CardHeader>
 
         <CardContent>
-          {/* <div className="grid grid-cols-1 gap-6">
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Select Batch Code
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={batchCode}
-                  label="Select Batch Code"
-                  onChange={handleCodeChange}
-                >
-                  {data &&
-                    data.code.map((item, index) => (
-                      <MenuItem key={index} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            </Box>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First name</Label>
-                <Input
-                  id="firstName"
-                  type="text"
-                  value={formData.firstName || ""}
-                  onChange={handleChange}
-                  placeholder="Enter your first name"
-                />
-                {errors.firstName && (
-                  <Alert severity="error">{errors.firstName}</Alert>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last name</Label>
-                <Input
-                  id="lastName"
-                  type="text"
-                  value={formData.lastName || ""}
-                  onChange={handleChange}
-                  placeholder="Enter your last name"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="rollNumber">Roll Number</Label>
-              <Input
-                id="rollNumber"
-                type="text"
-                value={formData.rollNumber || ""}
-                onChange={handleChange}
-                placeholder="Enter your roll number"
-              />
-              {errors.rollNumber && (
-                <Alert severity="error">{errors.rollNumber}</Alert>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="certificateNumber">Certificate Number</Label>
-              <Input
-                id="certificateNumber"
-                type="text"
-                value={formData.certificateNumber || ""}
-                onChange={handleChange}
-                placeholder="Enter your certificate number"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="designation">Designation</Label>
-              <Input
-                id="designation"
-                type="text"
-                value={formData.designation || ""}
-                onChange={handleChange}
-                placeholder="Enter your designation"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="employeeId">Employee Id</Label>
-              <Input
-                id="employeeId"
-                type="text"
-                value={formData.employeeId || ""}
-                onChange={handleChange}
-                placeholder="Enter your employee id"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input
-                id="phoneNumber"
-                type="text"
-                value={formData.phoneNumber || ""}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-              />
-              {errors.phoneNumber && (
-                <Alert severity="error">{errors.phoneNumber}</Alert>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email || ""}
-                onChange={handleChange}
-                placeholder="Enter your email"
-              />
-              {errors.email && <Alert severity="error">{errors.email}</Alert>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="remarks">Remarks</Label>
-              <Textarea
-                id="remarks"
-                value={formData.remarks || ""}
-                onChange={handleChange}
-                placeholder="Enter remarks"
-              />
-            </div>
-          </div> */}
-
           <div className="grid grid-cols-1 gap-6">
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
@@ -364,7 +270,9 @@ export default function Component() {
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="firstName">
+                  First Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="firstName"
                   placeholder="First Name"
@@ -391,7 +299,9 @@ export default function Component() {
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="rollNumber">Roll Number</Label>
+                <Label htmlFor="rollNumber">
+                  Roll Number <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="rollNumber"
                   placeholder="Roll Number"
@@ -426,6 +336,10 @@ export default function Component() {
                   onChange={handleChange}
                   className="mt-1 block w-full"
                 />
+
+                {errors.designation && (
+                  <p className="text-red-500 text-sm">{errors.designation}</p>
+                )}
               </div>
 
               <div>
@@ -442,7 +356,9 @@ export default function Component() {
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Label htmlFor="phoneNumber">
+                  Phone Number <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="phoneNumber"
                   placeholder="Phone Number"
@@ -456,7 +372,9 @@ export default function Component() {
               </div>
 
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">
+                  Email <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="email"
                   placeholder="Email"
@@ -492,6 +410,10 @@ export default function Component() {
 
       {batchCode && (
         <div className="container my-8 mx-auto p-4 bg-white rounded shadow">
+          {/* <div>
+            <BatchLabel />
+          </div> */}
+
           <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
           <table className="min-w-full bg-white">
             <thead>

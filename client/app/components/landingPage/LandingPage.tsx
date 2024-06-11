@@ -42,7 +42,7 @@ export default function Component() {
 
 
       
-      <footer className="bg-[#1f316e] text-white px-4 py-6 sm:px-6 lg:px-8">
+      <footer className="bg-[#1f316e] text-white px-4 py-6 sm:px-6 lg:px-8 mt-1">
         <div className="container mx-auto flex flex-col items-center justify-between md:flex-row">
           <div className=" md:mb-0">
             <h3 className="text-lg font-bold">NIELIT Delhi</h3>

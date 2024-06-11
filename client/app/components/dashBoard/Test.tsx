@@ -31,10 +31,12 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import Header from "../header/Header";
+
+import ShowBatchDetails from '../certificate/ShowBatchDetails'
 import BatchEntryForm from "../form/BatchEntryForm";
 import EmployeeForm from "../form/EmployeeForm";
 import OperatorDashboard from "./OperatorDashboard";
+import Header from "../header/Header";
 
 import CertificateGenerator from "../certificate/CertificateGenerator";
 
@@ -42,6 +44,9 @@ export default function Component() {
   const [activeTab, setActiveTab] = useState("batch");
   const [candidates, setCandidates] = useState();
   return (
+    <>
+    {/* <Header/> */}
+
     <div className="flex min-h-screen w-full">
       <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
         <div className="flex h-16 items-center justify-between px-6">
@@ -84,15 +89,7 @@ export default function Component() {
 
 
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="justify-start gap-2 text-left"
-            onClick={() => setActiveTab("dashboard")}
-          >
-            <BarChartIcon className="h-4 w-4" />
-            Dashboard
-          </Button>
+         
 
 
           <Button
@@ -103,6 +100,17 @@ export default function Component() {
           >
             <BarChartIcon className="h-4 w-4" />
             Generate Certificate 
+          </Button>
+
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="justify-start gap-2 text-left"
+            onClick={() => setActiveTab("dashboard")}
+          >
+            <BarChartIcon className="h-4 w-4" />
+            Dashboard
           </Button>
 
 
@@ -145,7 +153,7 @@ export default function Component() {
         </header>
 
         <main className="flex-1 px-4 py-6 md:px-6">
-          {activeTab === "batch" && <BatchEntryForm />}
+          {activeTab === "batch" && <BatchEntryForm />  }
 
           {activeTab === "candidate" && <EmployeeForm />}
 
@@ -156,7 +164,10 @@ export default function Component() {
         </main>
       </div>
     </div>
+
+    </>
   );
+
 }
 
 function BarChartIcon(props) {
@@ -326,5 +337,7 @@ function LogOutIcon(props) {
       <polyline points="16 17 21 12 16 7" />
       <line x1="21" x2="9" y1="12" y2="12" />
     </svg>
+   
+
   );
 }

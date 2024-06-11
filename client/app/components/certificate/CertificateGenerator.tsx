@@ -1,68 +1,237 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CryptoJS from "crypto-js";
+import Alert from "@mui/material/Alert";
 import {
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectGroup,
-  SelectContent,
-  Select,
-} from "../ui/select";
+  CardTitle,
+  CardDescription,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  Card,
+} from "../ui/card";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { IoCloseCircle } from "react-icons/io5";
 
-function CertificateGenerator() {
-  const [data, setData] = useState(null);
-  const [batchCodes, setBatchCodes] = useState([]);
-  const [selectedBatchCode, setSelectedBatchCode] = useState('');
-  const handleBatchCodeChange = (value) => setSelectedBatchCode(value);
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
+import { FormData, Candidate } from "../form/lib/types";
+
+export default function Component() {
+  const [batchCode, setBatchCode] = useState<string | null>(null);
+  const [formData, setFormData] = useState<FormData>({});
+  const [data, setData] = useState<any>(null);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [editForm, setEditForm] = useState(false);
+  const [editData, setEditData] = useState<Partial<Candidate>>({});
+  const [errors, setErrors] = useState<FormData>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchBatchCodes();
+    fetchData();
   }, []);
 
-  async function fetchBatchCodes() {
-    try {
-      const response = await axios.get("http://localhost:4000/candidates");
-      setBatchCodes(response.data); // Assuming the API returns an array of batch codes
-    } catch (error) {
-      console.error("Error fetching batch codes:", error);
+  useEffect(() => {
+    if (batchCode) {
+      fetchEmployeeData(batchCode);
     }
-  }
+  }, [batchCode]);
 
-
-
-  const generateCertificate = () => {
-    // Logic to generate certificate for the selected batch code
-    console.log(`Generating certificate for batch code: ${selectedBatchCode}`);
-    // This could involve another API call or local processing
+  const handleScroll = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/data");
+      setData(response.data);
+    } catch (err) {
+      console.error("Error fetching data", err);
+    }
+  };
+
+  const fetchCandidateDetails = async (id: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:4000/candidate/${id}`);
+      setEditData(response.data);
+      setEditForm(true);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.error("Error fetching candidate details", err);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [id]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [id]: "" }));
+  };
+
+  const fetchEmployeeData = async (id: string) => {
+    try {
+      if (id) {
+        const response = await axios.get(
+          `http://localhost:4000/employees/${id}`
+        );
+        setCandidates(response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching employee data", err);
+    }
+  };
+
+  const handleCodeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setBatchCode(event.target.value as string);
+  };
+
+
+  const generateCertificates = async () => {
+    try {
+      // Find the maximum existing certificate number in the selected batch
+      let maxCertNumber = candidates.reduce((max, candidate) => {
+        if (candidate.certificateNumber) {
+          const certNum = parseInt(candidate.certificateNumber.replace(/[^\d]/g, ''), 10);
+          return certNum > max ? certNum : max;
+        }
+        return max;
+      }, 0);
+
+      const updatedCandidates = candidates.map((candidate) => {
+        maxCertNumber += 1;
+        return {
+          ...candidate,
+          certificateNumber: `CERT${maxCertNumber}`
+        };
+      });
+
+      // await axios.post(`http://localhost:4000/assign-certificates/${batchCode}`, updatedCandidates);
+
+      setCandidates(updatedCandidates);
+      setAlert({ type: "success", message: "Certificate numbers assigned successfully!" });
+    } catch (err) {
+      console.error("Error generating certificates", err);
+      setAlert({ type: "error", message: "Failed to assign certificate numbers." });
+    }
+  };
+  if (loading) return <h1>Loading...</h1>;
+
   return (
-    <div>
-      <h1>Certificate Generator</h1>
-      <div>
-        <label htmlFor="batchCodeSelect">Select Batch Code:</label>
-        <Select onValueChange={handleBatchCodeChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Batch Code " />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {data &&
-                  data?.code?.map((item, index) => {
-                    return (
-                      <SelectItem key={index} value={item}>
-                        {item}
-                      </SelectItem>
-                    );
-                  })}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+    <>
+      <Header />
+
+      <CardHeader className="text-center">
+        <img
+          alt="Header Logo"
+          className="mx-auto h-12 w-auto"
+          src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
+        />
+        <CardTitle className="text-2xl">Assign Certificate Numbers </CardTitle>
+      </CardHeader>
+      <div className="mt-5 mb-4">
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Select Batch Code
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={batchCode}
+              label="Select Batch Code"
+              onChange={handleCodeChange}
+            >
+              {data &&
+                data.code.map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        {alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
+
+        {batchCode && (
+          <div className="container my-8 mx-auto p-4 bg-white rounded shadow mb-4">
+            <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 border">S. No.</th>
+                  <th className="py-2 px-4 border"> Name</th>
+
+                  <th className="py-2 px-4 border">Roll Number</th>
+
+                  <th className="py-2 px-4 border">Designation</th>
+                  <th className="py-2 px-4 border">Employee ID</th>
+                  <th className="py-2 px-4 border">Phone Number</th>
+                  <th className="py-2 px-4 border">Certificate Number</th>
+
+                  <th className="py-2 px-4 border">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {candidates.map((candidate, index) => (
+                  <tr key={candidate._id}>
+                    <td className="border px-4 py-2">{index + 1}</td>
+                    <td className="py-2 px-4 border">
+                      {candidate.firstName + " " + candidate.lastName}
+                    </td>
+
+                    <td className="py-2 px-4 border">{candidate.rollNumber}</td>
+
+                    <td className="py-2 px-4 border">
+                      {candidate.designation}
+                    </td>
+                    <td className="py-2 px-4 border">{candidate.employeeId}</td>
+                    <td className="py-2 px-4 border">
+                      {candidate.phoneNumber}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {candidate.certificateNumber}
+                    </td>
+
+                    <td className="py-2 px-4 border">
+                      <div className="flex space-x-2">
+                        <Button>Delete</Button>
+                        <IoCloseCircle className="text-4xl" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+        )}
+
+
+        <div>
+        <Button onClick={generateCertificates} className="mt-4">Generate Certificate</Button>
+        </div>
       </div>
-      <button onClick={generateCertificate}>Generate Certificate</button>
-    </div>
+      <Footer />
+    </>
   );
 }
-
-export default CertificateGenerator;

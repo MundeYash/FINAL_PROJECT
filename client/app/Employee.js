@@ -11,6 +11,7 @@ export async function saveBatchCode(batchCodeData) {
         departmentAddress: batchCodeData.departmentAddress,
         trainingMode: batchCodeData.trainingMode,
         venueOfTraining: batchCodeData.venueOfTraining,
+        venueDetails:batchCode.venueDetails,
         courseName: batchCodeData.courseName,
         technologyName: batchCodeData.technologyName,
         revenueOfBatch: batchCodeData.revenueOfBatch,

@@ -27,6 +27,7 @@ app.use(cors());
 
 app.get("/batchCode", async (req, res) => {
   const batch = await Batch.aggregate([
+
     { $group: { _id: null, maxBatchCode: { $max: "$batchCode" } } },
   ]);
   console.log(batch);
@@ -69,6 +70,24 @@ app.get("/employees/:id", async (req, res) => {
     res.status(500).send({ message: "Error getting employee" });
   }
 });
+
+
+// modified changes 
+app.get("/batch/:code", async (req, res) => {
+  const batchCode = req.params.code;
+  try {
+    const batchDetails = await Batch.findOne({ batchCode: batchCode });
+    if (batchDetails) {
+      res.status(200).json(batchDetails);
+    } else {
+      res.status(404).send({ message: "Batch not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 app.get("/data", async (req, res) => {
   try {

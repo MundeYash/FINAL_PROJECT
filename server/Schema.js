@@ -8,6 +8,7 @@ const batchCodeSchema = new mongoose.Schema({
   departmentAddress: String,
   trainingMode: String,
   venueOfTraining: String,
+  venueDetails:String,
   courseName: String,
   technologyName: String,
   revenueOfBatch: String,
