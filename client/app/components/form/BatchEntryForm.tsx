@@ -27,7 +27,7 @@ import axios from "axios";
 import CryptoJS from "crypto-js";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
-import GenerateBatchTable from '../certificate/GenerateBatchTable'
+import GenerateBatchTable from "../certificate/GenerateBatchTable";
 
 export default function Component() {
   const [alert2, setAlert2] = useState(false);
@@ -54,6 +54,7 @@ export default function Component() {
   });
   const [errors, setErrors] = useState({});
   const [data, setData] = useState([]);
+  const [revenueOfBatchUnit, setRevenueOfBatchUnit] = useState("thousands");
 
   async function fetchBatchCode() {
     try {
@@ -78,6 +79,8 @@ export default function Component() {
           [id === "courseDurationValue" ? "value" : "format"]: value,
         },
       }));
+    } else if (id === "revenueOfBatchUnit") {
+      setRevenueOfBatchUnit(value);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -105,6 +108,15 @@ export default function Component() {
       newErrors.revenueOfBatch = "Revenue of batch is required.";
     } else if (parseInt(formData.revenueOfBatch) < 0) {
       newErrors.revenueOfBatch = "Revenue cannot be negative.";
+    }
+    if (formData.revenueOfBatch) {
+      const revenue = parseInt(formData.revenueOfBatch);
+      if (
+        parseInt(formData.revenueOfBatch) < 0 ||
+        parseInt(formData.revenueOfBatch) > 1000000
+      ) {
+        newErrors.revenueOfBatch = "Revenue must be between 0 and 1000000.";
+      }
     }
     if (!formData.courseDuration.value)
       newErrors.courseDuration = "Course duration value is required.";
@@ -238,7 +250,7 @@ export default function Component() {
                 </div>
               </div>
 
-              <div className="space-y-2 w-4/4 ">
+              <div className="space-y-2 w-3/4 ">
                 <Label htmlFor="departmentAddress">Address of Department</Label>
                 <Input
                   id="departmentAddress"
@@ -376,7 +388,7 @@ export default function Component() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2 w-3/4 max-w-xs">
+                {/* <div className="space-y-2 w-3/4 max-w-xs">
                   <Label htmlFor="revenueOfBatch w-3/4 max-w-xs">
                     Revenue of Batch <span className="text-red-500">*</span>
                   </Label>
@@ -394,6 +406,37 @@ export default function Component() {
                   {errors.revenueOfBatch && (
                     <Alert severity="error">{errors.revenueOfBatch}</Alert>
                   )}
+                </div> */}
+                
+                <div className="space-y-2 w-3/4 max-w-xs">
+                  <Label htmlFor="revenueOfBatch">
+                    Revenue of Batch <span className="text-red-500">*</span>
+                  </Label>
+
+                  <div className="flex space-x-2">
+                    <Input
+                      id="revenueOfBatch"
+                      type="number"
+                      min="0"
+                      onChange={handleChange}
+                      value={formData.revenueOfBatch}
+                      placeholder="Enter revenue of batch"
+                      max="1000000" // Restrict input value up to 1000000
+                    />
+                    {errors.revenueOfBatch && (
+                      <Alert severity="error">{errors.revenueOfBatch}</Alert>
+                    )}
+                    <select
+                      id="revenueOfBatchUnit"
+                      className="select-field"
+                      value={revenueOfBatchUnit}
+                      onChange={handleChange}
+                    >
+                      <option value="thousands">Thousands</option>
+                      <option value="lakh">Lakhs</option>
+                      <option value="crores">Crores</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="space-y-2 w-3/4 max-w-xs">
@@ -492,12 +535,9 @@ export default function Component() {
           </CardFooter>
         </Card>
 
-
         <div>
-       < GenerateBatchTable/>
+          <GenerateBatchTable />
         </div>
-
-
       </div>
 
       <Footer />

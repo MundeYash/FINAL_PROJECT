@@ -25,8 +25,9 @@ import CandidateUpdate from "./CandidateUpdate";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import { FormData, Candidate } from "./lib/types";
-import BatchLabel from "../certificate/ShowBatchDetails";
-
+import ShowBatchDetails from "../certificate/ShowBatchDetails";
+import BatchLabel from "../certificate/BatchLabel";
+import BatchDetailsCard from "../certificate/BatchDetailsCard";
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({});
@@ -232,7 +233,12 @@ export default function Component() {
 
       <Header />
 
-      <BatchLabel batchCode={batchCode} />
+      <div>
+        <ShowBatchDetails batchCode={batchCode} />
+      </div>
+
+
+      {/* <BatchLabel/> */}
 
       <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
@@ -410,10 +416,6 @@ export default function Component() {
 
       {batchCode && (
         <div className="container my-8 mx-auto p-4 bg-white rounded shadow">
-          {/* <div>
-            <BatchLabel />
-          </div> */}
-
           <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
           <table className="min-w-full bg-white">
             <thead>

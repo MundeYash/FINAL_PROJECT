@@ -78,6 +78,7 @@ app.get("/batch/:code", async (req, res) => {
   try {
     const batchDetails = await Batch.findOne({ batchCode: batchCode });
     if (batchDetails) {
+      console.log(batchDetails);
       res.status(200).json(batchDetails);
     } else {
       res.status(404).send({ message: "Batch not found" });

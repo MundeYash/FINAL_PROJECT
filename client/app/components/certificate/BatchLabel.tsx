@@ -45,19 +45,33 @@ const BatchCodeSelector = () => {
   return (
     <div>
         
-      {batchDetails && (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-        <h2 className="text-xl font-semibold mb-4">Batch Details</h2>
-        <div className="space-y-2 w-4/5">
-          <div className="text-gray-700"><strong className="font-semibold">Batch Code:</strong> {batchDetails.batchCode}</div>
-          <div className="text-gray-700"><strong className="font-semibold">Description:</strong> {batchDetails.batchDescription}</div>
-          <div className="text-gray-700"><strong className="font-semibold">Course Name:</strong> {batchDetails.courseName}</div>
-          <div className="text-gray-700"><strong className="font-semibold">Start Date:</strong> {new Date(batchDetails.startDate).toLocaleDateString()}</div>
-          <div className="text-gray-700"><strong className="font-semibold">End Date:</strong> {new Date(batchDetails.endDate).toLocaleDateString()}</div>
-          <div className="text-gray-700"><strong className="font-semibold">Duration:</strong> {`${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`}</div>
-        </div>
+   
+
+{batchDetails && (
+  <div className="bg-white p-4 rounded-md shadow-sm mb-4 max-w-lg mx-auto">
+    <h2 className="text-lg font-bold mb-2 text-center text-blue-500">Batch Summary</h2>
+    <div className="space-y-2">
+      <div className="flex justify-between items-center text-gray-700">
+        <strong className="font-semibold">Batch Code:</strong>
+        <span className="font-bold  text-red-500">{batchDetails.batchCode}</span>
       </div>
-      )}
+      <div className="flex justify-between items-center text-gray-700">
+        <strong className="font-semibold">Description:</strong>
+        <span>{batchDetails.batchDescription}</span>
+      </div>
+      <div className="flex justify-between items-center text-gray-700">
+        <strong className="font-semibold">Course Name:</strong>
+        <span>{batchDetails.courseName}</span>
+      </div>
+      <div className="flex justify-between items-center text-gray-700">
+        <strong className="font-semibold">Duration:</strong>
+        <span>{`${new Date(batchDetails.startDate).toLocaleDateString()} - ${new Date(batchDetails.endDate).toLocaleDateString()}`}</span>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
       <FormControl fullWidth>
         <InputLabel id="batch-code-select-label">Select Batch Code</InputLabel>

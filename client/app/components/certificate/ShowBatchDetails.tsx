@@ -1,53 +1,46 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
-const BatchCodeSelector = ({ batchCode = "" }) => {
-  const [batchDetails, setBatchDetails] = useState<any | null>(null);
-  const [data, setData] = useState<any>(null);
+interface BatchDetails {
+  batchCode: string;
+  batchDescription: string;
+  courseName: string;
+  startDate: string;
+  endDate: string;
+  courseDuration: { value: number; format: string };
+}
+
+interface BatchCodeSelectorProps {
+  batchCode: string | null;
+}
+
+const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
+  const [batchDetails, setBatchDetails] = useState<BatchDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/data");
-        setData(response.data);
+        const response = await axios.get(`http://localhost:4000/batch/${batchCode}`);
+        const data = response.data;
+        console.log(data);
+        setBatchDetails({
+          batchCode: data?.batchCode,
+          batchDescription: data?.batchDescription,
+          courseName: data?.courseName,
+          startDate: data?.startDate,
+          endDate: data?.endDate,
+          courseDuration: data?.value || { value: 0, format: "days" },
+        });
       } catch (err) {
         console.error("Error fetching data", err);
       }
     };
 
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-      setBatchDetails({
-        batchCode: data.code[0],
-        batchDescription: data.description[0],
-        courseName: data.name[0],
-        startDate: data.startDate[0],
-        endDate: data.endDate[0],
-        courseDuration: data.duration[0] || { value: 0, format: "days" },
-      });
+    if (batchCode !== null) {
+      console.log(batchCode)
+      fetchData();
     }
-  }, [data]);
-
-  useEffect(() => {
-    if (data && batchCode) {
-      const index = data.code.indexOf(batchCode);
-      if (index !== -1) {
-        setBatchDetails({
-          batchCode: data.code[index],
-          batchDescription: data.description[index],
-          courseName: data.name[index],
-          startDate: data.startDate[index],
-          endDate: data.endDate[index],
-          courseDuration: data.duration[index] || { value: 0, format: "days" },
-        });
-      }
-    }
-  }, [batchCode, data]);
+  }, [batchCode]);
 
   return (
     <div className="mb-5">
@@ -68,9 +61,7 @@ const BatchCodeSelector = ({ batchCode = "" }) => {
             <tbody>
               <tr>
                 <td className="border px-4 py-2">{batchDetails.batchCode}</td>
-                <td className="border px-4 py-2">
-                  {batchDetails.batchDescription}
-                </td>
+                <td className="border px-4 py-2">{batchDetails.batchDescription}</td>
                 <td className="border px-4 py-2">{batchDetails.courseName}</td>
                 <td className="border px-4 py-2">
                   {new Date(batchDetails.startDate).toLocaleDateString()}
