@@ -27,7 +27,7 @@ import Footer from "../footer/Footer";
 import { FormData, Candidate } from "./lib/types";
 import ShowBatchDetails from "../certificate/ShowBatchDetails";
 import BatchLabel from "../certificate/BatchLabel";
-import BatchDetailsCard from "../certificate/BatchDetailsCard";
+import BatchDetailsCard from "../certificate/ShowBatchDetails";
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({});
@@ -238,7 +238,7 @@ export default function Component() {
       </div>
 
 
-      {/* <BatchLabel/> */}
+     
 
       <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
@@ -320,7 +320,7 @@ export default function Component() {
                 )}
               </div>
 
-              <div>
+              {/* <div>
                 <Label htmlFor="certificateNumber">Certificate Number</Label>
                 <Input
                   id="certificateNumber"
@@ -329,7 +329,10 @@ export default function Component() {
                   onChange={handleChange}
                   className="mt-1 block w-full"
                 />
-              </div>
+              </div> */}
+
+
+
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -424,7 +427,7 @@ export default function Component() {
                 <th className="py-2 px-4 border">First Name</th>
                 <th className="py-2 px-4 border">Last Name</th>
                 <th className="py-2 px-4 border">Roll Number</th>
-                <th className="py-2 px-4 border">Certificate Number</th>
+                {/* <th className="py-2 px-4 border">Certificate Number</th> */}
                 <th className="py-2 px-4 border">Designation</th>
                 <th className="py-2 px-4 border">Employee ID</th>
                 <th className="py-2 px-4 border">Phone Number</th>
@@ -440,9 +443,9 @@ export default function Component() {
                   <td className="py-2 px-4 border">{candidate.firstName}</td>
                   <td className="py-2 px-4 border">{candidate.lastName}</td>
                   <td className="py-2 px-4 border">{candidate.rollNumber}</td>
-                  <td className="py-2 px-4 border">
+                  {/* <td className="py-2 px-4 border">
                     {candidate.certificateNumber}
-                  </td>
+                  </td> */}
                   <td className="py-2 px-4 border">{candidate.designation}</td>
                   <td className="py-2 px-4 border">{candidate.employeeId}</td>
                   <td className="py-2 px-4 border">{candidate.phoneNumber}</td>

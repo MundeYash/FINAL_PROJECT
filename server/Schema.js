@@ -53,6 +53,19 @@ const employeeSchema = new mongoose.Schema({
 // Create a Mongoose model from the schema
 const Employee = mongoose.model("Employee", employeeSchema);
 
+const certificateSchema = new mongoose.Schema({
+  name: {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true }
+  },
+  certificateNumber: { type: String, required: true },
+  batchCode: { type: String, required: true }
+  // Uncomment if needed in the future
+  // rollNumber: String,
+  // designation: String,
+  // employeeId: String,
+});
 
+const Certificate = mongoose.model("Certificate", certificateSchema);
 // Export the model
-module.exports = {Batch,Employee};
+module.exports = {Batch,Employee,Certificate};

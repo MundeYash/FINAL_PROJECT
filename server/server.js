@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 // const mongoose = require('mongoose');
 const { Batch } = require("./Schema");
 const { Employee } = require("./Schema");
-
+const {Certificate } = require("./Schema");
 
 const { remove, update, getDetails, getAllCanditates } = require("./candidateServices/candidate");
 const authRoutes = require('./routes/auth');
@@ -19,6 +19,31 @@ dotenv.config();
 require("./dbConnect");
 
 connectDB();
+//***********************************/
+
+
+// Get the last updated certificate number
+app.get('/last-updated-certificate', async (req, res) => {
+  try {
+    const lastUpdated = await getLastUpdatedCertificate(); // Implement this function to get the last updated certificate number from the database
+    res.json({ lastUpdatedCertificate: lastUpdated });
+  } catch (error) {
+    res.status(500).send('Error fetching last updated certificate number');
+  }
+});
+
+// Update certificates for the selected batch
+app.post('/assign-certificates/:batchCode', async (req, res) => {
+  try {
+    const { batchCode } = req.params;
+    const updatedCandidates = req.body;
+    await updateCertificates(batchCode, updatedCandidates); // Implement this function to update certificates in the database
+    res.send('Certificates updated successfully');
+  } catch (error) {
+    res.status(500).send('Error updating certificates');
+  }
+});
+/***************************************************** */
 
 // console.log(process.env.MONGO_URI);
 
@@ -132,7 +157,7 @@ app.post("/submit/employee", async (req, res) => {
   try {
     const newEmployee = new Employee(decryptedObj);
 
-    console.log(newEmployee);
+    // console.log(newEmployee);
     if (await newEmployee.save()) {
       res.status(201).json({ message: "saved on database :)" }); // Send a simple response
     } else {
@@ -145,22 +170,56 @@ app.post("/submit/employee", async (req, res) => {
   //   res.status(200).json({ message: "submited" }); // Send a simple response
 });
 
-app.post("/signin", (req, res) => {
-  const formdata = req.body;
-  console.log(formdata);
-});
 //candidate services for update and delete
 app.get("/candidates", getAllCanditates);
 app.put("/candidate/update", update);
 app.delete("/candidate/delete/:id", remove);
 app.get("/candidate/:id", getDetails);
 
-app.use(express.json({ extended: false }));
+app.use(express.json({ extended:true }));
+app.use('/api/auth', authRoutes)
+  
 
-// app.use("/api/auth", require("./routes/auth"));
 
-app.use('/api/auth', authRoutes);
+app.get('/certificate/:batchCode', async (req, res) => {
+  const batchCode = req.params.batchCode;
+  // console.log(batchCode);
 
+  try {
+    // Find the certificate with the maximum certificate number for the given batch code
+    const maxCertificate = await Certificate.findOne({})
+      .sort({ certificateNumber: -1 }) // Sort in descending order by certificateNumber
+      .limit(1); // Limit the result to 1 document
+
+    if (maxCertificate) {
+      res.send(maxCertificate.certificateNumber);
+    } else {
+      res.send("1000");
+    }
+  } catch (error) {
+    console.error('Error fetching certificate:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/assignCertificates/:batchCode',async (req,res)=>{
+  const updatedCandidates = req.body;
+  // console.log(updatedCandidates);
+  try{
+    const updatedCandidates = req.body;
+    const newCertificates = new Certificate({
+      name : {firstName : updatedCandidates.firstName, lastName : updatedCandidates.lastName},
+      certificateNumber : updatedCandidates.certificateNumber,
+      batchCode : updatedCandidates.batchCode
+    })
+    console.log(newCertificates);
+    res.send(updatedCandidates);
+  }
+  catch(error)
+  {
+    console.log(error);
+  }
+})
 
 // Start the server
 const port = process.env.PORT || 4000; // Choose any port you prefer
