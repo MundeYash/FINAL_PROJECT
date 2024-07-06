@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import Footer from '../footer/Footer';
-import Header from '../header/Header';
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
 import Link from "next/link";
 import axios from "axios"; // Import axios for HTTP requests
 
@@ -42,7 +42,7 @@ export default function Component() {
 
   return (
     <>
-      <Header/>
+      <Header />
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -165,7 +165,7 @@ export default function Component() {
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </>
   );
 }

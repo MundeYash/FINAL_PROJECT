@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Button } from "../ui/button";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 const ExcelExportButton = ({ candidatesData }) => {
   const handleExport = () => {
@@ -11,15 +11,13 @@ const ExcelExportButton = ({ candidatesData }) => {
     const worksheet = XLSX.utils.json_to_sheet(candidatesData);
 
     // Adding the worksheet to the workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Candidates Data');
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates Data");
 
     // Exporting the workbook as an Excel file
-    XLSX.writeFile(workbook, 'candidates_data.xlsx');
+    XLSX.writeFile(workbook, "candidates_data.xlsx");
   };
 
-  return (
-    <Button onClick={handleExport}>Excel</Button>
-  );
+  return <Button onClick={handleExport}>Excel</Button>;
 };
 
 export default ExcelExportButton;

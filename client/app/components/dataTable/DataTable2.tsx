@@ -80,16 +80,12 @@ const DataTable = ({ candidatesData ,login}) => {
         title="Candidates Data"
         columns={[
           { title: 'Batch Code', field: 'batchCode' },
-          { title: 'Roll No', field: 'rollNumber' },
-          { title: 'Certificate Number', field: 'certificateNumber' },
-          // { title: 'Name', render: rowData => `${rowData.firstName} ${rowData.lastName}` },
-          {
-            title: 'Name',
-            render: rowData => `${rowData.firstName} ${rowData.lastName}`,
-            customFilterAndSearch: (term, rowData) => `${rowData.firstName} ${rowData.lastName}`.toLowerCase().includes(term.toLowerCase())
-           
-          },
-          { title: 'Designation', field: 'designation' },
+          { title: 'Batch Description ', field: 'batchCode' },
+          { title: 'Course Name', field: 'batchCode' },
+          { title: 'Duration', field: 'batchCode' },
+          { title: 'Total', field: 'batchCode' },
+          { title: 'Certificate No: From - To', field: 'batchCode' },
+         
         ]}
         data={candidatesData}
         options={{

@@ -126,7 +126,9 @@ export default function Component() {
       newErrors.participantsNo = "Number of participants is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+
   };
+  
 
   const resetForm = () => {
     setFormData({
@@ -407,7 +409,7 @@ export default function Component() {
                     <Alert severity="error">{errors.revenueOfBatch}</Alert>
                   )}
                 </div> */}
-                
+
                 <div className="space-y-2 w-3/4 max-w-xs">
                   <Label htmlFor="revenueOfBatch">
                     Revenue of Batch <span className="text-red-500">*</span>

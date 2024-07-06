@@ -32,10 +32,11 @@ import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
-import ShowBatchDetails from '../certificate/ShowBatchDetails'
+import ShowBatchDetails from "../certificate/ShowBatchDetails";
 import BatchEntryForm from "../form/BatchEntryForm";
 import EmployeeForm from "../form/EmployeeForm";
 import OperatorDashboard from "./OperatorDashboard";
+import OperatorDashboard2 from "./OperatorDashboard2";
 import Header from "../header/Header";
 
 import CertificateGenerator from "../certificate/CertificateGenerator";
@@ -45,129 +46,119 @@ export default function Component() {
   const [candidates, setCandidates] = useState();
   return (
     <>
-    {/* <Header/> */}
+      {/* <Header/> */}
 
-    <div className="flex min-h-screen w-full">
-      <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
-        <div className="flex h-16 items-center justify-between px-6">
-          <Link
-            href="#"
-            className="flex items-center gap-2 font-semibold"
-            prefetch={false}
-          >
-            <Package2Icon className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
-          </Link>
+      <div className="flex min-h-screen w-full">
+        <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
+          <div className="flex h-16 items-center justify-between px-6">
+            <Link
+              href="#"
+              className="flex items-center gap-2 font-semibold"
+              prefetch={false}
+            >
+              <Package2Icon className="h-6 w-6" />
+              <span className="sr-only">Acme Inc</span>
+            </Link>
+          </div>
+
+          <nav className="flex flex-col gap-1 px-4 py-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("batch")}
+            >
+              <LayoutGridIcon className="h-4 w-4" />
+              Batch Entry
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("candidate")}
+            >
+              <UserPlusIcon className="h-4 w-4" />
+              Candidate Entry
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("generateCertificate")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Generate Certificate No
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("dashboard")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Candidate Report
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("dashboard2")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch Report
+            </Button>
+          </nav>
         </div>
 
+        <div className="flex-1">
+          <header className="flex h-16 items-center justify-between border-b bg-white px-4 dark:border-gray-800 dark:bg-gray-950 md:px-6">
+            <h1 className="text-lg font-bold">Operator Portal</h1>
+            <div className="flex items-center gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <LogOutIcon className="h-5 w-5 mr-2  text-black  bg-[#ebebf9]" />
+                    <span className="sr-only">Toggle user menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>NIELIT Operator</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
 
+                  <DropdownMenuItem>
+                    <Link
+                      href="/login/operator"
+                      className="font-medium text-[#080808c5] flex justify-center"
+                    >
+                      Logout
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </header>
 
+          <main className="flex-1 px-4 py-6 md:px-6">
+            {activeTab === "batch" && <BatchEntryForm />}
 
-        <nav className="flex flex-col gap-1 px-4 py-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="justify-start gap-2 text-left"
-            onClick={() => setActiveTab("batch")}
-          >
-            <LayoutGridIcon className="h-4 w-4" />
-            Batch Entry
-          </Button>
+            {activeTab === "candidate" && <EmployeeForm />}
 
+            {activeTab === "dashboard" && (
+              <OperatorDashboard login="operator" />
+            )}
+            {activeTab === "dashboard2" && (
+              <OperatorDashboard2 login="operator" />
+            )}
 
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="justify-start gap-2 text-left"
-            onClick={() => setActiveTab("candidate")}
-          >
-            <UserPlusIcon className="h-4 w-4" />
-            Candidate Entry
-          </Button>
-
-
-
-
-         
-
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="justify-start gap-2 text-left"
-            onClick={() => setActiveTab("generateCertificate")}
-          >
-            <BarChartIcon className="h-4 w-4" />
-            Generate Certificate 
-          </Button>
-
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="justify-start gap-2 text-left"
-            onClick={() => setActiveTab("dashboard")}
-          >
-            <BarChartIcon className="h-4 w-4" />
-            Dashboard
-          </Button>
-
-
-
-
-
-        </nav>
+            {activeTab === "generateCertificate" && <CertificateGenerator />}
+          </main>
+        </div>
       </div>
-
-
-
-
-
-      <div className="flex-1">
-        <header className="flex h-16 items-center justify-between border-b bg-white px-4 dark:border-gray-800 dark:bg-gray-950 md:px-6">
-          <h1 className="text-lg font-bold">Operator Portal</h1>
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <LogOutIcon className="h-5 w-5 mr-2  text-black  bg-[#ebebf9]" />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>NIELIT Operator</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem>
-                  <Link
-                    href="/login/operator"
-                    className="font-medium text-[#080808c5] flex justify-center"
-                  >
-                    Logout
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
-
-        <main className="flex-1 px-4 py-6 md:px-6">
-          {activeTab === "batch" && <BatchEntryForm />  }
-
-          {activeTab === "candidate" && <EmployeeForm />}
-
-          {activeTab === "dashboard" && <OperatorDashboard login="operator" />}
-
-
-          {activeTab === "generateCertificate" && <CertificateGenerator  />}
-        </main>
-      </div>
-    </div>
-
     </>
   );
-
 }
 
 function BarChartIcon(props) {
@@ -337,7 +328,5 @@ function LogOutIcon(props) {
       <polyline points="16 17 21 12 16 7" />
       <line x1="21" x2="9" y1="12" y2="12" />
     </svg>
-   
-
   );
 }

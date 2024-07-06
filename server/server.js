@@ -2,57 +2,34 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const CryptoJS = require("crypto-js");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const connectDB = require("./config/db");
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 // const mongoose = require('mongoose');
 const { Batch } = require("./Schema");
 const { Employee } = require("./Schema");
-const {Certificate } = require("./Schema");
+const { Certificate } = require("./Schema");
 
-const { remove, update, getDetails, getAllCanditates } = require("./candidateServices/candidate");
-const authRoutes = require('./routes/auth');
+const {
+  remove,
+  update,
+  getDetails,
+  getAllCanditates,
+} = require("./candidateServices/candidate");
+
+const authRoutes = require("./routes/auth");
 const app = express();
 dotenv.config();
 
 require("./dbConnect");
 
 connectDB();
-//***********************************/
-
-
-// Get the last updated certificate number
-app.get('/last-updated-certificate', async (req, res) => {
-  try {
-    const lastUpdated = await getLastUpdatedCertificate(); // Implement this function to get the last updated certificate number from the database
-    res.json({ lastUpdatedCertificate: lastUpdated });
-  } catch (error) {
-    res.status(500).send('Error fetching last updated certificate number');
-  }
-});
-
-// Update certificates for the selected batch
-app.post('/assign-certificates/:batchCode', async (req, res) => {
-  try {
-    const { batchCode } = req.params;
-    const updatedCandidates = req.body;
-    await updateCertificates(batchCode, updatedCandidates); // Implement this function to update certificates in the database
-    res.send('Certificates updated successfully');
-  } catch (error) {
-    res.status(500).send('Error updating certificates');
-  }
-});
-/***************************************************** */
-
-// console.log(process.env.MONGO_URI);
-
 app.use(express.json());
 app.use(cors());
 
 app.get("/batchCode", async (req, res) => {
   const batch = await Batch.aggregate([
-
     { $group: { _id: null, maxBatchCode: { $max: "$batchCode" } } },
   ]);
   console.log(batch);
@@ -96,8 +73,7 @@ app.get("/employees/:id", async (req, res) => {
   }
 });
 
-
-// modified changes 
+// modified changes
 app.get("/batch/:code", async (req, res) => {
   const batchCode = req.params.code;
   try {
@@ -113,7 +89,6 @@ app.get("/batch/:code", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 app.get("/data", async (req, res) => {
   try {
@@ -176,50 +151,86 @@ app.put("/candidate/update", update);
 app.delete("/candidate/delete/:id", remove);
 app.get("/candidate/:id", getDetails);
 
-app.use(express.json({ extended:true }));
-app.use('/api/auth', authRoutes)
-  
+app.use(express.json({ extended: true }));
+app.use("/api/auth", authRoutes);
 
-
-app.get('/certificate/:batchCode', async (req, res) => {
+app.get("/certificate/:batchCode", async (req, res) => {
   const batchCode = req.params.batchCode;
-  // console.log(batchCode);
-
   try {
     // Find the certificate with the maximum certificate number for the given batch code
     const maxCertificate = await Certificate.findOne({})
       .sort({ certificateNumber: -1 }) // Sort in descending order by certificateNumber
       .limit(1); // Limit the result to 1 document
+    
+      console.log(maxCertificate)
 
     if (maxCertificate) {
-      res.send(maxCertificate.certificateNumber);
+      res.json({ lastCertificateNumber: maxCertificate.certificateNumber });
     } else {
-      res.send("1000");
+      res.json({ lastCertificateNumber: 1000 }); // Default value if no certificates found
     }
   } catch (error) {
-    console.error('Error fetching certificate:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error fetching certificate:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
-app.post('/assignCertificates/:batchCode',async (req,res)=>{
-  const updatedCandidates = req.body;
-  // console.log(updatedCandidates);
-  try{
+/* fetching the last certificate number that is updated  */
+
+
+app.post("/assignCertificates/:batchCode", async (req, res) => {
+  try {
+    const { batchCode } = req.params;
     const updatedCandidates = req.body;
-    const newCertificates = new Certificate({
-      name : {firstName : updatedCandidates.firstName, lastName : updatedCandidates.lastName},
-      certificateNumber : updatedCandidates.certificateNumber,
-      batchCode : updatedCandidates.batchCode
-    })
-    console.log(newCertificates);
-    res.send(updatedCandidates);
+
+    // Use Promise.all to wait for all save operations to complete
+    const certificatePromises = updatedCandidates.map(async (candidate) => {
+      // Check if the candidate already has a certificate
+      const existingCertificate = await Certificate.findOne({
+        "name.firstName": candidate.firstName,
+        "name.lastName": candidate.lastName,
+        batchCode: candidate.batchCode
+      });
+
+      if (existingCertificate) {
+        if (existingCertificate.certificateNumber !== candidate.certificateNumber) {
+          throw new Error(`Duplicate certificate assignment detected for candidate ${candidate.firstName} ${candidate.lastName} with different certificate numbers.`);
+        }
+        return existingCertificate;
+      }
+
+      // Create the certificate
+      const newCertificate = new Certificate({
+        name: {
+          firstName: candidate.firstName,
+          lastName: candidate.lastName
+        },
+        certificateNumber: candidate.certificateNumber,
+        batchCode: candidate.batchCode
+      });
+
+      // Save the certificate
+      await newCertificate.save();
+
+      // Update the employee with the certificate number
+      await Employee.updateOne(
+        { _id: candidate._id },
+        { certificateNumber: candidate.certificateNumber }
+      );
+
+      return newCertificate;
+    });
+
+    // Wait for all certificates to be saved and employees to be updated
+    await Promise.all(certificatePromises);
+
+    res.send("Certificates updated successfully");
+  } catch (error) {
+    console.error("Error updating certificates", error);
+    res.status(500).send(`Error updating certificates: ${error.message}`);
   }
-  catch(error)
-  {
-    console.log(error);
-  }
-})
+});
+
 
 // Start the server
 const port = process.env.PORT || 4000; // Choose any port you prefer

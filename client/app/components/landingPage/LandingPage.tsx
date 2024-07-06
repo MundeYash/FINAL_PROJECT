@@ -1,13 +1,11 @@
 import Link from "next/link";
-import  './LandingPage.css';
+import "./LandingPage.css";
 import Header from "../header/Header";
-
 
 export default function Component() {
   return (
     <>
-      
-    <Header/>
+      <Header />
 
       <section className="relative h-[500px] w-full overflow-hidden">
         <img
@@ -21,27 +19,18 @@ export default function Component() {
               Welcome to NIELIT Corporate Certificate Database
             </h1>
 
-
             <div className="mt-6 flex justify-center space-x-4">
-             
               <Link
                 className="inline-flex items-center rounded-md bg-[#4b36bd] px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 href="../login"
               >
-                Click to Move 
+                Click to Move
               </Link>
-
             </div>
-
-
-            
           </div>
         </div>
       </section>
 
-
-
-      
       <footer className="bg-[#1f316e] text-white px-4 py-6 sm:px-6 lg:px-8 mt-1">
         <div className="container mx-auto flex flex-col items-center justify-between md:flex-row">
           <div className=" md:mb-0">
@@ -73,9 +62,6 @@ export default function Component() {
           </div>
         </div>
       </footer>
-
-
-      
     </>
   );
 }
@@ -98,7 +84,6 @@ function FacebookIcon(props) {
     </svg>
   );
 }
-
 
 function LinkedinIcon(props) {
   return (
@@ -139,7 +124,6 @@ function TwitterIcon(props) {
     </svg>
   );
 }
-
 
 function YoutubeIcon(props) {
   return (

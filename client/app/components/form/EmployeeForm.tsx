@@ -116,6 +116,7 @@ export default function Component() {
     setErrors(newErrors);
     return isValid;
   }
+
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:4000/data");
@@ -197,11 +198,15 @@ export default function Component() {
     }
   };
 
+
+
   const handleEdit = async (id: string) => {
     setIsModalOpen(true);
     await fetchCandidateDetails(id);
     batchCode && fetchEmployeeData(batchCode);
   };
+
+
 
   const handleDelete = async (id: string) => {
     try {
@@ -213,6 +218,8 @@ export default function Component() {
       console.error("Error deleting record", err);
     }
   };
+
+  
 
   if (loading) return <h1>Loading...</h1>;
 
@@ -236,9 +243,6 @@ export default function Component() {
       <div>
         <ShowBatchDetails batchCode={batchCode} />
       </div>
-
-
-     
 
       <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
@@ -265,7 +269,7 @@ export default function Component() {
                   onChange={handleCodeChange}
                 >
                   {data &&
-                    data.code.map((item, index) => (
+                    data.code.sort().map((item, index) => (
                       <MenuItem key={index} value={item}>
                         {item}
                       </MenuItem>
@@ -330,9 +334,6 @@ export default function Component() {
                   className="mt-1 block w-full"
                 />
               </div> */}
-
-
-
             </div>
 
             <div className="grid grid-cols-2 gap-6">

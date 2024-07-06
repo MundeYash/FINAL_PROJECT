@@ -7,8 +7,7 @@ import Footer from "../components/footer/Footer";
 export default function login() {
   return (
     <>
-    <Header/>
-     
+      <Header />
 
       <main className=" bg-white p-4 md:p-12  ">
         <section className="border-20 ">
@@ -92,9 +91,7 @@ export default function login() {
           </div>
         </section>
       </main>
-      <Footer/>
-
-     
+      <Footer />
     </>
   );
 }

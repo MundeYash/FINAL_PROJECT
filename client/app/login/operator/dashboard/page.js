@@ -1,27 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
+import Dashboard from "../../../components/dashBoard/Test";
 
-import Dashboard from '../../../components/dashBoard/Test'
+import { buttonVariants } from "../../../components/ui/button";
 
-import { buttonVariants } from '../../../components/ui/button';
-
-
-
-export default function AdminDashboard(){
-
-
-    
-
-    
-    return(
-            <>
-            
-            <Dashboard/>
-           
-        
-
-            </>
-        );
+export default function AdminDashboard() {
+  return (
+    <>
+      <Dashboard />
+    </>
+  );
 }

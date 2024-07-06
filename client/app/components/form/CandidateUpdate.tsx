@@ -31,73 +31,69 @@ import CryptoJS from "crypto-js";
 import axios from "axios";
 import { useState } from "react";
 
-export default function CandidateUpdate({children}) {
+export default function CandidateUpdate({ children }) {
+  const [alert, setAlert] = useState(false);
+  const [batchCode, setBatchCode] = useState("");
+  const [formData, setFormData] = useState(children);
+  const [data, setData] = useState(null);
+  const [candidates, setCandidates] = useState();
 
-    const [alert, setAlert] = useState(false);
-    const [batchCode, setBatchCode] = useState("");
-    const [formData, setFormData] = useState(children);
-    const [data, setData] = useState(null);
-    const [candidates, setCandidates] = useState();
+  async function handleSubmit() {
+    // console.log("submit");
+    setFormData({ batchCode: batchCode, ...formData });
+    console.log(formData);
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(formData),
+      "secretKey"
+    ).toString();
+    console.log(encryptedData);
 
-    async function handleSubmit() {
-        // console.log("submit");
-        setFormData({ batchCode: batchCode, ...formData });
-        console.log(formData);
-        const encryptedData = CryptoJS.AES.encrypt(
-          JSON.stringify(formData),
-          "secretKey"
-        ).toString();
-        console.log(encryptedData);
-    
-        const response = await axios.put("http://localhost:4000/candidate/update", {
-          encryptedData: encryptedData,
-        });
-        // setAlert(true);
-        // setTimeout(() => {
-        //   setAlert(false);
-        // }, 3000);
-        // console.log(response);
-      }
+    const response = await axios.put("http://localhost:4000/candidate/update", {
+      encryptedData: encryptedData,
+    });
+    // setAlert(true);
+    // setTimeout(() => {
+    //   setAlert(false);
+    // }, 3000);
+    // console.log(response);
+  }
 
-    async function fetchData() {
-        const response = await axios.get("http://localhost:4000/data");
-        console.log(response.data);
-        setData(response.data);
+  async function fetchData() {
+    const response = await axios.get("http://localhost:4000/data");
+    console.log(response.data);
+    setData(response.data);
+  }
+  function handleChange(e) {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  }
+  async function fetchEmployeeData(id: String) {
+    try {
+      // setLoading(true);
+      if (id !== "") {
+        const response = await axios.get(
+          `http://localhost:4000/employees/${id}`
+        );
+        // console.log(response.data);
+        setCandidates(response.data);
       }
-      function handleChange(e) {
-        setFormData({
-          ...formData,
-          [e.target.id]: e.target.value,
-        });
-      }
-      async function fetchEmployeeData(id: String) {
-        try {
-          // setLoading(true);
-          if (id !== "") {
-            const response = await axios.get(
-              `http://localhost:4000/employees/${id}`
-            );
-            // console.log(response.data);
-            setCandidates(response.data);
-          }
-          // setLoading(false);
-        } catch (err) {
-          console.log(err);
-        }
-        // setData(response.data);
-      }
-      const handleCodeChange = (event) => {
-        setBatchCode(event.target.value);
-      };
+      // setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+    // setData(response.data);
+  }
+  const handleCodeChange = (event) => {
+    setBatchCode(event.target.value);
+  };
   return (
     <>
-     
       <Card
-       
         className="w-full max-w-lg mx-auto py-8 px-6 absolute z-10 right-0 mt-6 ml-auto bg-gray-100 shadow-lg "
-    //     className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 absolute top-0 right-0"
-    // style={{ zIndex: 35 }}
-      
+        //     className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 absolute top-0 right-0"
+        // style={{ zIndex: 35 }}
       >
         <CardHeader className="text-center">
           <img
@@ -117,7 +113,6 @@ export default function CandidateUpdate({children}) {
                 <InputLabel id="demo-simple-select-label">
                   Batch Code {formData.batchCode}
                 </InputLabel>
-                
               </FormControl>
             </Box>
 
@@ -138,7 +133,7 @@ export default function CandidateUpdate({children}) {
                 <Input
                   id="lastName"
                   type="text"
-                  value = {formData.lastName}
+                  value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Enter your last name"
                 />
@@ -151,7 +146,7 @@ export default function CandidateUpdate({children}) {
                 id="rollNumber"
                 type="text"
                 onChange={handleChange}
-                value = {formData.rollNumber}
+                value={formData.rollNumber}
                 placeholder="Enter your roll number"
               />
             </div>
@@ -162,7 +157,7 @@ export default function CandidateUpdate({children}) {
                 id="certificateNumber"
                 type="text"
                 onChange={handleChange}
-                value = {formData.certificateNumber}
+                value={formData.certificateNumber}
                 placeholder="Enter your certificate number"
               />
             </div>
@@ -173,7 +168,7 @@ export default function CandidateUpdate({children}) {
                 id="designation"
                 type="text"
                 onChange={handleChange}
-                value = {formData.designation}
+                value={formData.designation}
                 placeholder="Enter your designation"
               />
             </div>
@@ -184,7 +179,7 @@ export default function CandidateUpdate({children}) {
                 id="employeeId"
                 type="text"
                 onChange={handleChange}
-                value = {formData.employeeId}
+                value={formData.employeeId}
                 placeholder="Enter your employee ID"
               />
             </div>
@@ -196,7 +191,7 @@ export default function CandidateUpdate({children}) {
                 id="phoneNumber"
                 type="numeric"
                 onChange={handleChange}
-                value = {formData.phoneNumber}
+                value={formData.phoneNumber}
                 placeholder="Enter your phone number"
               />
             </div>
@@ -217,7 +212,7 @@ export default function CandidateUpdate({children}) {
               <Textarea
                 className="min-h-[100px]"
                 id="remarks"
-                value = {formData.remarks}
+                value={formData.remarks}
                 placeholder="Enter your message"
                 onChange={handleChange}
               />
@@ -225,20 +220,18 @@ export default function CandidateUpdate({children}) {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end  ">
-        <div className="flex space-x-2">
-        <Button onClick={() => window.location.reload()}>Cancel </Button>
+          <div className="flex space-x-2">
+            <Button onClick={() => window.location.reload()}>Cancel </Button>
 
-          <Button
-            
-            onClick={() => {
-              handleSubmit();
-            }}
-            type="submit"
-          >
-            Update 
-          </Button>
-
-        </div>
+            <Button
+              onClick={() => {
+                handleSubmit();
+              }}
+              type="submit"
+            >
+              Update
+            </Button>
+          </div>
         </CardFooter>
         {alert && (
           <Alert
@@ -249,8 +242,6 @@ export default function CandidateUpdate({children}) {
           </Alert>
         )}
       </Card>
-
-     
     </>
   );
 }

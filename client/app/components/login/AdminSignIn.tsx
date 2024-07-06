@@ -1,33 +1,33 @@
+"use client";
 
-
-"use client"
-
-
-import React, { useState } from 'react';
-import { Input } from '../ui/input';
-import { Checkbox } from '../ui/checkbox';
-import { Button } from '../ui/button';
-import Link from 'next/link';
-import Footer from '../footer/Footer';
-import Header from '../header/Header';
+import React, { useState } from "react";
+import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
 
 export default function AdminSignIn() {
-  const [formData, setFormData] = useState({ center: '', email: '', password: '' });
+  const [formData, setFormData] = useState({
+    center: "",
+    email: "",
+    password: "",
+  });
   const handleInputChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
     const data = await response.json();
-    if (data.message === 'saved') {
+    if (data.message === "saved") {
       // Redirect to login page or show a success message
     } else {
       // Handle error
@@ -35,10 +35,9 @@ export default function AdminSignIn() {
     }
   };
 
-
   return (
     <>
-      <Header/>
+      <Header />
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -54,9 +53,7 @@ export default function AdminSignIn() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-
-
-            <form onSubmit={handleSubmit}className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="option">Choose Centre :- </label>
                 <select
@@ -122,7 +119,7 @@ export default function AdminSignIn() {
                     checked={formData.rememberMe}
                     onChange={handleInputChange}
                   />
-                  
+
                   <label
                     className="ml-2 block text-sm text-gray-900"
                     htmlFor="remember-me"
@@ -147,7 +144,6 @@ export default function AdminSignIn() {
                   Sign in
                 </Button> */}
 
-
                 <Link
                   href="/login/admin/dashboard"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -169,9 +165,7 @@ export default function AdminSignIn() {
         </div>
       </div>
 
-      <Footer/>
-
-      
+      <Footer />
     </>
   );
 }

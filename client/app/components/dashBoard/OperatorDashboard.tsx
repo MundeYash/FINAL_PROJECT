@@ -5,7 +5,7 @@ import html2canvas from "html2canvas";
 
 import * as XLSX from "xlsx";
 import ExcelExportButton from "../format/ExcelExportButton";
-import DataTable from '../dataTable/DataTable';
+import DataTable from "../dataTable/DataTable";
 import Header from "../header/Header";
 
 import { Button } from "../ui/button";
@@ -34,7 +34,7 @@ import { useCallback, useEffect } from "react";
 import axios from "axios";
 import { useState } from "react";
 
-export default function Operator({login}) {
+export default function Operator({ login }) {
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [candidatesData, setCandidatesData] = useState([]);
@@ -200,19 +200,15 @@ export default function Operator({login}) {
             <span className="font-medium">Operator</span>
           </div>
         </div>
-
-        
       </header>
 
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4 mt-6 tb-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Filters</h2>
           <div className="flex space-x-2">
-          <Button onClick={applyFilters}>Apply Filters</Button>
-          <Button onClick={() => window.location.reload()}>Clear </Button>
+            <Button onClick={applyFilters}>Apply Filters</Button>
+            <Button onClick={() => window.location.reload()}>Clear </Button>
           </div>
-
-        
         </div>
 
         <div className="grid grid-cols-3 gap-4">
@@ -238,11 +234,8 @@ export default function Operator({login}) {
                 onClick={handleEndDateChange}
               />
             </div>
-            
           </div>
 
-          
-          
           <Select onValueChange={handleBatchCodeChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Batch Code " />
@@ -250,12 +243,16 @@ export default function Operator({login}) {
             <SelectContent>
               <SelectGroup>
                 {data &&
-                  data?.code?.map((item, index) => {
-                    return (
-                      <SelectItem key={index} value={item}>
-                        {item}
-                      </SelectItem>
-                    );
+                  data?.code?.sort().map((item, index) => {
+                    if (item) {
+                      return (
+                        <SelectItem key={index} value={item}>
+                          {item}
+                        </SelectItem>
+                      );
+                    }
+
+                    return null;
                   })}
               </SelectGroup>
             </SelectContent>
@@ -269,12 +266,16 @@ export default function Operator({login}) {
             <SelectContent>
               <SelectGroup>
                 {data &&
-                  data?.description?.map((item, index) => {
-                    return (
-                      <SelectItem key={index} value={item}>
-                        {item}
-                      </SelectItem>
-                    );
+                  data?.description?.sort().map((item, index) => {
+                    if (item) {
+                      return (
+                        <SelectItem key={index} value={item}>
+                          {item}
+                        </SelectItem>
+                      );
+                    }
+
+                    return null;
                   })}
               </SelectGroup>
             </SelectContent>
@@ -282,17 +283,20 @@ export default function Operator({login}) {
 
           <Select onValueChange={handleCourseNameChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Course Content/Name" />
+              <SelectValue placeholder="Select CourseName" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 {data &&
-                  data?.name?.map((item, index) => {
-                    return (
-                      <SelectItem key={index} value={item}>
-                        {item}
-                      </SelectItem>
-                    );
+                  data?.name?.sort().map((item, index) => {
+                    if (item) {
+                      return (
+                        <SelectItem key={index} value={item}>
+                          {item}
+                        </SelectItem>
+                      );
+                    }
+                    return null;
                   })}
               </SelectGroup>
             </SelectContent>
@@ -306,20 +310,19 @@ export default function Operator({login}) {
             <SelectContent>
               <SelectGroup>
                 {data &&
-                  data?.duration?.map((item, index) => {
-                    return (
-                      <SelectItem key={index} value={item}>
-                        {item.value + " " + item.format}
-                      </SelectItem>
-                    );
+                  data?.duration?.sort().map((item, index) => {
+                    if (item) {
+                      return (
+                        <SelectItem key={index} value={item}>
+                          {item.value + " " + item.format}
+                        </SelectItem>
+                      );
+                    }
+                    return null;
                   })}
               </SelectGroup>
             </SelectContent>
           </Select>
-
-          
-          
-          
         </div>
       </section>
 
@@ -328,23 +331,12 @@ export default function Operator({login}) {
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold"> Report Data</h2>
-
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-         
-          
-       <DataTable candidatesData={candidatesData} login = {login}/>
-
-
-
+          <DataTable candidatesData={candidatesData} login={login} />
         </div>
-
-    
       </section>
-
-      
-
 
       {/* footer section  */}
 
@@ -352,8 +344,6 @@ export default function Operator({login}) {
         <span className="flex items-center justify-center">
           @CC: Developed and Maintained by NIELIT Delhi
         </span>
-
-        
       </footer>
     </div>
   );
@@ -379,4 +369,3 @@ function LogOutIcon(props) {
     </svg>
   );
 }
-

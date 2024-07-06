@@ -58,7 +58,7 @@ const certificateSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true }
   },
-  certificateNumber: { type: String, required: true },
+  certificateNumber: { type: Number, required: true, unique: true },
   batchCode: { type: String, required: true }
   // Uncomment if needed in the future
   // rollNumber: String,

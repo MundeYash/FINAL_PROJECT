@@ -7,7 +7,7 @@ interface BatchDetails {
   courseName: string;
   startDate: string;
   endDate: string;
-  // courseDuration: { value: number; format: string };
+  courseDuration: { value: number; format: string };
 }
 
 interface BatchCodeSelectorProps {
@@ -15,34 +15,23 @@ interface BatchCodeSelectorProps {
 }
 
 const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
-  const [batchDetails, setBatchDetails] = useState<BatchDetails | null>(null);
+  
+  const [batchDetails, setBatchDetails] = useState(null);
+
+  const fetchBatchDetails = async (batchId) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/batch/${batchId}`);
+      setBatchDetails(response.data);
+    } catch (error) {
+      console.error('Error fetching batch details', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/batch/${batchCode}`
-        );
-        const data = response.data;
-        console.log(data);
-        setBatchDetails({
-          batchCode: data?.batchCode,
-          batchDescription: data?.batchDescription,
-          courseName: data?.courseName,
-          startDate: data?.startDate,
-          endDate: data?.endDate,
-          // courseDuration: data?.value || { value: 0, format: "days" },
-        });
-      } catch (err) {
-        console.error("Error fetching data", err);
-      }
-    };
-
-    if (batchCode !== null) {
-      console.log(batchCode);
-      fetchData();
-    }
-  }, [batchCode]);
+    // Assuming you have a way to get the current batch ID
+    const currentBatchId = 'someBatchId';
+    fetchBatchDetails(currentBatchId);
+  }, []);
 
   return (
     <div className="mb-5">
@@ -57,7 +46,7 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
                 <th className="px-4 py-2 border">Course Name</th>
                 <th className="px-4 py-2 border">Start Date</th>
                 <th className="px-4 py-2 border">End Date</th>
-                {/* <th className="px-4 py-2 border">Course Duration</th> */}
+                <th className="px-4 py-2 border">Course Duration</th>
               </tr>
             </thead>
             <tbody>
@@ -73,14 +62,10 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
                 <td className="border px-4 py-2">
                   {new Date(batchDetails.endDate).toLocaleDateString()}
                 </td>
-                {/* <td className="border px-4 py-2">{`${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`}</td> */}
+                <td className="border px-4 py-2">{`${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`}</td>
               </tr>
             </tbody>
           </table>
-
-
-
-          
         </div>
       )}
     </div>
