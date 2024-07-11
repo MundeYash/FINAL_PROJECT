@@ -12,6 +12,7 @@ export default function Header() {
             National Institute of Electronics and Information Technology
           </div>
         </div>
+        
         <div className="flex items-center">
           <div className="mr-4 text-sm">
             Ministry of Electronics and Information Technology

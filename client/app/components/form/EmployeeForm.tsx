@@ -22,8 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { IoCloseCircle } from "react-icons/io5";
 import CandidateUpdate from "./CandidateUpdate";
-import Header from "../header/Header";
-import Footer from "../footer/Footer";
+
 import { FormData, Candidate } from "./lib/types";
 import ShowBatchDetails from "../certificate/ShowBatchDetails";
 import BatchLabel from "../certificate/BatchLabel";
@@ -212,7 +211,9 @@ export default function Component() {
     try {
       await axios.delete(`http://localhost:4000/candidate/delete/${id}`);
       fetchEmployeeData(batchCode);
+      
       setAlert({ type: "success", message: "Candidate deleted successfully." });
+      setTimeout(() => setAlert({ type: "", message: "" }), 5000); // Hide alert after 5 seconds
       handleScroll();
     } catch (err) {
       console.error("Error deleting record", err);
@@ -238,7 +239,7 @@ export default function Component() {
         </div>
       )}
 
-      <Header />
+
 
       <div>
         <ShowBatchDetails batchCode={batchCode} />
@@ -469,7 +470,7 @@ export default function Component() {
         </div>
       )}
 
-      <Footer />
+     
     </>
   );
 }

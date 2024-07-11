@@ -30,7 +30,7 @@ import {
   TableBody,
   Table,
 } from "../ui/table";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
 
@@ -46,6 +46,7 @@ export default function Operator({ login }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const defaultSelectValue = ""; // Define a default value for select elements
   async function fetchData() {
     const response = await axios.get("http://localhost:4000/data");
     console.log(response.data);
@@ -57,13 +58,19 @@ export default function Operator({ login }) {
     fetchCandidatesData();
   }, []);
 
-  const handleBatchCodeChange = (value) => setSelectedBatchCode(value);
+  console.log(candidatesData);
+  const handleBatchCodeChange = (value) =>
+    setSelectedBatchCode(value || defaultSelectValue);
   const handleBatchDescriptionChange = (value) =>
-    setSelectedBatchDescription(value);
-  const handleCourseNameChange = (value) => setSelectedCourseName(value);
-  const handleDurationChange = (value) => setSelectedDuration(value);
-  const handleStartDateChange = (e) => setStartDate(e.target.value);
-  const handleEndDateChange = (e) => setEndDate(e.target.value);
+    setSelectedBatchDescription(value || defaultSelectValue);
+  const handleCourseNameChange = (value) =>
+    setSelectedCourseName(value || defaultSelectValue);
+  const handleDurationChange = (value) =>
+    setSelectedDuration(value || defaultSelectValue);
+  const handleStartDateChange = (e) =>
+    setStartDate(e.target.value || defaultSelectValue);
+  const handleEndDateChange = (e) =>
+    setEndDate(e.target.value || defaultSelectValue);
 
   async function fetchCandidatesData() {
     const response = await axios.get("http://localhost:4000/candidates");
@@ -113,101 +120,46 @@ export default function Operator({ login }) {
         );
       })
       .map((item) => item.batchCode);
-    const filteredCandidates = filteredData.employeeData.filter((candidate) =>
-      filteredBatchCodes.includes(candidate.batchCode)
+    const filteredCandidates = filteredData.employeeData.filter(
+      (candidate) =>
+        // filteredBatchCodes.includes(candidate.batchCode)
+        filteredBatchCodes.includes(candidate.batchCode) &&
+        candidate.certificateNumber
     );
 
     setCandidatesData(filteredCandidates);
   };
 
-  const handleGeneratePDF = () => {
-    // Create a new jsPDF instance
-    const doc = new jsPDF();
-
-    // Define a height for the table
-    const tableHeight = 10 + candidatesData.length * 10; // Adjust the multiplier based on the number of rows
-
-    // Use html2canvas to capture the table and convert it to a canvas
-    html2canvas(document.querySelector("#pdfTable"), { scale: 1 }).then(
-      (canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-
-        // Add an image to the PDF
-        doc.addImage(imgData, "PNG", 10, 10, 180, tableHeight);
-
-        // Save the PDF
-        doc.save("table.pdf");
-      }
-    );
+  const clearFilters = () => {
+    setSelectedBatchCode(defaultSelectValue);
+    setSelectedBatchDescription(defaultSelectValue);
+    setSelectedCourseName(defaultSelectValue);
+    setSelectedDuration(defaultSelectValue);
+    setStartDate(defaultSelectValue);
+    setEndDate(defaultSelectValue);
+    // Optionally, you might want to reset the candidates data as well
+    setCandidatesData([]);
+    // Resetting the Select components to show placeholder values
+    batchCodeSelectRef.current?.reset();
+    batchDescriptionSelectRef.current?.reset();
+    courseNameSelectRef.current?.reset();
+    durationSelectRef.current?.reset();
   };
 
-  const handleExport = () => {
-    // Creating a new workbook
-    const workbook = XLSX.utils.book_new();
-
-    // Creating a worksheet
-    const worksheet = XLSX.utils.json_to_sheet(candidatesData);
-
-    // Adding the worksheet to the workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates Data");
-
-    // Exporting the workbook as an Excel file
-    XLSX.writeFile(workbook, "candidates_data.xlsx");
-  };
+  // Refs for select components
+  const batchCodeSelectRef = useRef(null);
+  const batchDescriptionSelectRef = useRef(null);
+  const courseNameSelectRef = useRef(null);
+  const durationSelectRef = useRef(null);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <img
-              alt="Header Logo"
-              className="mx-auto h-12 w-auto"
-              src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
-            />
-          </div>
-          <span className="text-lg font-medium">
-            National Institute of Electronics and Information Technology Delhi
-          </span>
-        </div>
-
-        <nav className="flex items-center gap-6">
-          <Link className="hover:underline" href="../">
-            Home
-          </Link>
-
-          <Link className="hover:underline" href="#">
-            About
-          </Link>
-          <Link className="hover:underline" href="#">
-            Contact Us
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <img
-              alt="logo"
-              className="rounded-full"
-              height="70"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRaEjFnlJLW5piED3eXo2fTr6WJOaNMeJd9A&s" // replace this with your chosen image URL
-              style={{
-                aspectRatio: "80/80",
-                objectFit: "cover",
-              }}
-              width="40"
-            />
-            <span className="font-medium">Operator</span>
-          </div>
-        </div>
-      </header>
-
+    <div className="flex flex-col min-h-screen  mb-8">
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4 mt-6 tb-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Filters</h2>
           <div className="flex space-x-2">
             <Button onClick={applyFilters}>Apply Filters</Button>
-            <Button onClick={() => window.location.reload()}>Clear </Button>
+            <Button onClick={clearFilters}>Clear </Button>
           </div>
         </div>
 
@@ -220,7 +172,8 @@ export default function Operator({ login }) {
               <Input
                 className="w-full"
                 type="date"
-                onClick={handleStartDateChange}
+                value={startDate} // Bind value to state
+                onChange={handleStartDateChange}
               />
             </div>
 
@@ -231,16 +184,21 @@ export default function Operator({ login }) {
               <Input
                 className="w-full"
                 type="date"
-                onClick={handleEndDateChange}
+                value={endDate} // Bind value to state
+                onChange={handleEndDateChange}
               />
             </div>
           </div>
 
-          <Select onValueChange={handleBatchCodeChange}>
-            <SelectTrigger className="w-full">
+          <Select
+            ref={batchCodeSelectRef}
+            onValueChange={handleBatchCodeChange}
+            value={selectedBatchCode}
+          >
+            <SelectTrigger className="w-60">
               <SelectValue placeholder="Select Batch Code " />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="w-60">
               <SelectGroup>
                 {data &&
                   data?.code?.sort().map((item, index) => {
@@ -258,12 +216,16 @@ export default function Operator({ login }) {
             </SelectContent>
           </Select>
 
-          <Select onValueChange={handleBatchDescriptionChange}>
-            <SelectTrigger className="w-full">
+          <Select
+            ref={batchDescriptionSelectRef}
+            onValueChange={handleBatchDescriptionChange}
+            value={selectedBatchDescription}
+          >
+            <SelectTrigger className="w-72">
               <SelectValue placeholder="Select Batch Description " />
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent className="w-72">
               <SelectGroup>
                 {data &&
                   data?.description?.sort().map((item, index) => {
@@ -281,12 +243,16 @@ export default function Operator({ login }) {
             </SelectContent>
           </Select>
 
-          <Select onValueChange={handleCourseNameChange}>
-            <SelectTrigger className="w-full">
+          <Select
+            ref={courseNameSelectRef}
+            onValueChange={handleCourseNameChange}
+            value={selectedCourseName}
+          >
+            <SelectTrigger className="w-72">
               <SelectValue placeholder="Select CourseName" />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
+              <SelectGroup className="w-72">
                 {data &&
                   data?.name?.sort().map((item, index) => {
                     if (item) {
@@ -302,8 +268,12 @@ export default function Operator({ login }) {
             </SelectContent>
           </Select>
 
-          <Select onValueChange={handleDurationChange}>
-            <SelectTrigger className="w-full">
+          <Select
+            ref={durationSelectRef}
+            onValueChange={handleDurationChange}
+            value={selectedDuration}
+          >
+            <SelectTrigger className="w-60">
               <SelectValue placeholder="Select Duration in weeks" />
             </SelectTrigger>
 
@@ -325,26 +295,15 @@ export default function Operator({ login }) {
           </Select>
         </div>
       </section>
-
       {/* Report Printing options  */}
 
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold"> Report Data</h2>
-        </div>
-
         <div className="grid grid-cols-1 gap-4">
-          <DataTable candidatesData={candidatesData} login={login} />
+          <DataTable candidatesData={candidatesData}  login={login}/>
         </div>
       </section>
 
-      {/* footer section  */}
-
-      <footer className="bg-[#1f316e] text-white py-4 px-6 flex items-center justify-between">
-        <span className="flex items-center justify-center">
-          @CC: Developed and Maintained by NIELIT Delhi
-        </span>
-      </footer>
+      
     </div>
   );
 }

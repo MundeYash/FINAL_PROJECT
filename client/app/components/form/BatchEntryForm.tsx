@@ -25,9 +25,9 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import axios from "axios";
 import CryptoJS from "crypto-js";
-import Header from "../header/Header";
-import Footer from "../footer/Footer";
+
 import GenerateBatchTable from "../certificate/GenerateBatchTable";
+import BatchTable from "../dataTable/BatchTable";
 
 export default function Component() {
   const [alert2, setAlert2] = useState(false);
@@ -206,7 +206,8 @@ export default function Component() {
 
   return (
     <>
-      <Header />
+   
+   
       <div className="flex flex-col items-center">
         <Card className=" w-4/5  mt-6 mb-6 bg-blue-100 shadow-lg ">
           <CardHeader className="text-center">
@@ -537,12 +538,10 @@ export default function Component() {
           </CardFooter>
         </Card>
 
-        <div>
-          <GenerateBatchTable />
-        </div>
+        
       </div>
 
-      <Footer />
+      
       {alert2 && <Alert severity="success">Form submitted successfully!</Alert>}
     </>
   );

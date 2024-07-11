@@ -28,6 +28,8 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+
+// this route is returning the maximum value of the batchcode
 app.get("/batchCode", async (req, res) => {
   const batch = await Batch.aggregate([
     { $group: { _id: null, maxBatchCode: { $max: "$batchCode" } } },
@@ -63,6 +65,9 @@ app.post("/submit/batch", async (req, res) => {
   //   res.status(200).json({ message: "submited" }); // Send a simple response
 });
 
+
+
+// this route is returning all the details of the candidates with particular batchcode
 app.get("/employees/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -73,7 +78,7 @@ app.get("/employees/:id", async (req, res) => {
   }
 });
 
-// modified changes
+// This route give all the batch details of particular batchcode
 app.get("/batch/:code", async (req, res) => {
   const batchCode = req.params.code;
   try {
@@ -89,6 +94,10 @@ app.get("/batch/:code", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+
+// this route give all details of all the batchCode 
 
 app.get("/data", async (req, res) => {
   try {
@@ -154,6 +163,10 @@ app.get("/candidate/:id", getDetails);
 app.use(express.json({ extended: true }));
 app.use("/api/auth", authRoutes);
 
+
+
+
+// This route finds the highest certificate number in the Certificate collection for a all batchcodes .
 app.get("/certificate/:batchCode", async (req, res) => {
   const batchCode = req.params.batchCode;
   try {
@@ -193,7 +206,13 @@ app.post("/assignCertificates/:batchCode", async (req, res) => {
       });
 
       if (existingCertificate) {
-        if (existingCertificate.certificateNumber !== candidate.certificateNumber) {
+        // If there's an exemption reason, update the status accordingly
+        if (candidate.exemptionReason) {
+          await Certificate.updateOne(
+            { _id: existingCertificate._id },
+            { status: candidate.exemptionReason }
+          );
+        } else  if (existingCertificate.certificateNumber !== candidate.certificateNumber) {
           throw new Error(`Duplicate certificate assignment detected for candidate ${candidate.firstName} ${candidate.lastName} with different certificate numbers.`);
         }
         return existingCertificate;
@@ -221,6 +240,8 @@ app.post("/assignCertificates/:batchCode", async (req, res) => {
       return newCertificate;
     });
 
+
+
     // Wait for all certificates to be saved and employees to be updated
     await Promise.all(certificatePromises);
 
@@ -228,6 +249,22 @@ app.post("/assignCertificates/:batchCode", async (req, res) => {
   } catch (error) {
     console.error("Error updating certificates", error);
     res.status(500).send(`Error updating certificates: ${error.message}`);
+  }
+});
+
+
+
+// Update candidate status
+app.patch('/candidates/:id', async (req, res) => {
+  try {
+    const updatedCandidate = await Certificate.findByIdAndUpdate(
+      req.params.id,
+      { $set: { status: req.body.status } },
+      { new: true }
+    );
+    res.json(updatedCandidate);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 

@@ -30,11 +30,11 @@ import {
   TableBody,
   Table,
 } from "../ui/table";
-import { useCallback, useEffect,useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
 
-export default function Admin({ login }) {
+export default function Admin() {
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [candidatesData, setCandidatesData] = useState([]);
@@ -344,16 +344,36 @@ export default function Admin({ login }) {
       
 
         <div className="grid grid-cols-1 gap-4">
-          <DataTable2 batchData={filteredBatchData}   employeeData={filteredData.employeeData}  login={login}/>
+          <DataTable2 batchData={filteredBatchData}   employeeData={filteredData.employeeData}  />
         </div>
         
       </section>
 
-      
+
     </div>
   );
 }
 
+function LogOutIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" x2="9" y1="12" y2="12" />
+    </svg>
+  );
+}
 
 function MountainIcon(props) {
   return (

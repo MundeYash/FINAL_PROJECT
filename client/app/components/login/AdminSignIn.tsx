@@ -137,12 +137,7 @@ export default function AdminSignIn() {
                 </div>
               </div>
               <div>
-                {/* <Button
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  type="submit"
-                >
-                  Sign in
-                </Button> */}
+                
 
                 <Link
                   href="/login/admin/dashboard"

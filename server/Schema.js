@@ -48,6 +48,7 @@ const employeeSchema = new mongoose.Schema({
   phoneNumber: Number,
   email: String,
   remarks: String,
+  status: { type: String, default: "okay" },
 });
 
 // Create a Mongoose model from the schema
@@ -59,12 +60,15 @@ const certificateSchema = new mongoose.Schema({
     lastName: { type: String, required: true }
   },
   certificateNumber: { type: Number, required: true, unique: true },
-  batchCode: { type: String, required: true }
+  batchCode: { type: String, required: true },
+  status: { type: String, default: "okay" } // Added status field with default value "okay"
   // Uncomment if needed in the future
   // rollNumber: String,
   // designation: String,
   // employeeId: String,
+
 });
+
 
 const Certificate = mongoose.model("Certificate", certificateSchema);
 // Export the model

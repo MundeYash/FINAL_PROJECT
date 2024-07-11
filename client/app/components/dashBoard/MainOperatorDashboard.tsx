@@ -38,6 +38,7 @@ import EmployeeForm from "../form/EmployeeForm";
 import OperatorDashboard from "./OperatorDashboard";
 import OperatorDashboard2 from "./OperatorDashboard2";
 import Header from "../header/Header";
+import Footer from "../footer/Footer";
 
 import CertificateGenerator from "../certificate/CertificateGenerator";
 
@@ -46,7 +47,51 @@ export default function Component() {
   const [candidates, setCandidates] = useState();
   return (
     <>
-      {/* <Header/> */}
+           <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <img
+              alt="Header Logo"
+              className="mx-auto h-12 w-auto"
+              src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
+            />
+          </div>
+          <span className="text-lg font-medium">
+            National Institute of Electronics and Information Technology Delhi
+          </span>
+        </div>
+
+        <nav className="flex items-center gap-6">
+          <Link className="hover:underline" href="../">
+            Home
+          </Link>
+
+          <Link className="hover:underline" href="#">
+            About
+          </Link>
+          <Link className="hover:underline" href="#">
+            Contact Us
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <img
+              alt="logo"
+              className="rounded-full"
+              height="70"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRaEjFnlJLW5piED3eXo2fTr6WJOaNMeJd9A&s" // replace this with your chosen image URL
+              style={{
+                aspectRatio: "80/80",
+                objectFit: "cover",
+              }}
+              width="40"
+            />
+            <span className="font-medium">Operator</span>
+          </div>
+        </div>
+      </header>
+
 
       <div className="flex min-h-screen w-full">
         <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
@@ -157,6 +202,7 @@ export default function Component() {
           </main>
         </div>
       </div>
+      <Footer></Footer>
     </>
   );
 }

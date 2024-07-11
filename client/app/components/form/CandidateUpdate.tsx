@@ -51,11 +51,12 @@ export default function CandidateUpdate({ children }) {
     const response = await axios.put("http://localhost:4000/candidate/update", {
       encryptedData: encryptedData,
     });
-    // setAlert(true);
-    // setTimeout(() => {
-    //   setAlert(false);
-    // }, 3000);
-    // console.log(response);
+    setAlert(true);
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+    console.log(response);
+
   }
 
   async function fetchData() {
@@ -233,14 +234,17 @@ export default function CandidateUpdate({ children }) {
             </Button>
           </div>
         </CardFooter>
+       
+       
         {alert && (
           <Alert
             severity="info"
             className="mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded shadow-lg"
           >
-            Record Added Successfully.
+            Record Updated Successfully Close Form.
           </Alert>
         )}
+
       </Card>
     </>
   );

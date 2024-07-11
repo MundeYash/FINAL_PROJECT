@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import Dashboard from "../../../components/dashBoard/Test";
+import Dashboard from "../../../components/dashBoard/MainOperatorDashboard";
 
 import { buttonVariants } from "../../../components/ui/button";
 
