@@ -41,10 +41,17 @@ const DataTable = ({ candidatesData, login }) => {
   const handleExportToPDF = async () => {
     const doc = new jsPDF();
 
+    const imagePath = './Logo_NIELIT.png'; // Adjust if necessary
+
+// Load the image and add it to the PDF
+// Note: This example assumes jsPDF can handle the path directly. If not, convert the image to a Base64 string and use that instead.
+doc.addImage(imagePath, 'PNG', 20, 10, 50, 50); // Adjust x, y, width, and height as needed
+
+
     doc.setTextColor(0, 0, 128); // Dark blue
 
     // Adjust font size and position for English translation
-    doc.setFontSize(13);
+    doc.setFontSize(17);
     doc.text(
       "National Institute of Electronics and Information Technology (NIELIT)",
       20,
@@ -52,16 +59,19 @@ const DataTable = ({ candidatesData, login }) => {
     );
 
     // Set font for additional information
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setFont("times", "normal");
     doc.text(
       "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
-      23,
+      32,
       30
     );
+
+    doc.setFontSize(10);
+    doc.setFont("times", "normal");
     doc.text(
       "[2nd Floor, Parsvanath Metro Mall, Inderlok Metro Station, Inderlok, Delhi-110052]",
-      25,
+      39,
       36
     );
 
@@ -128,30 +138,46 @@ const DataTable = ({ candidatesData, login }) => {
             {
               title: "Serial No",
               field: "tableData.id",
-              render: rowData => rowData.tableData.id + 1, // Add 1 because tableData.id starts from 0
+              render: (rowData) => rowData.tableData.id + 1, // Add 1 because tableData.id starts from 0
               cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-              headerStyle: { padding: "2px", paddingLeft: "30px",fontWeight: "bold" }, // Minimize header padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
               width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
               title: "Batch Code",
               field: "batchCode",
               cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-              headerStyle: { padding: "2px", paddingLeft: "30px",fontWeight: "bold"  }, // Minimize header padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
               width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
               title: "Roll No",
               field: "rollNumber",
               cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-              headerStyle: { padding: "2px", paddingLeft: "30px",fontWeight: "bold"  }, // Minimize header padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
               width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
               title: "Certificate Number",
               field: "certificateNumber",
               cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-              headerStyle: { padding: "2px", paddingLeft: "30px",fontWeight: "bold"  }, // Minimize header padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
               width: "10%", // Adjust width as needed to ensure it's minimal
             },
             // { title: 'Name', render: rowData => `${rowData.firstName} ${rowData.lastName}` },
@@ -162,15 +188,23 @@ const DataTable = ({ candidatesData, login }) => {
                 `${rowData.firstName} ${rowData.lastName}`
                   .toLowerCase()
                   .includes(term.toLowerCase()),
-                  cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-                  headerStyle: { padding: "2px", paddingLeft: "30px" ,fontWeight: "bold" }, // Minimize header padding
-                  width: "10%", // Adjust width as needed to ensure it's minimal
+              cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
               title: "Designation",
               field: "designation",
               cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-              headerStyle: { padding: "2px", paddingLeft: "30px",fontWeight: "bold"  }, // Minimize header padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
               width: "10%", // Adjust width as needed to ensure it's minimal
             },
           ]}

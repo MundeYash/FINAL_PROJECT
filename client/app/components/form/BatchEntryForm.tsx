@@ -105,6 +105,7 @@ export default function Component() {
     if (!formData.technologyName)
       newErrors.technologyName = "Technology name is required.";
     if (!formData.revenueOfBatch) {
+
       newErrors.revenueOfBatch = "Revenue of batch is required.";
     } else if (parseInt(formData.revenueOfBatch) < 0) {
       newErrors.revenueOfBatch = "Revenue cannot be negative.";
@@ -113,7 +114,7 @@ export default function Component() {
       const revenue = parseInt(formData.revenueOfBatch);
       if (
         parseInt(formData.revenueOfBatch) < 0 ||
-        parseInt(formData.revenueOfBatch) > 1000000
+        parseInt(formData.revenueOfBatch) > 10000
       ) {
         newErrors.revenueOfBatch = "Revenue must be between 0 and 1000000.";
       }
@@ -124,6 +125,12 @@ export default function Component() {
     if (!formData.endDate) newErrors.endDate = "End date is required.";
     if (!formData.participantsNo)
       newErrors.participantsNo = "Number of participants is required.";
+    else {
+      const participants = parseInt(formData.participantsNo);
+      if (participants < 0 || participants > 10000) {
+        newErrors.participantsNo = "Number of participants must be between 0 and 10000.";
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
 
@@ -222,8 +229,8 @@ export default function Component() {
           <CardContent>
             <div className="grid grid-cols-1 gap-6">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2 w-1/4 max-w-xs">
-                  <Label htmlFor="batchCode" className="w-1/4 max-w-xs">
+                <div className="space-y-2 w-24">
+                  <Label htmlFor="batchCode" className="w-16">
                     Batch code
                   </Label>
                   {batchCode !== null && (
@@ -391,25 +398,7 @@ export default function Component() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {/* <div className="space-y-2 w-3/4 max-w-xs">
-                  <Label htmlFor="revenueOfBatch w-3/4 max-w-xs">
-                    Revenue of Batch <span className="text-red-500">*</span>
-                  </Label>
-                  <div className="flex items-center">
-                    <span className="mr-2">₹</span>
-                    <Input
-                      id="revenueOfBatch"
-                      type="number"
-                      min="0"
-                      onChange={handleChange}
-                      value={formData.revenueOfBatch}
-                      placeholder="Enter batch revenue"
-                    />
-                  </div>
-                  {errors.revenueOfBatch && (
-                    <Alert severity="error">{errors.revenueOfBatch}</Alert>
-                  )}
-                </div> */}
+                
 
                 <div className="space-y-2 w-3/4 max-w-xs">
                   <Label htmlFor="revenueOfBatch">
@@ -473,8 +462,8 @@ export default function Component() {
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2 w-2/4 max-w-xs">
-                  <Label htmlFor="startDate">
+                <div className="space-y-2 w-36">
+                  <Label htmlFor="startDate" className="w-36">
                     Start Date <span className="text-red-500">*</span>
                   </Label>
                   <Input
@@ -487,7 +476,7 @@ export default function Component() {
                     <Alert severity="error">{errors.startDate}</Alert>
                   )}
                 </div>
-                <div className="space-y-2 w-2/4 ">
+                <div className="space-y-2 w-36 ">
                   <Label htmlFor="endDate">
                     End Date <span className="text-red-500">*</span>
                   </Label>

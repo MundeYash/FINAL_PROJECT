@@ -197,21 +197,17 @@ export default function Component() {
     }
   };
 
-
-
   const handleEdit = async (id: string) => {
     setIsModalOpen(true);
     await fetchCandidateDetails(id);
     batchCode && fetchEmployeeData(batchCode);
   };
 
-
-
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(`http://localhost:4000/candidate/delete/${id}`);
       fetchEmployeeData(batchCode);
-      
+
       setAlert({ type: "success", message: "Candidate deleted successfully." });
       setTimeout(() => setAlert({ type: "", message: "" }), 5000); // Hide alert after 5 seconds
       handleScroll();
@@ -219,8 +215,6 @@ export default function Component() {
       console.error("Error deleting record", err);
     }
   };
-
-  
 
   if (loading) return <h1>Loading...</h1>;
 
@@ -238,8 +232,6 @@ export default function Component() {
           <CandidateUpdate>{editData}</CandidateUpdate>
         </div>
       )}
-
-
 
       <div>
         <ShowBatchDetails batchCode={batchCode} />
@@ -469,8 +461,6 @@ export default function Component() {
           </table>
         </div>
       )}
-
-     
     </>
   );
 }

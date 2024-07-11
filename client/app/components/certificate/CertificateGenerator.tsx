@@ -25,6 +25,22 @@ import ShowBatchDetails from "./ShowBatchDetails";
 
 import { FormData, Candidate } from "../form/lib/types";
 
+interface Candidate {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  rollNumber: string;
+  designation: string;
+  employeeId: string;
+  phoneNumber: string;
+  certificateNumber?: string;
+  status?: string;
+}
+
+interface FormData {
+  [key: string]: any;
+}
+
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({});
@@ -63,17 +79,34 @@ export default function Component() {
     }
   };
 
+  // const fetchEmployeeData = async (id: string) => {
+  //   try {
+  //     if (id) {
+  //       const response = await axios.get(
+  //         `http://localhost:4000/employees/${id}`
+  //       );
+  //       setCandidates(response.data);
+  //       const filteredCandidates = response.data.filter(
+  //         (candidate) => !candidate.certificateNumber
+  //       );
+  //       setCandidates(filteredCandidates);
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching employee data", err);
+  //   }
+  // };
+
   const fetchEmployeeData = async (id: string) => {
     try {
       if (id) {
         const response = await axios.get(
           `http://localhost:4000/employees/${id}`
         );
-        setCandidates(response.data);
-        const filteredCandidates = response.data.filter(
-          (candidate) => !candidate.certificateNumber
+        setCandidates(
+          response.data.filter(
+            (candidate: Candidate) => !candidate.certificateNumber
+          )
         );
-        setCandidates(filteredCandidates);
       }
     } catch (err) {
       console.error("Error fetching employee data", err);
@@ -81,48 +114,26 @@ export default function Component() {
   };
 
   // Function to handle the exemption of a candidate
-  // const handleExemptCandidate = async (candidateId) => {
-  //   if (selectedReason) {
-  //     // Update the candidate status in the database with the selected reason
-  //     // await updateCandidateStatus(candidateId, { status: selectedReason });
-  //     // Remove the candidate from the table
-  //     setCandidates(
-  //       candidates.filter((candidate) => candidate._id !== candidateId)
-  //     );
 
-  //     // removeCandidateFromTable(candidateId);
-  //     // Reset the exemption reason state
-  //     setShowExemptionReason(false);
-  //     setSelectedReason("");
-  //   }
-  // };
-
-
-  // Function to handle the exemption of a candidate
-const handleExemptCandidate = async (candidateId: string) => {
-  if (selectedReason) {
+  const handleExemptCandidate = async (candidateId: string) => {
+    if (!selectedReason) return;
     try {
-      // Update the candidate status in the database with the selected reason
-      await axios.patch(`http://localhost:4000/candidates/${candidateId}`, {
-        status: selectedReason,
+      await axios.post(`http://localhost:4000/exemptCandidate/${candidateId}`, {
+        reason: selectedReason,
       });
-      // Remove the candidate from the table
-      setCandidates(candidates.filter((candidate) => candidate._id !== candidateId));
-      // Reset the exemption reason state
-      setShowExemptionReason(false);
+      setCandidates(
+        candidates.filter((candidate) => candidate._id !== candidateId)
+      );
+      setSelectedCandidateForExemption(null);
       setSelectedReason("");
-      setSelectedCandidateForExemption(null); // Reset selected candidate for exemption
+      setAlert({ type: "success", message: "Exemption saved successfully." });
+      setTimeout(() => setAlert({ type: "", message: "" }), 3000); // Hide alert after 5 seconds
     } catch (error) {
-      console.error("Error updating candidate status", error);
+      console.error("Failed to save exemption reason:", error);
+      setAlert({ type: "error", message: "Failed to exempt candidate." });
+      setTimeout(() => setAlert({ type: "", message: "" }), 5000); // Hide alert after 5 seconds
     }
-  }
-};
-
-
-
-
-
-  
+  };
 
   // Modify showExemptionReasonDropdown to accept a candidate ID
   const showExemptionReasonDropdown = (id: string) => {
@@ -273,11 +284,7 @@ const handleExemptCandidate = async (candidateId: string) => {
                       {/* Displaying status with default "okay" */}
                     </td>
 
-
-
                     <td className="py-2 px-4 border">
-
-
                       <div className="flex space-x-2">
                         {selectedCandidateForExemption === candidate._id ? (
                           <select
