@@ -34,11 +34,11 @@ import { Textarea } from "../ui/textarea";
 
 import AdminDashboardForm from "./AdminDashboardForm";
 import AdminDashboardForm2 from "./AdminDashboardForm2";
+import AdminDashboardForm3 from "./AdminDashboardForm3";
+import AdminDashboardForm4 from "./AdminDashboardForm4";
 import Footer from "../footer/Footer";
 
 import Header from "../header/Header";
-
-
 
 export default function Component() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -59,8 +59,6 @@ export default function Component() {
           </span>
         </div>
 
-       
-
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <img
@@ -77,7 +75,6 @@ export default function Component() {
             <span className="font-medium">Admin</span>
           </div>
         </div>
-
       </header>
 
       <div className="flex min-h-screen w-full">
@@ -93,8 +90,7 @@ export default function Component() {
             </Link>
           </div>
 
-          <nav className="flex flex-col gap-1 px-4 py-6">
-          
+          {/* <nav className="flex flex-col gap-1 px-4 py-6">
             <Button
               variant="ghost"
               size="sm"
@@ -113,6 +109,75 @@ export default function Component() {
             >
               <BarChartIcon className="h-4 w-4" />
               Batch Report
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("dashboard3")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch-Wise Certificate Rep
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 text-left"
+              onClick={() => setActiveTab("dashboard4")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch MasterData Report
+            </Button>
+          </nav> */}
+
+          <nav className="flex flex-col gap-1 px-4 py-6">
+           
+
+        
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Candidate Report
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard2" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard2")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch Report
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard3" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard3")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch-Wise Certificate Rep
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard4" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard4")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch MasterData Report
             </Button>
           </nav>
         </div>
@@ -146,15 +211,18 @@ export default function Component() {
           </header>
 
           <main className="flex-1 px-4 py-6 md:px-6">
-           
             {activeTab === "dashboard" && (
               <AdminDashboardForm login="operator" />
             )}
             {activeTab === "dashboard2" && (
               <AdminDashboardForm2 login="operator" />
             )}
-
-            
+            {activeTab === "dashboard3" && (
+              <AdminDashboardForm3 login="operator" />
+            )}
+            {activeTab === "dashboard4" && (
+              <AdminDashboardForm4 login="operator" />
+            )}
           </main>
         </div>
       </div>

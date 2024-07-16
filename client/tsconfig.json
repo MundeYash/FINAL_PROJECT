@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/dashBoard/AdminDashboardForm.js", "components/dashBoard/AdminDashboardForm.js", "components/landingPage/LandingPage.jsx", "components/form/BatchEntryForm.tsx", "app/components/landingPage/LandingPage.tsx", "app/components/header/Header.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/dashBoard/AdminDashboardForm.js", "components/dashBoard/AdminDashboardForm.js", "components/landingPage/LandingPage.jsx", "components/form/BatchEntryForm.tsx", "app/components/landingPage/LandingPage.tsx", "app/components/header/Header.tsx", "app/login/page.js"],
   "exclude": ["node_modules"]
 }

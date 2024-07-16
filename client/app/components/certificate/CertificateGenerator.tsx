@@ -79,22 +79,12 @@ export default function Component() {
     }
   };
 
-  // const fetchEmployeeData = async (id: string) => {
-  //   try {
-  //     if (id) {
-  //       const response = await axios.get(
-  //         `http://localhost:4000/employees/${id}`
-  //       );
-  //       setCandidates(response.data);
-  //       const filteredCandidates = response.data.filter(
-  //         (candidate) => !candidate.certificateNumber
-  //       );
-  //       setCandidates(filteredCandidates);
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching employee data", err);
-  //   }
-  // };
+  const cancelExemption = (id: string) => {
+    if (selectedCandidateForExemption === id) {
+      setSelectedCandidateForExemption(null);
+      setSelectedReason("");
+    }
+  };
 
   const fetchEmployeeData = async (id: string) => {
     try {
@@ -174,7 +164,7 @@ export default function Component() {
         message:
           "Certificate numbers assigned successfully! and removed from table after 5 seconds",
       });
-      setTimeout(() => setAlert({ type: "", message: "" }), 5000); // Hide alert after 5 seconds
+      setTimeout(() => setAlert({ type: "", message: "" }), 3000); // Hide alert after 5 seconds
       // Remove candidates after assigning certificate numbers
       setTimeout(() => {
         setCandidates([]);
@@ -202,11 +192,11 @@ export default function Component() {
       </CardHeader>
 
       <div className="mt-5 mb-4">
-        <div>
+        <div className="flex justify-center">
           <ShowBatchDetails batchCode={batchCode} />
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex justify-center space-x-4">
           <Box sx={{ minWidth: 120 }}>
             <FormControl sx={{ minWidth: 200 }}>
               <InputLabel id="demo-simple-select-label">
@@ -228,14 +218,6 @@ export default function Component() {
               </Select>
             </FormControl>
           </Box>
-
-          <Button
-            onClick={generateCertificates}
-            disabled={candidates.length === 0}
-            className="mt-4 self-start"
-          >
-            Generate Certificate
-          </Button>
         </div>
 
         {alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
@@ -318,6 +300,10 @@ export default function Component() {
                               Confirm
                             </Button>
                           )}
+
+                        <Button onClick={() => cancelExemption(candidate._id)}>
+                          Cancel
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -326,6 +312,16 @@ export default function Component() {
             </table>
           </div>
         )}
+ <div className="flex justify-end m-4">
+          <Button
+            onClick={generateCertificates}
+            disabled={candidates.length === 0}
+            className="mt-4"
+          >
+            Generate Certificate
+          </Button>
+        </div>
+        
       </div>
     </>
   );

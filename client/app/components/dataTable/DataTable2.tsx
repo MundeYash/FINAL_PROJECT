@@ -1,173 +1,40 @@
-import React, { useMemo } from "react";
+import React from "react";
 import MaterialTable from "@material-table/core";
 import { Button, Stack } from "@mui/material";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import axios from "axios";
+import html2canvas from 'html2canvas';
 
-import { Bar, Pie } from 'react-chartjs-2';
-import 'chart.js/auto'; // For automatic chart type detection
-
-
-interface Employee {
+// Add an interface for batchDetails prop
+interface BatchDetails {
   batchCode: string;
-  certificateNumber: string;
-  designation: string;
-  email: string;
-  employeeId: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: number;
-  remarks: string;
-  rollNumber: string;
-  __v: number;
-  _id: string;
+  batchDescription: string;
+  courseName: string;
+  startDate: string;
+  endDate: string;
 }
 
-const DataTable = ({ batchData, employeeData, login }) => {
-  console.log("tableBatchData", batchData);
-  console.log("new EmployeeData", employeeData);
-
-  
-  // Prepare data for the charts
-  const chartData = batchData.reduce((acc, batch) => {
-    const totalCandidates = employeeData.filter(emp => emp.batchCode === batch.batchCode).length;
-    acc.labels.push(batch.batchCode);
-    acc.data.push(totalCandidates);
-    return acc;
-  }, { labels: [], data: [] });
-
-  const barChartData = {
-    labels: chartData.labels,
-    datasets: [
-      {
-        label: 'Total Candidates',
-        data: chartData.data,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  
-  const pieChartData = {
-    labels: chartData.labels,
-    datasets: [
-      {
-        label: 'Total Candidates',
-        data: chartData.data,
-        backgroundColor: chartData.labels.map((_, index) => {
-          // Generate a random color for each batch code
-          const r = Math.floor(Math.random() * 255);
-          const g = Math.floor(Math.random() * 255);
-          const b = Math.floor(Math.random() * 255);
-          return `rgb(${r}, ${g}, ${b})`;
-        }),
-        hoverOffset: 4,
-      },
-    ],
-  };
-
-
-  // Function to find smallest and largest certificate numbers for a given batchCode
-  function countEmployeesWithBatchCode(
-    employeeData: Employee[],
-    batchCode: string
-  ): number {
-    const count = employeeData.filter(
-      (employee) => employee.batchCode === batchCode
-    ).length;
-    return count;
-  }
-
-  // Function to find smallest and largest certificate numbers for a given batchCode
-  function findCertificateNumberRange(
-    employeeData: Employee[],
-    batchCode: string
-  ): string {
-    const filteredEmployees = employeeData.filter(
-      (employee) => employee.batchCode === batchCode
-    );
-
-    if (filteredEmployees.length === 0) {
-      return `NIL`;
-    }
-
-    let minCertificateNumber = filteredEmployees[0].certificateNumber;
-    let maxCertificateNumber = filteredEmployees[0].certificateNumber;
-
-    filteredEmployees.forEach((employee) => {
-      if (employee.certificateNumber < minCertificateNumber) {
-        minCertificateNumber = employee.certificateNumber;
-      }
-      if (employee.certificateNumber > maxCertificateNumber) {
-        maxCertificateNumber = employee.certificateNumber;
-      }
-    });
-    return `${minCertificateNumber} - ${maxCertificateNumber}`;
-  }
-
-  // Memoized filtered data with unique batchCode
-  const uniquebatchData = useMemo(() => {
-    const unique = {};
-    batchData.forEach((candidate) => {
-      if (!unique[candidate.batchCode]) {
-        unique[candidate.batchCode] = {
-          ...candidate,
-          startDate: candidate.startDate
-            .split("T")[0]
-            .split("-")
-            .reverse()
-            .join("-"), // Convert startDate to dd-mm-yyyy format
-          endDate: candidate.endDate
-            .split("T")[0]
-            .split("-")
-            .reverse()
-            .join("-"), // Convert endDate to dd-mm-yyyy format
-          courseDuration: `${candidate.courseDuration.value} ${candidate.courseDuration.format}`, // Combine value and format
-          total: countEmployeesWithBatchCode(employeeData, candidate.batchCode), // Count of employees in the batch
-          certificateNumberRange: findCertificateNumberRange(
-            employeeData,
-            candidate.batchCode
-          ),
-        };
-      }
-    });
-    return Object.values(unique);
-  }, [batchData]);
-  console.log("uniqueData", uniquebatchData);
-
+const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
+  console.log("new value " + selectedBatchCode);
   const handleExportToExcel = () => {
     // Specify column headers
     const tableColumn = [
       "Batch Code",
-      "Batch Description",
-      "Course Name",
-      "Start Date",
-      "End Date",
-      "Course Duration",
-      "Total",
-      "Certificate Number Range",
+      "Roll No",
+      "Certificate Number",
+      "Name",
+      "Designation",
     ];
 
-    // Extract only the specified columns from batchData
-    const filteredData = batchData.map((batch) => ({
-      "Batch Code": batch.batchCode,
-      "Batch Description": batch.batchDescription,
-      "Course Name": batch.courseName,
-      "Start Date": batch.startDate
-        .split("T")[0]
-        .split("-")
-        .reverse()
-        .join("-"), // Convert startDate to dd-mm-yyyy format
-      "End Date": batch.endDate.split("T")[0].split("-").reverse().join("-"), // Convert endDate to dd-mm-yyyy format
-      "Course Duration": `${batch.courseDuration.value} ${batch.courseDuration.format}`, // Use combined course duration
-      Total: countEmployeesWithBatchCode(employeeData, batch.batchCode),
-      "Certificate Number Range": findCertificateNumberRange(
-        employeeData,
-        batch.batchCode
-      ),
+    // Extract only the specified columns from candidatesData
+    const filteredData = candidatesData.map((candidate) => ({
+      "Batch Code": candidate.batchCode,
+      "Roll No": candidate.rollNumber,
+      "Certificate Number": candidate.certificateNumber,
+      Name: `${candidate.firstName} ${candidate.lastName}`,
+      Designation: candidate.designation,
     }));
 
     // Create worksheet
@@ -177,19 +44,21 @@ const DataTable = ({ batchData, employeeData, login }) => {
 
     // Create workbook
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Batch Data");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates Data");
 
     // Save the file
-    XLSX.writeFile(workbook, "batch_Report.xlsx");
+    XLSX.writeFile(workbook, "candidates_data.xlsx");
   };
 
   const handleExportToPDF = async () => {
     const doc = new jsPDF();
 
+    // URL of the logo
+
     doc.setTextColor(0, 0, 128); // Dark blue
 
     // Adjust font size and position for English translation
-    doc.setFontSize(13);
+    doc.setFontSize(17);
     doc.text(
       "National Institute of Electronics and Information Technology (NIELIT)",
       20,
@@ -197,47 +66,72 @@ const DataTable = ({ batchData, employeeData, login }) => {
     );
 
     // Set font for additional information
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setFont("times", "normal");
     doc.text(
       "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
-      23,
+      32,
       30
     );
-    doc.text(
-      "[2nd Floor, Parsvanath Metro Mall, Inderlok Metro Station, Inderlok, Delhi-110052]",
-      25,
-      36
-    );
 
-    // Add space between header and table
-    const headerHeight = 70; // Adjust as needed
+    // Fetch batch details for selectedBatchCode
+    let batchDetails = null;
+    if (selectedBatchCode) {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/batch/${selectedBatchCode}`
+        );
+        batchDetails = response.data;
+      } catch (err) {
+        console.error("Error fetching batch details", err);
+      }
+    }
+
+    // Display batch details after the header
+    if (batchDetails) {
+      doc.setTextColor(0, 0, 0); // Black
+      doc.setFillColor(128, 128, 128); // Grey background
+      doc.setFontSize(12);
+
+      doc.text(`Batch Code: ${batchDetails.batchCode}`, 20, 40);
+      doc.text(`Batch Description: ${batchDetails.batchDescription}`, 20, 45);
+      doc.text(`Course Name: ${batchDetails.courseName}`, 20, 50);
+      doc.text(
+        `Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`,
+        20,
+        55
+      );
+      doc.text(
+        `Start Date: ${new Date(
+          batchDetails.startDate
+        ).toLocaleDateString()}                             End Date: ${new Date(
+          batchDetails.endDate
+        ).toLocaleDateString()}`,
+        20,
+        60
+      );
+    }
+
+    // Adjust startY position based on whether batch details were included
+    const startY = batchDetails ? 70 : 40;
 
     // Set text color to dark blue and font style to bold for the header
     const tableColumn = [
       "Batch Code",
-      "Batch Description",
-      "Course Name",
-      "Start Date",
-      "End Date",
-      "Course Duration",
-      "Total",
-      "Certificate Number Range",
+      "Roll No",
+      "Certificate Number",
+      "Name",
+      "Designation",
     ];
     const tableRows = [];
 
-    uniquebatchData.forEach((candidate) => {
+    candidatesData.forEach((candidate) => {
       const candidateData = [
         candidate.batchCode,
-        candidate.batchDescription,
-        candidate.courseName,
-        candidate.startDate,
-        candidate.endDate,
-        candidate.courseDuration,
-        candidate.total.toString(),
-        candidate.certificateNumberRange,
-
-        // Add more fields as necessary
+        candidate.rollNumber,
+        candidate.certificateNumber,
+        `${candidate.firstName} ${candidate.lastName}`,
+        candidate.designation,
       ];
       tableRows.push(candidateData);
     });
@@ -245,7 +139,7 @@ const DataTable = ({ batchData, employeeData, login }) => {
     doc.autoTable({
       head: [tableColumn],
       body: tableRows,
-      startY: 40,
+      startY: startY,
     });
 
     doc.save("candidates_Report.pdf");
@@ -276,65 +170,82 @@ const DataTable = ({ batchData, employeeData, login }) => {
         </Stack>
 
         <MaterialTable
-          title="Batch Data"
+          title="Candidates Data"
           columns={[
             {
               title: "Serial No",
               field: "tableData.id",
               render: (rowData) => rowData.tableData.id + 1, // Add 1 because tableData.id starts from 0
               cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
-              headerStyle: { padding: "2px", paddingLeft: "10px", fontWeight: "bold" }, // Minimize header padding
-             
-              // Highlighted header
-              width: "5%", // Adjust width as needed to ensure it's minimal
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
               title: "Batch Code",
               field: "batchCode",
-              cellStyle: { padding: "2px" },
-               headerStyle: {  padding: "2px", fontWeight: "bold"}, // Highlighted header
-               width: "5%",
+              cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
-              title: "Batch Description ",
-              field: "batchDescription",
-              cellStyle: { width: "4%", maxWidth: "40%", padding: "4px" },
-              headerStyle: {  fontWeight: "bold"}, // Highlighted header
+              title: "Roll No",
+              field: "rollNumber",
+              cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
-              title: "Course Name",
-              field: "courseName",
-              cellStyle: { width: "30%", maxWidth: "35%", padding: "4px" },
-              headerStyle: {  fontWeight: "bold"}, // Highlighted header
+              title: "Certificate Number",
+              field: "certificateNumber",
+              cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
+            },
+            // { title: 'Name', render: rowData => `${rowData.firstName} ${rowData.lastName}` },
+            {
+              title: "Name",
+              render: (rowData) => `${rowData.firstName} ${rowData.lastName}`,
+              customFilterAndSearch: (term, rowData) =>
+                `${rowData.firstName} ${rowData.lastName}`
+                  .toLowerCase()
+                  .includes(term.toLowerCase()),
+              cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
             },
             {
-              title: "Start Date",
-              field: "startDate",
-              cellStyle: { padding: "4px" },
-              headerStyle: {  fontWeight: "bold"}, // Highlighted header
-            },
-            {
-              title: "End Date ",
-              field: "endDate",
-              cellStyle: { width: "8%",maxWidth: "8%", padding: "4px" },
-              headerStyle: {  fontWeight: "bold"}, // Highlighted header
-            },
-            {
-              title: "Course Duration",
-              field: "courseDuration",
-              cellStyle: { width: "10%", maxWidth: "10%", padding: "4px" },
-              headerStyle: {  fontWeight: "bold"}, // Highlighted header
-            }, // Display combined course duration
-            { title: "Total", field: "total", cellStyle: { padding: "4px" } ,headerStyle: {  fontWeight: "bold"},  width: "5%", },
-            {
-              title: "CertificateNo Range",
-              field: "certificateNumberRange",
-              cellStyle: { padding: "2px" },
-              headerStyle: {  fontWeight: "bold"}, // Highlighted header
+              title: "Designation",
+              field: "designation",
+              cellStyle: { padding: "2px", paddingLeft: "30px" }, // Reduced cell padding
+              headerStyle: {
+                padding: "2px",
+                paddingLeft: "30px",
+                fontWeight: "bold",
+              }, // Minimize header padding
+              width: "10%", // Adjust width as needed to ensure it's minimal
             },
           ]}
-          // data={batchData}
-          data={uniquebatchData} // Use uniquebatchData here
+          data={candidatesData}
           options={{
             search: true,
             paging: true,
@@ -350,21 +261,9 @@ const DataTable = ({ batchData, employeeData, login }) => {
             },
             pageSize: 10, // Default number of rows to display
             pageSizeOptions: [5, 10, 20, 50, 100], // Options for changing the number of rows displayed
-            
           }}
         />
       </div>
-
-      <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px 0' }}>
-    <div style={{ width: '45%', height: '400px' }}>
-      <h2>Batch Code vs Total Candidates</h2>
-      <Bar data={barChartData} options={{ responsive: true, maintainAspectRatio: false }} />
-    </div>
-    <div style={{ width: '45%', height: '400px' }}>
-      <h2>Batch Code Distribution</h2>
-      <Pie data={pieChartData} options={{ responsive: true, maintainAspectRatio: false }} />
-    </div>
-  </div>
     </>
   );
 };

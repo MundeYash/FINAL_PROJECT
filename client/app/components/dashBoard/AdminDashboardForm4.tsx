@@ -5,8 +5,8 @@ import html2canvas from "html2canvas";
 
 import * as XLSX from "xlsx";
 import ExcelExportButton from "../format/ExcelExportButton";
-import DataTable from "../dataTable/DataTable";
-import Header from "../header/Header";
+
+import DataTable4 from "../dataTable/DataTable4";
 
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -34,7 +34,7 @@ import { useCallback, useEffect, useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
 
-export default function Operator({ login }) {
+export default function Admin() {
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [candidatesData, setCandidatesData] = useState([]);
@@ -42,14 +42,21 @@ export default function Operator({ login }) {
   const [selectedBatchCode, setSelectedBatchCode] = useState("");
   const [selectedBatchDescription, setSelectedBatchDescription] = useState("");
   const [selectedCourseName, setSelectedCourseName] = useState("");
-  const [selectedDuration, setSelectedDuration] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [selectedDuration, setSelectedDuration] = useState(null);
+  const [durationFormat, setDurationFormat] = useState(null);
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [filteredBatchData, setfilteredBatchData] = useState([]);
+  const [filteredBatchDetails, setFilteredBatchDetails] = useState([]);
+
+  const [batchCounts, setBatchCounts] = useState({});
+  const [employeeData, setEmployeeData] = useState([]);
 
   const defaultSelectValue = ""; // Define a default value for select elements
   async function fetchData() {
     const response = await axios.get("http://localhost:4000/data");
-    console.log(response.data);
+    console.log(`4000/data: ${response.data}`);
     setData(response.data);
   }
 
@@ -58,7 +65,6 @@ export default function Operator({ login }) {
     fetchCandidatesData();
   }, []);
 
-  console.log(candidatesData);
   const handleBatchCodeChange = (value) =>
     setSelectedBatchCode(value || defaultSelectValue);
   const handleBatchDescriptionChange = (value) =>
@@ -74,7 +80,6 @@ export default function Operator({ login }) {
 
   async function fetchCandidatesData() {
     const response = await axios.get("http://localhost:4000/candidates");
-    console.log(response.data);
     setFilteredData(response.data);
   }
 
@@ -87,48 +92,57 @@ export default function Operator({ login }) {
     console.log(`selectedDuration`, selectedDuration);
     console.log(`startDate`, startDate);
     console.log(`endDate`, endDate);
+    // console.log(`format`, format);
+    const filteredBatchData = filteredData.batchData?.filter((item) => {
+      const batchCodeMatch = selectedBatchCode
+        ? item.batchCode === selectedBatchCode
+        : true;
+      const batchDescriptionMatch = selectedBatchDescription
+        ? item.batchDescription === selectedBatchDescription
+        : true;
+      const courseNameMatch = selectedCourseName
+        ? item.courseName === selectedCourseName
+        : true;
+      const durationMatch = selectedDuration
+        ? item.courseDuration.value === selectedDuration.value &&
+          item.courseDuration.format === selectedDuration.format
+        : true;
+      const startDateMatch = startDate
+        ? new Date(item.startDate) >= new Date(startDate)
+        : true;
+      const endDateMatch = endDate
+        ? new Date(item.endDate) <= new Date(endDate)
+        : true;
 
-    const filteredBatchCodes = filteredData.batchData
-      ?.filter((item) => {
-        const batchCodeMatch = selectedBatchCode
-          ? item.batchCode === selectedBatchCode
-          : true;
-        const batchDescriptionMatch = selectedBatchDescription
-          ? item.batchDescription === selectedBatchDescription
-          : true;
-        const courseNameMatch = selectedCourseName
-          ? item.courseName === selectedCourseName
-          : true;
-        const durationMatch = selectedDuration
-          ? item.courseDuration.value === selectedDuration.value &&
-            item.courseDuration.format === selectedDuration.format
-          : true;
-        const startDateMatch = startDate
-          ? new Date(item.startDate) >= new Date(startDate)
-          : true;
-        const endDateMatch = endDate
-          ? new Date(item.endDate) <= new Date(endDate)
-          : true;
+      return (
+        batchCodeMatch &&
+        batchDescriptionMatch &&
+        courseNameMatch &&
+        durationMatch &&
+        startDateMatch &&
+        endDateMatch
+      );
+    });
+    // .map((item) => item.batchCode);
+    setfilteredBatchData(filteredBatchData);
+    const filteredCandidates = filteredData.employeeData.filter((candidate) =>
+      // filteredBatchData.includes(candidate.batchCode)
+      filteredBatchData.includes(candidate.batchCode)
+    );
+    console.log("batchFilter", filteredBatchData);
+    console.log("filter", filteredCandidates);
+    setCandidatesData(filteredCandidates);
 
-        return (
-          batchCodeMatch &&
-          batchDescriptionMatch &&
-          courseNameMatch &&
-          durationMatch &&
-          startDateMatch &&
-          endDateMatch
-        );
-      })
-      .map((item) => item.batchCode);
-    const filteredCandidates = filteredData.employeeData.filter(
-      (candidate) =>
-        // filteredBatchCodes.includes(candidate.batchCode)
-        filteredBatchCodes.includes(candidate.batchCode) &&
-        candidate.certificateNumber
+    // After filtering batch codes, find the corresponding batch details
+    const filteredBatchDetails = filteredData.batchData.filter((batch) =>
+      filteredBatchData.includes(batch.batchCode)
     );
 
-    setCandidatesData(filteredCandidates);
+    // Assuming you have a state to hold the filtered batch details for the DataTable2 component
+    setFilteredBatchDetails(filteredBatchDetails);
   };
+
+  // function for clearing all the filters (remaing to be implemented)
 
   const clearFilters = () => {
     setSelectedBatchCode(defaultSelectValue);
@@ -137,8 +151,11 @@ export default function Operator({ login }) {
     setSelectedDuration(defaultSelectValue);
     setStartDate(defaultSelectValue);
     setEndDate(defaultSelectValue);
-    // Optionally, you might want to reset the candidates data as well
-    setCandidatesData([]);
+
+    setCandidatesData([]); // Optionally, you might want to reset the candidates data as well
+    setfilteredBatchData([]); // Clear filtered batch data
+    setFilteredBatchDetails([]); // Clear filtered batch details
+
     // Resetting the Select components to show placeholder values
     batchCodeSelectRef.current?.reset();
     batchDescriptionSelectRef.current?.reset();
@@ -152,11 +169,46 @@ export default function Operator({ login }) {
   const courseNameSelectRef = useRef(null);
   const durationSelectRef = useRef(null);
 
+  const handleGeneratePDF = () => {
+    // Create a new jsPDF instance
+    const doc = new jsPDF();
+
+    // Define a height for the table
+    const tableHeight = 10 + candidatesData.length * 10; // Adjust the multiplier based on the number of rows
+
+    // Use html2canvas to capture the table and convert it to a canvas
+    html2canvas(document.querySelector("#pdfTable"), { scale: 1 }).then(
+      (canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+
+        // Add an image to the PDF
+        doc.addImage(imgData, "PNG", 10, 10, 180, tableHeight);
+
+        // Save the PDF
+        doc.save("table.pdf");
+      }
+    );
+  };
+
+  const handleExport = () => {
+    // Creating a new workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Creating a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(candidatesData);
+
+    // Adding the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates Data");
+
+    // Exporting the workbook as an Excel file
+    XLSX.writeFile(workbook, "candidates_data.xlsx");
+  };
+
   return (
-    <div className="flex flex-col min-h-screen  mb-8">
+    <div className="flex flex-col min-h-screen mt-2 mb-8">
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4 mt-6 tb-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Candidate Report</h2>
+          <h2 className="text-2xl font-bold">Batchwise MasterData Report </h2>
           <div className="flex space-x-2">
             <Button onClick={applyFilters}>Apply Filters</Button>
             <Button onClick={clearFilters}>Clear </Button>
@@ -295,18 +347,23 @@ export default function Operator({ login }) {
           </Select>
         </div>
       </section>
+
       {/* Report Printing options  */}
 
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4">
-          <DataTable candidatesData={candidatesData} login={login} />
+          <DataTable4
+            batchData={filteredBatchData}
+            employeeData={filteredData.employeeData}
+           
+          />
         </div>
       </section>
     </div>
   );
 }
 
-function LogOutIcon(props) {
+function MountainIcon(props) {
   return (
     <svg
       {...props}
@@ -320,9 +377,7 @@ function LogOutIcon(props) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" x2="9" y1="12" y2="12" />
+      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
     </svg>
   );
 }

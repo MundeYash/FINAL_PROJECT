@@ -37,6 +37,8 @@ import BatchEntryForm from "../form/BatchEntryForm";
 import EmployeeForm from "../form/EmployeeForm";
 import OperatorDashboard from "./OperatorDashboard";
 import OperatorDashboard2 from "./OperatorDashboard2";
+import OperatorDashboard3 from "./OperatorDashboard3";
+import OperatorDashboard4 from "./OperatorDashboard4";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 
@@ -47,7 +49,7 @@ export default function Component() {
   const [candidates, setCandidates] = useState();
   return (
     <>
-           <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
+      <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <img
@@ -92,7 +94,6 @@ export default function Component() {
         </div>
       </header>
 
-
       <div className="flex min-h-screen w-full">
         <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
           <div className="flex h-16 items-center justify-between px-6">
@@ -105,12 +106,15 @@ export default function Component() {
               <span className="sr-only">Acme Inc</span>
             </Link>
           </div>
+          
 
           <nav className="flex flex-col gap-1 px-4 py-6">
             <Button
               variant="ghost"
               size="sm"
-              className="justify-start gap-2 text-left"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "batch" ? "font-bold bg-gray-200" : ""
+              }`}
               onClick={() => setActiveTab("batch")}
             >
               <LayoutGridIcon className="h-4 w-4" />
@@ -120,7 +124,9 @@ export default function Component() {
             <Button
               variant="ghost"
               size="sm"
-              className="justify-start gap-2 text-left"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "candidate" ? "font-bold bg-gray-200" : ""
+              }`}
               onClick={() => setActiveTab("candidate")}
             >
               <UserPlusIcon className="h-4 w-4" />
@@ -130,7 +136,11 @@ export default function Component() {
             <Button
               variant="ghost"
               size="sm"
-              className="justify-start gap-2 text-left"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "generateCertificate"
+                  ? "font-bold bg-gray-200"
+                  : ""
+              }`}
               onClick={() => setActiveTab("generateCertificate")}
             >
               <BarChartIcon className="h-4 w-4" />
@@ -140,7 +150,9 @@ export default function Component() {
             <Button
               variant="ghost"
               size="sm"
-              className="justify-start gap-2 text-left"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard" ? "font-bold bg-gray-200" : ""
+              }`}
               onClick={() => setActiveTab("dashboard")}
             >
               <BarChartIcon className="h-4 w-4" />
@@ -149,11 +161,35 @@ export default function Component() {
             <Button
               variant="ghost"
               size="sm"
-              className="justify-start gap-2 text-left"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard2" ? "font-bold bg-gray-200" : ""
+              }`}
               onClick={() => setActiveTab("dashboard2")}
             >
               <BarChartIcon className="h-4 w-4" />
               Batch Report
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard3" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard3")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch-Wise Certificate Rep
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "dashboard4" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard4")}
+            >
+              <BarChartIcon className="h-4 w-4" />
+              Batch MasterData Report
             </Button>
           </nav>
         </div>
@@ -176,7 +212,9 @@ export default function Component() {
                   <DropdownMenuItem>
                     <Link
                       href="/login/operator"
-                      className="font-medium text-[#080808c5] flex justify-center"
+                      className={`font-medium text-[#080808c5] flex justify-center ${
+                        activeTab === "logout" ? "font-bold" : ""
+                      }`}
                     >
                       Logout
                     </Link>
@@ -187,18 +225,30 @@ export default function Component() {
           </header>
 
           <main className="flex-1 px-4 py-6 md:px-6">
+           
             {activeTab === "batch" && <BatchEntryForm />}
-
             {activeTab === "candidate" && <EmployeeForm />}
-
             {activeTab === "dashboard" && (
-              <OperatorDashboard login="operator" />
-            )}
-            {activeTab === "dashboard2" && (
-              <OperatorDashboard2 login="operator" />
-            )}
+                <OperatorDashboard login="operator" />
+              )}
+           {activeTab === "dashboard2" && (
+                <OperatorDashboard2 login="operator" />
+              )}
 
-            {activeTab === "generateCertificate" && <CertificateGenerator />}
+{activeTab === "dashboard3" && (
+                <OperatorDashboard3 login="operator" />
+              )}
+
+{activeTab === "dashboard4" && (
+                <OperatorDashboard4 login="operator" />
+              )}
+               {activeTab === "generateCertificate" && <CertificateGenerator />}
+            
+           
+           
+           
+
+            
           </main>
         </div>
       </div>

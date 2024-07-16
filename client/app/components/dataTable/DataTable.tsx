@@ -41,13 +41,6 @@ const DataTable = ({ candidatesData, login }) => {
   const handleExportToPDF = async () => {
     const doc = new jsPDF();
 
-    const imagePath = './Logo_NIELIT.png'; // Adjust if necessary
-
-// Load the image and add it to the PDF
-// Note: This example assumes jsPDF can handle the path directly. If not, convert the image to a Base64 string and use that instead.
-doc.addImage(imagePath, 'PNG', 20, 10, 50, 50); // Adjust x, y, width, and height as needed
-
-
     doc.setTextColor(0, 0, 128); // Dark blue
 
     // Adjust font size and position for English translation
@@ -65,14 +58,6 @@ doc.addImage(imagePath, 'PNG', 20, 10, 50, 50); // Adjust x, y, width, and heigh
       "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
       32,
       30
-    );
-
-    doc.setFontSize(10);
-    doc.setFont("times", "normal");
-    doc.text(
-      "[2nd Floor, Parsvanath Metro Mall, Inderlok Metro Station, Inderlok, Delhi-110052]",
-      39,
-      36
     );
 
     // Add space between header and table
