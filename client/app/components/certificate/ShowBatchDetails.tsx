@@ -45,6 +45,8 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
   }, [batchCode]);
 
   return (
+
+    <>
     <div className="mb-5">
       {batchCode && batchDetails && (
         <div className="container my-8 mx-auto p-4 bg-white rounded shadow mb-5">
@@ -57,7 +59,7 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
                 <th className="px-4 py-2 border">Course Name</th>
                 <th className="px-4 py-2 border">Start Date</th>
                 <th className="px-4 py-2 border">End Date</th>
-                {/* <th className="px-4 py-2 border">Course Duration</th> */}
+              
               </tr>
             </thead>
             <tbody>
@@ -73,7 +75,7 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
                 <td className="border px-4 py-2">
                   {new Date(batchDetails.endDate).toLocaleDateString()}
                 </td>
-                {/* <td className="border px-4 py-2">{`${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`}</td> */}
+               
               </tr>
             </tbody>
           </table>
@@ -84,6 +86,13 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
         </div>
       )}
     </div>
+
+
+      
+
+      </>
+
+
   );
 };
 

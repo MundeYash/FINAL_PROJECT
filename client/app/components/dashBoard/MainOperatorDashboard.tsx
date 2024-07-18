@@ -42,6 +42,7 @@ import OperatorDashboard4 from "./OperatorDashboard4";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 
+
 import CertificateGenerator from "../certificate/CertificateGenerator";
 
 export default function Component() {
@@ -106,7 +107,6 @@ export default function Component() {
               <span className="sr-only">Acme Inc</span>
             </Link>
           </div>
-          
 
           <nav className="flex flex-col gap-1 px-4 py-6">
             <Button
@@ -225,30 +225,23 @@ export default function Component() {
           </header>
 
           <main className="flex-1 px-4 py-6 md:px-6">
-           
             {activeTab === "batch" && <BatchEntryForm />}
             {activeTab === "candidate" && <EmployeeForm />}
             {activeTab === "dashboard" && (
-                <OperatorDashboard login="operator" />
-              )}
-           {activeTab === "dashboard2" && (
-                <OperatorDashboard2 login="operator" />
-              )}
+              <OperatorDashboard login="operator" />
+            )}
+            {activeTab === "dashboard2" && (
+              <OperatorDashboard2 login="operator" />
+            )}
 
-{activeTab === "dashboard3" && (
-                <OperatorDashboard3 login="operator" />
-              )}
+            {activeTab === "dashboard3" && (
+              <OperatorDashboard3 login="operator" />
+            )}
 
-{activeTab === "dashboard4" && (
-                <OperatorDashboard4 login="operator" />
-              )}
-               {activeTab === "generateCertificate" && <CertificateGenerator />}
-            
-           
-           
-           
-
-            
+            {activeTab === "dashboard4" && (
+              <OperatorDashboard4 login="operator" />
+            )}
+            {activeTab === "generateCertificate" && <CertificateGenerator />}
           </main>
         </div>
       </div>

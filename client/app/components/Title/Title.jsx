@@ -1,9 +1,13 @@
 import React from 'react';
 
-const CenteredHeading = ({ title }) => (
-    <div className="flex justify-center items-center my-5">
-    <h1 className="text-2xl font-bold bg-blue-200 text-gray-800 uppercase tracking-wide text-center p-2">{title}</h1>
-  </div>
-);
+const TitleComponent = ({ title }) => {
+  return (
+    <div className="flex justify-center items-center h-16">
+      
 
-export default CenteredHeading;
+      <h2 className="text-2xl font-bold text-center">{title} </h2>
+    </div>
+  );
+};
+
+export default TitleComponent;

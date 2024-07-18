@@ -50,101 +50,114 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
     XLSX.writeFile(workbook, "candidates_data.xlsx");
   };
 
+  
   const handleExportToPDF = async () => {
     const doc = new jsPDF();
-
+  
     // URL of the logo
+    const imageUrl = 'https://akm-img-a-in.tosshub.com/aajtak/images/story/201506/logo_650_062915055832.jpg?size=1200:675';
+  
+    // Fetch image from URL and convert to base64
+    const imageResponse = await fetch(imageUrl);
+    const imageBlob = await imageResponse.blob();
+    const reader = new FileReader();
+  
+    reader.readAsDataURL(imageBlob); 
+    reader.onloadend = async function() {
+      const base64data = reader.result;
+  
+      // Add image to PDF at top left corner
+       // Add image to PDF at top left corner
+    doc.addImage(base64data, 'JPEG', 10, 9, 23, 20); // Adjust position and size as needed
+  
+      // Set font size and position for organization name
+      doc.setTextColor(0, 0, 128); // Dark blue
 
-    doc.setTextColor(0, 0, 128); // Dark blue
-
-    // Adjust font size and position for English translation
-    doc.setFontSize(17);
-    doc.text(
-      "National Institute of Electronics and Information Technology (NIELIT)",
-      20,
-      25
-    );
-
-    // Set font for additional information
-    doc.setFontSize(10);
-    doc.setFont("times", "normal");
-    doc.text(
-      "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
-      32,
-      30
-    );
-
-    // Fetch batch details for selectedBatchCode
-    let batchDetails = null;
-    if (selectedBatchCode) {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/batch/${selectedBatchCode}`
-        );
-        batchDetails = response.data;
-      } catch (err) {
-        console.error("Error fetching batch details", err);
+      // Adjust font size and position for English translation
+      doc.setFontSize(13);
+      doc.text(
+        "National Institute of Electronics and Information Technology (NIELIT)",
+        40,
+        20
+      );
+  
+      // Set font for additional information
+      doc.setFontSize(10);
+      doc.setFont("times", "normal");
+      doc.text(
+        "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
+        32,
+        30
+      );
+  
+      // Fetch batch details for selectedBatchCode
+      let batchDetails = null;
+      if (selectedBatchCode) {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/batch/${selectedBatchCode}`
+          );
+          batchDetails = response.data;
+        } catch (err) {
+          console.error("Error fetching batch details", err);
+        }
       }
-    }
-
-    // Display batch details after the header
-    if (batchDetails) {
-      doc.setTextColor(0, 0, 0); // Black
-      doc.setFillColor(128, 128, 128); // Grey background
-      doc.setFontSize(12);
-
-      doc.text(`Batch Code: ${batchDetails.batchCode}`, 20, 40);
-      doc.text(`Batch Description: ${batchDetails.batchDescription}`, 20, 45);
-      doc.text(`Course Name: ${batchDetails.courseName}`, 20, 50);
-      doc.text(
-        `Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`,
-        20,
-        55
-      );
-      doc.text(
-        `Start Date: ${new Date(
-          batchDetails.startDate
-        ).toLocaleDateString()}                             End Date: ${new Date(
-          batchDetails.endDate
-        ).toLocaleDateString()}`,
-        20,
-        60
-      );
-    }
-
-    // Adjust startY position based on whether batch details were included
-    const startY = batchDetails ? 70 : 40;
-
-    // Set text color to dark blue and font style to bold for the header
-    const tableColumn = [
-      "Batch Code",
-      "Roll No",
-      "Certificate Number",
-      "Name",
-      "Designation",
-    ];
-    const tableRows = [];
-
-    candidatesData.forEach((candidate) => {
-      const candidateData = [
-        candidate.batchCode,
-        candidate.rollNumber,
-        candidate.certificateNumber,
-        `${candidate.firstName} ${candidate.lastName}`,
-        candidate.designation,
+  
+      // Display batch details after the header
+      if (batchDetails) {
+        doc.setTextColor(0, 0, 0); // Black
+        doc.setFillColor(128, 128, 128); // Grey background
+        doc.setFontSize(15);
+        
+        doc.text(`Batch Code: ${batchDetails.batchCode}                                Batch Description: ${batchDetails.batchDescription}`, 20, 50);
+        // doc.text(`Batch Description: ${batchDetails.batchDescription}`, 20, 55);
+        doc.text(`Course Name: ${batchDetails.courseName}           Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`, 20, 60);
+        // doc.text(
+        //   `Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`,
+        //   20,
+        //   65
+        // );
+        doc.text(
+          `Start Date: ${new Date(batchDetails.startDate).toLocaleDateString()}                            End Date: ${new Date(batchDetails.endDate).toLocaleDateString()}`,
+          20,
+          70
+        );
+      }
+  
+      // Adjust startY position based on whether batch details were included
+      const startY = batchDetails ? 80 : 50;
+  
+      // Set text color to dark blue and font style to bold for the header
+      const tableColumn = [
+        "Batch Code",
+        "Roll No",
+        "Certificate Number",
+        "Name",
+        "Designation",
       ];
-      tableRows.push(candidateData);
-    });
-
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: startY,
-    });
-
-    doc.save("candidates_Report.pdf");
+      const tableRows = [];
+  
+      candidatesData.forEach((candidate) => {
+        const candidateData = [
+          candidate.batchCode,
+          candidate.rollNumber,
+          candidate.certificateNumber,
+          `${candidate.firstName} ${candidate.lastName}`,
+          candidate.designation,
+        ];
+        tableRows.push(candidateData);
+      });
+  
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: startY,
+      });
+  
+      doc.save("candidates_Report.pdf");
+    };
   };
-
+  
   return (
     <>
       <div>
@@ -170,7 +183,7 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
         </Stack>
 
         <MaterialTable
-          title="Candidates Data"
+          title="Batch Data"
           columns={[
             {
               title: "Serial No",
@@ -253,7 +266,7 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
             exportButton: true,
             sorting: true,
             rowStyle: (rowData, index) => ({
-              backgroundColor: index % 2 === 0 ? "#6495ed" : "#e6e6fa", // Light grey for odd rows, white for even
+              backgroundColor: index % 2 === 0 ? "#" : "#bfff00", // Light grey for odd rows, white for even
             }),
             headerStyle: {
               backgroundColor: "#039be5", // Darker shade for header

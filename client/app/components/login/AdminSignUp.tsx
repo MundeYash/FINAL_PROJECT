@@ -40,6 +40,7 @@ export default function Component() {
     }
   };
 
+
   return (
     <>
       <Header />
@@ -164,6 +165,8 @@ export default function Component() {
           </div>
         </div>
       </div>
+
+      
 
       <Footer />
     </>

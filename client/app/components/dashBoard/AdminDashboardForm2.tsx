@@ -159,23 +159,16 @@ export default function Admin() {
   const durationSelectRef = useRef(null);
 
   return (
-    <div className="flex flex-col min-h-screen  mb-8">
-      <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4 mt-6 tb-6">
-        <div className="flex items-center justify-between">
-          {/* <h2 className="text-2xl font-bold">Candidate Report</h2> */}
-         
-          <div className="flex space-x-2">
-            <Button onClick={applyFilters}>Apply Filters</Button>
-            <Button onClick={clearFilters}>Clear </Button>
-          </div>
-        </div>
+    <div className="flex flex-col min-h-screen  ">
+      <h2 className="text-2xl font-bold text-center">Batch Report </h2>
 
-        <div className="grid grid-cols-3 gap-4">
-          {/* Filter selection options  */}
+  
 
+
+      <section className="bg-gray-100 py-8 px-8 flex flex-col gap-6 mt-8 mb-8 rounded-lg shadow-md">
+        <div className="flex items-center justify-start space-x-8">
           
-
-          <Select
+        <Select
             ref={batchCodeSelectRef}
             onValueChange={handleBatchCodeChange}
             value={selectedBatchCode}
@@ -200,13 +193,19 @@ export default function Admin() {
               </SelectGroup>
             </SelectContent>
           </Select>
-
-         
-
-         
-
-          
+          <div className="flex space-x-2">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded-lg transition duration-300 shadow-md"
+            onClick={applyFilters}>Apply Filters</Button>
+           <Button
+              onClick={clearFilters}
+             
+            >
+              Clear
+            </Button>
+          </div>
         </div>
+
+        
 
        
         <div>
@@ -215,11 +214,12 @@ export default function Admin() {
         
        
       </section>
-
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4">
-          <DataTable2 candidatesData={candidatesData} selectedBatchCode={selectedBatchCode}
-  />
+          <DataTable2
+            candidatesData={candidatesData}
+            selectedBatchCode={selectedBatchCode}
+          />
         </div>
       </section>
     </div>
@@ -265,4 +265,3 @@ function MountainIcon(props) {
     </svg>
   );
 }
-

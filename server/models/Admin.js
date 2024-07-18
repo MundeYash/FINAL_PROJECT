@@ -15,6 +15,10 @@ const AdminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  rememberMe: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 AdminSchema.pre('save', async function (next) {

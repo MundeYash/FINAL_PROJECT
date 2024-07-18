@@ -3,12 +3,14 @@ import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import Navigator from "../Navigator/Navigator";
 
 import Link from "next/link";
 export default function Operator() {
   return (
     <>
       <Header />
+      <Navigator/>
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">

@@ -182,16 +182,16 @@ export default function Component() {
 
   return (
     <>
-      <CardHeader className="text-center">
+      <CardHeader className="justify-between mt-0 ">
         <img
           alt="Header Logo"
           className="mx-auto h-12 w-auto"
           src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
         />
-        <CardTitle className="text-2xl">Assign Certificate Numbers </CardTitle>
+        <CardTitle className="text-2xl text-center">Assign Certificate Numbers </CardTitle>
       </CardHeader>
 
-      <div className="mt-5 mb-4">
+      <div className="mt-0 mb-4">
         <div className="flex justify-center">
           <ShowBatchDetails batchCode={batchCode} />
         </div>
@@ -312,7 +312,7 @@ export default function Component() {
             </table>
           </div>
         )}
- <div className="flex justify-end m-4">
+        <div className="flex justify-end m-4">
           <Button
             onClick={generateCertificates}
             disabled={candidates.length === 0}
@@ -321,7 +321,6 @@ export default function Component() {
             Generate Certificate
           </Button>
         </div>
-        
       </div>
     </>
   );

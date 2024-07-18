@@ -214,30 +214,50 @@ const DataTable = ({ batchData, employeeData, login }) => {
   };
 
   const handleExportToPDF = async () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({
+      orientation: "landscape", // Set orientation to landscape
+    });
 
-    doc.setTextColor(0, 0, 128); // Dark blue
-
-    // Adjust font size and position for English translation
-    doc.setFontSize(13);
-    doc.text(
-      "National Institute of Electronics and Information Technology (NIELIT)",
-      20,
-      25
-    );
-
-    // Set font for additional information
-    doc.setFontSize(8);
-    doc.setFont("times", "normal");
-    doc.text(
-      "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
-      23,
-      30
-    );
-
-    // Add space between header and table
-    const headerHeight = 70; // Adjust as needed
-
+    
+      // Fetch image from URL and convert to base64
+      const imageUrl = 'https://upload.wikimedia.org/wikipedia/en/b/b4/NIELIT_Logo.jpg';
+      const imageResponse = await fetch(imageUrl);
+      const imageBlob = await imageResponse.blob();
+      const reader = new FileReader();
+    
+      reader.readAsDataURL(imageBlob); 
+      reader.onloadend = function() {
+        const base64data = reader.result;  
+        // Add image to PDF at top left corner
+        doc.addImage(base64data, 'JPEG', 10, 9, 40, 30); // Adjust position and size as needed
+    
+           // Set the position for the organization name to ensure it does not overlap with the logo
+           const orgNameXPosition = 10 + 30 + 10; // Image width + 10 units for padding
+           const orgNameYPosition = 9;  // Adjust based on the height of your logo
+    
+    
+        doc.setTextColor(0, 0, 128); // Dark blue
+    
+        // Adjust font size and position for English translation
+        doc.setFontSize(13);
+        doc.text(
+          "National Institute of Electronics and Information Technology (NIELIT)",
+          80,
+          25
+        );
+    
+        // Set font for additional information
+        doc.setFontSize(8);
+        doc.setFont("times", "normal");
+        doc.text(
+          "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
+          80,
+          30
+        );
+    
+        // Add space between header and table
+        const headerHeight = 70; // Adjust as needed
+    
     // Set text color to dark blue and font style to bold for the header
     const tableColumn = [
       "Batch Code",
@@ -297,7 +317,8 @@ const DataTable = ({ batchData, employeeData, login }) => {
       },
     });
 
-    doc.save("candidates_Report.pdf");
+    doc.save(`batch_Report_${new Date().toISOString()}.pdf`);
+  };
   };
 
   return (
@@ -325,7 +346,7 @@ const DataTable = ({ batchData, employeeData, login }) => {
         </Stack>
 
         <MaterialTable
-          title="Batch Data"
+          title="Batch Master  Data"
           columns={[
             {
               title: "Serial No",
@@ -389,9 +410,10 @@ const DataTable = ({ batchData, employeeData, login }) => {
             },
 
             { title: "Training Mode", field: "trainingMode" },
-            { title: "Venue Details", field: "venueDetails" },
             { title: "Venue of Training", field: "venueOfTraining" },
 
+            { title: "Venue Details", field: "venueDetails" },
+          
             { title: "Revenue of Batch", field: "revenueOfBatch" },
 
             {
@@ -426,7 +448,7 @@ const DataTable = ({ batchData, employeeData, login }) => {
             exportButton: true,
             sorting: true,
             rowStyle: (rowData, index) => ({
-              backgroundColor: index % 2 === 0 ? "#6495ed" : "#e6e6fa", // Light grey for odd rows, white for even
+              backgroundColor: index % 2 === 0 ? "#" : "#8cbed6", // Light grey for odd rows, white for even
             }),
             headerStyle: {
               backgroundColor: "#039be5", // Darker shade for header

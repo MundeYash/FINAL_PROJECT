@@ -47,16 +47,16 @@ export default function Component() {
             </p>
           </div>
           <div className="flex space-x-4">
-            <a className="text-gray-400 hover:text-white" href="#">
+            <a className="text-gray-400 hover:text-white" href="https://www.facebook.com/NIELITIndia/">
               <FacebookIcon className="h-6 w-6" />
             </a>
-            <a className="text-gray-400 hover:text-white" href="#">
+            <a className="text-gray-400 hover:text-white" href="https://x.com/nielitindia">
               <TwitterIcon className="h-6 w-6" />
             </a>
-            <a className="text-gray-400 hover:text-white" href="#">
+            <a className="text-gray-400 hover:text-white" href="https://in.linkedin.com/in/nielit-india-b28425167?original_referer=https%3A%2F%2Fsearch.brave.com%2F">
               <LinkedinIcon className="h-6 w-6" />
             </a>
-            <a className="text-gray-400 hover:text-white" href="#">
+            <a className="text-gray-400 hover:text-white" href="https://www.youtube.com/NIELITIndia">
               <YoutubeIcon className="h-6 w-6" />
             </a>
           </div>

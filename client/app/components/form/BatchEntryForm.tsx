@@ -127,8 +127,8 @@ export default function Component() {
       newErrors.participantsNo = "Number of participants is required.";
     else {
       const participants = parseInt(formData.participantsNo);
-      if (participants < 0 || participants > 10000) {
-        newErrors.participantsNo = "Number of participants must be between 0 and 10000.";
+      if (participants < 1 || participants > 10000) {
+        newErrors.participantsNo = "Number of participants must be between 1 and 10000.";
       }
     }
     setErrors(newErrors);

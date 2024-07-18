@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import Navigator from "../Navigator/Navigator";
 
 export default function AdminSignIn() {
   const [formData, setFormData] = useState({
@@ -38,6 +39,8 @@ export default function AdminSignIn() {
   return (
     <>
       <Header />
+
+      <Navigator/>
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -137,8 +140,6 @@ export default function AdminSignIn() {
                 </div>
               </div>
               <div>
-                
-
                 <Link
                   href="/login/admin/dashboard"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

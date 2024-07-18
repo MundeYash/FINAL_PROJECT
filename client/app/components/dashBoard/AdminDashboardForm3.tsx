@@ -206,37 +206,33 @@ export default function Admin() {
 
   return (
     <div className="flex flex-col min-h-screen mt-2 mb-8">
-      <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4 mt-6 tb-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Batchwise Certificate Report </h2>
-          <div className="flex space-x-2">
-            <Button onClick={applyFilters}>Apply Filters</Button>
-            <Button onClick={clearFilters}>Clear </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          {/* Filter selection options  */}
-
-          <div className="flex items-center gap-2">
-            <div>
-              Start Date
+      <h2 className="text-2xl font-bold text-center">BatchWise Certificate Report </h2>
+      <section className="bg-gray-100 py-8 px-8 flex flex-col gap-6 mt-8 mb-8 rounded-lg shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+              <label className="font-semibold text-gray-700 mb-1">
+                Start Date
+              </label>
               <Input
-                className="w-full"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="date"
-                value={startDate} // Bind value to state
+                value={startDate}
                 onChange={handleStartDateChange}
               />
             </div>
 
-            <span>-</span>
+            <span className="font-bold text-gray-600">-</span>
 
-            <div>
-              End Date
+            <div className="flex flex-col">
+              <label className="font-semibold text-gray-700 mb-1">
+                End Date
+              </label>
               <Input
-                className="w-full"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="date"
-                value={endDate} // Bind value to state
+                value={endDate}
                 onChange={handleEndDateChange}
               />
             </div>
@@ -247,23 +243,20 @@ export default function Admin() {
             onValueChange={handleBatchCodeChange}
             value={selectedBatchCode}
           >
-            <SelectTrigger className="w-60">
-              <SelectValue placeholder="Select Batch Code " />
+            <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <SelectValue placeholder="Select Batch Code" />
             </SelectTrigger>
-            <SelectContent className="w-60">
+            <SelectContent className="w-full">
               <SelectGroup>
                 {data &&
-                  data?.code?.sort().map((item, index) => {
-                    if (item) {
-                      return (
+                  data?.code?.sort().map(
+                    (item, index) =>
+                      item && (
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      );
-                    }
-
-                    return null;
-                  })}
+                      )
+                  )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -273,24 +266,20 @@ export default function Admin() {
             onValueChange={handleBatchDescriptionChange}
             value={selectedBatchDescription}
           >
-            <SelectTrigger className="w-72">
-              <SelectValue placeholder="Select Batch Description " />
+            <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <SelectValue placeholder="Select Batch Description" />
             </SelectTrigger>
-
-            <SelectContent className="w-72">
+            <SelectContent className="w-full">
               <SelectGroup>
                 {data &&
-                  data?.description?.sort().map((item, index) => {
-                    if (item) {
-                      return (
+                  data?.description?.sort().map(
+                    (item, index) =>
+                      item && (
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      );
-                    }
-
-                    return null;
-                  })}
+                      )
+                  )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -300,22 +289,20 @@ export default function Admin() {
             onValueChange={handleCourseNameChange}
             value={selectedCourseName}
           >
-            <SelectTrigger className="w-72">
-              <SelectValue placeholder="Select CourseName" />
+            <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <SelectValue placeholder="Select Course Name" />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup className="w-72">
+              <SelectGroup className="w-full">
                 {data &&
-                  data?.name?.sort().map((item, index) => {
-                    if (item) {
-                      return (
+                  data?.name?.sort().map(
+                    (item, index) =>
+                      item && (
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      );
-                    }
-                    return null;
-                  })}
+                      )
+                  )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -325,26 +312,38 @@ export default function Admin() {
             onValueChange={handleDurationChange}
             value={selectedDuration}
           >
-            <SelectTrigger className="w-60">
+            <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <SelectValue placeholder="Select Duration in weeks" />
             </SelectTrigger>
-
             <SelectContent>
               <SelectGroup>
                 {data &&
-                  data?.duration?.sort().map((item, index) => {
-                    if (item) {
-                      return (
+                  data?.duration?.sort().map(
+                    (item, index) =>
+                      item && (
                         <SelectItem key={index} value={item}>
                           {item.value + " " + item.format}
                         </SelectItem>
-                      );
-                    }
-                    return null;
-                  })}
+                      )
+                  )}
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          <div className="flex justify-end p-4 space-x-4">
+            <Button
+              onClick={applyFilters}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300"
+            >
+              Apply
+            </Button>
+            <Button
+              onClick={clearFilters}
+             
+            >
+              Clear
+            </Button>
+          </div>
         </div>
       </section>
 

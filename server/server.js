@@ -11,6 +11,9 @@ const { Batch } = require("./Schema");
 const { Employee } = require("./Schema");
 const { Certificate } = require("./Schema");
 
+// Assuming Schema.js contains User schema
+const Admin = require('./models/Admin');
+
 const {
   remove,
   update,
@@ -269,6 +272,41 @@ app.get("/employees/:batchCode", async (req, res) => {
     res.status(500).send("Failed to fetch candidates.");
   }
 });
+
+
+// **************************************
+// New signUp route
+// Sign-up route
+app.post('/api/auth/signup', async (req, res) => {
+  const { email, password, center, rememberMe } = req.body;
+  try {
+    // Check if user already exists
+    const existingUser = await Admin.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Create new user
+    const newUser = new Admin({
+      email,
+      password: hashedPassword,
+      center,
+      rememberMe
+    });
+    
+    await newUser.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to register user' });
+  }
+});
+
+
+
 // Start the server
 const port = process.env.PORT || 4000; // Choose any port you prefer
 app.listen(port, () => {

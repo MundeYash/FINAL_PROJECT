@@ -40,6 +40,28 @@ export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [batchDetails, setBatchDetails] = useState<any | null>(null);
 
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [candidateToDelete, setCandidateToDelete] = useState<string | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(candidates.length / itemsPerPage);
+
+  // Calculate the slice of candidates to display
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = candidates.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page handler
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+
+  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -203,23 +225,59 @@ export default function Component() {
     batchCode && fetchEmployeeData(batchCode);
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await axios.delete(`http://localhost:4000/candidate/delete/${id}`);
-      fetchEmployeeData(batchCode);
+ 
+  const handleDelete = (id: string) => {
+    setCandidateToDelete(id);
+    setShowConfirmModal(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!candidateToDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:4000/candidate/delete/${candidateToDelete}`);
+      fetchEmployeeData(batchCode);
       setAlert({ type: "success", message: "Candidate deleted successfully." });
       setTimeout(() => setAlert({ type: "", message: "" }), 5000); // Hide alert after 5 seconds
       handleScroll();
     } catch (err) {
       console.error("Error deleting record", err);
+    } finally {
+      // Hide confirmation modal and reset candidateToDelete state
+      setShowConfirmModal(false);
+      setCandidateToDelete(null);
     }
   };
+
 
   if (loading) return <h1>Loading...</h1>;
 
   return (
     <>
+ {showConfirmModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+      <p className="text-lg mb-4">Are you sure you want to delete this candidate?</p>
+      <div className="flex justify-end space-x-4">
+        <button
+          onClick={confirmDelete}
+          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-200"
+        >
+          Confirm
+        </button>
+        <button
+          onClick={() => setShowConfirmModal(false)}
+          className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-200"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+    
       {editForm && (
         <div className="w-[700px] h-auto bg-gray-400 relative">
           <IoCloseCircle
@@ -459,6 +517,18 @@ export default function Component() {
               ))}
             </tbody>
           </table>
+
+          <div className="flex justify-center space-x-2 mt-4">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => paginate(i + 1)}
+            className={`px-4 py-2 border ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-white'}`}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
         </div>
       )}
     </>
