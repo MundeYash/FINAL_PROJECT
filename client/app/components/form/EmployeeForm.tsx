@@ -45,7 +45,7 @@ export default function Component() {
   const [candidateToDelete, setCandidateToDelete] = useState<string | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   // Calculate the total number of pages
   const totalPages = Math.ceil(candidates.length / itemsPerPage);

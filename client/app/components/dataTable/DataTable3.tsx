@@ -274,10 +274,23 @@ const DataTable = ({ batchData, employeeData, login }) => {
       tableRows.push(candidateData);
     });
 
+     // Set draw color to blue for borders
+  doc.setDrawColor(0, 0, 0); // Blue color
+
+  // Example: Draw a border around the header
+  // Adjust x, y, width, and height as needed
+  doc.rect(10, 10, 277, 28, 'S'); // Draws a rectangle (border only)
+
     doc.autoTable({
       head: [tableColumn],
       body: tableRows,
       startY: 40,
+      didDrawPage: (data) => {
+        // Draw a border around the table or the entire page
+        // For the entire page, you might use the full width and height
+        // For example, for an A4 page:
+        doc.rect(10, 10, doc.internal.pageSize.getWidth() - 20, doc.internal.pageSize.getHeight() - 20, 'S');
+      },
       styles: { fontSize: 8, cellPadding: 1 },
       columnStyles: {
         batchCode: { cellWidth: 5 },

@@ -87,7 +87,7 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
       doc.text(
         "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
         32,
-        30
+        28
       );
   
       // Fetch batch details for selectedBatchCode
@@ -107,18 +107,18 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
       if (batchDetails) {
         doc.setTextColor(0, 0, 0); // Black
         doc.setFillColor(128, 128, 128); // Grey background
-        doc.setFontSize(15);
+        doc.setFontSize(10);
         
-        doc.text(`Batch Code: ${batchDetails.batchCode}                                Batch Description: ${batchDetails.batchDescription}`, 20, 50);
+        doc.text(`Batch Code: ${batchDetails.batchCode}       Batch Description: ${batchDetails.batchDescription}`, 20, 50);
         // doc.text(`Batch Description: ${batchDetails.batchDescription}`, 20, 55);
-        doc.text(`Course Name: ${batchDetails.courseName}           Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`, 20, 60);
+        doc.text(`Course Name: ${batchDetails.courseName}           `, 20, 60);
         // doc.text(
         //   `Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`,
         //   20,
         //   65
         // );
         doc.text(
-          `Start Date: ${new Date(batchDetails.startDate).toLocaleDateString()}                            End Date: ${new Date(batchDetails.endDate).toLocaleDateString()}`,
+          `Start Date: ${new Date(batchDetails.startDate).toLocaleDateString()}                            End Date: ${new Date(batchDetails.endDate).toLocaleDateString()}   Duration : ${batchDetails.courseDuration.value} ${batchDetails.courseDuration.format}`,
           20,
           70
         );
@@ -147,11 +147,26 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
         ];
         tableRows.push(candidateData);
       });
+
+
+       // Set draw color to blue for borders
+  doc.setDrawColor(0, 0, 128); // Blue color
+
+  // Example: Draw a border around the header
+  // Adjust x, y, width, and height as needed
+  doc.rect(10, 10, 190, 20, 'S'); // Draws a rectangle (border only)
+
   
       doc.autoTable({
         head: [tableColumn],
         body: tableRows,
         startY: startY,
+        didDrawPage: (data) => {
+          // Draw a border around the table or the entire page
+          // For the entire page, you might use the full width and height
+          // For example, for an A4 page:
+          doc.rect(10, 10, doc.internal.pageSize.getWidth() - 20, doc.internal.pageSize.getHeight() - 20, 'S');
+        },
       });
   
       doc.save("candidates_Report.pdf");
