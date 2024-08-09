@@ -258,7 +258,7 @@ export default function Component() {
               </div>
 
               <div className="space-y-2 w-3/4 ">
-                <Label htmlFor="departmentAddress">Address of Department</Label>
+                <Label htmlFor="departmentAddress">Address of Department <span className="text-red-500">*</span></Label>
                 <Input
                   id="departmentAddress"
                   type="text"

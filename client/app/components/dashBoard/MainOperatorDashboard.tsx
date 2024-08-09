@@ -48,6 +48,19 @@ import CertificateGenerator from "../certificate/CertificateGenerator";
 export default function Component() {
   const [activeTab, setActiveTab] = useState("batch");
   const [candidates, setCandidates] = useState();
+  const [isCreateUpdateVisible, setCreateUpdateVisible] = useState(true);
+  const [isViewVisible, setViewVisible] = useState(false);
+
+  const toggleCreateUpdate = () => {
+    setCreateUpdateVisible(!isCreateUpdateVisible);
+    setViewVisible(false);
+  };
+
+  const toggleView = () => {
+    setViewVisible(!isViewVisible);
+    setCreateUpdateVisible(false);
+  };
+
   return (
     <>
       <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
@@ -97,6 +110,7 @@ export default function Component() {
 
       <div className="flex min-h-screen w-full">
         <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
+          
           <div className="flex h-16 items-center justify-between px-6">
             <Link
               href="#"
@@ -109,99 +123,121 @@ export default function Component() {
           </div>
 
           <nav className="flex flex-col gap-1 px-4 py-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "batch" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("batch")}
-            >
-              <LayoutGridIcon className="h-4 w-4" />
-              Batch Entry
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "batchUpdate" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("batchUpdate")}
-            >
-              <UserPlusIcon className="h-4 w-4" />
-              BatchUpdate
-            </Button>
+            <div className="mb-4">
+              <h2
+               className="font-extrabold text-xl cursor-pointer text-blue-600 hover:text-white hover:bg-violet-600 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out px-4 py-2 rounded-md"
+               onClick={toggleCreateUpdate}
+              >
+                Create & Update
+              </h2>
+              {isCreateUpdateVisible && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "batch" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("batch")}
+                  >
+                    <LayoutGridIcon className="h-4 w-4" />
+                    Batch Entry
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "candidate" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("candidate")}
+                  >
+                    <UserPlusIcon className="h-4 w-4" />
+                    Candidate Entry
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "batchUpdate" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("batchUpdate")}
+                  >
+                    <UserPlusIcon className="h-4 w-4" />
+                    BatchUpdate
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "generateCertificate"
+                        ? "font-bold bg-gray-200"
+                        : ""
+                    }`}
+                    onClick={() => setActiveTab("generateCertificate")}
+                  >
+                    <BarChartIcon className="h-4 w-4" />
+                    Generate Certificate No
+                  </Button>
+                </>
+              )}
+            </div>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "candidate" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("candidate")}
-            >
-              <UserPlusIcon className="h-4 w-4" />
-              Candidate Entry
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "generateCertificate"
-                  ? "font-bold bg-gray-200"
-                  : ""
-              }`}
-              onClick={() => setActiveTab("generateCertificate")}
-            >
-              <BarChartIcon className="h-4 w-4" />
-              Generate Certificate No
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "dashboard" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("dashboard")}
-            >
-              <BarChartIcon className="h-4 w-4" />
-              Candidate Report
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "dashboard2" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("dashboard2")}
-            >
-              <BarChartIcon className="h-4 w-4" />
-              Batch Report
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "dashboard3" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("dashboard3")}
-            >
-              <BarChartIcon className="h-4 w-4" />
-              Batch-Wise Certificate Rep
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`justify-start gap-2 text-left ${
-                activeTab === "dashboard4" ? "font-bold bg-gray-200" : ""
-              }`}
-              onClick={() => setActiveTab("dashboard4")}
-            >
-              <BarChartIcon className="h-4 w-4" />
-              Batch MasterData Report
-            </Button>
+            <div className="mb-4">
+            <h2
+               className="font-extrabold text-xl cursor-pointer text-blue-600 hover:text-white hover:bg-violet-600 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out px-4 py-2 rounded-md"
+               onClick={toggleView}
+              >
+                View
+              </h2>
+              {isViewVisible && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "dashboard" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("dashboard")}
+                  >
+                    <BarChartIcon className="h-4 w-4" />
+                    Candidate Report
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "dashboard2" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("dashboard2")}
+                  >
+                    <BarChartIcon className="h-4 w-4" />
+                    Batch Report
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "dashboard3" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("dashboard3")}
+                  >
+                    <BarChartIcon className="h-4 w-4" />
+                    Batch-Wise Certificate Rep
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`justify-start gap-2 text-left ${
+                      activeTab === "dashboard4" ? "font-bold bg-gray-200" : ""
+                    }`}
+                    onClick={() => setActiveTab("dashboard4")}
+                  >
+                    <BarChartIcon className="h-4 w-4" />
+                    Batch MasterData Report
+                  </Button>
+                </>
+              )}
+            </div>
           </nav>
         </div>
 

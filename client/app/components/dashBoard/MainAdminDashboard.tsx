@@ -189,6 +189,7 @@ export default function Component() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
+                    
                     <LogOutIcon className="h-5 w-5 mr-2  text-black  bg-[#ebebf9]" />
                     <span className="sr-only">Toggle user menu</span>
                   </Button>

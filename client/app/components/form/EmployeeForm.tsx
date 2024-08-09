@@ -380,7 +380,10 @@ export default function Component() {
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="designation">Designation</Label>
+                <Label htmlFor="designation">Designation
+                <span className="text-red-500">*</span>
+                
+                </Label>
                 <Input
                   id="designation"
                   placeholder="Designation"
@@ -486,9 +489,7 @@ export default function Component() {
                   <td className="py-2 px-4 border">{candidate.firstName}</td>
                   <td className="py-2 px-4 border">{candidate.lastName}</td>
                   <td className="py-2 px-4 border">{candidate.rollNumber}</td>
-                  {/* <td className="py-2 px-4 border">
-                    {candidate.certificateNumber}
-                  </td> */}
+                 
                   <td className="py-2 px-4 border">{candidate.designation}</td>
                   <td className="py-2 px-4 border">{candidate.employeeId}</td>
                   <td className="py-2 px-4 border">{candidate.phoneNumber}</td>
