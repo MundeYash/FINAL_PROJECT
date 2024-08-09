@@ -92,9 +92,8 @@ export default function CandidateUpdate({ children }) {
   return (
     <>
       <Card
-        className="w-full max-w-lg mx-auto py-8 px-6 absolute z-10 right-0 mt-6 ml-auto bg-gray-100 shadow-lg "
-        //     className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 absolute top-0 right-0"
-        // style={{ zIndex: 35 }}
+        className="w-full max-w-lg mx-auto py-8 px-6 absolute z-10 right-0 mt-2 ml-auto bg-gray-100 shadow-lg "
+      
       >
         <CardHeader className="text-center">
           <img
@@ -220,9 +219,11 @@ export default function CandidateUpdate({ children }) {
             </div>
           </div>
         </CardContent>
+
+
         <CardFooter className="flex justify-end  ">
           <div className="flex space-x-2">
-            <Button onClick={() => window.location.reload()}>Cancel </Button>
+           
 
             <Button
               onClick={() => {

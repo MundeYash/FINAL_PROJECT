@@ -55,7 +55,7 @@ const DataTable = ({ candidatesData, login, selectedBatchCode }) => {
     const doc = new jsPDF();
   
     // URL of the logo
-    const imageUrl = 'https://akm-img-a-in.tosshub.com/aajtak/images/story/201506/logo_650_062915055832.jpg?size=1200:675';
+    const imageUrl = 'https://upload.wikimedia.org/wikipedia/en/b/b4/NIELIT_Logo.jpg';
   
     // Fetch image from URL and convert to base64
     const imageResponse = await fetch(imageUrl);

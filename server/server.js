@@ -6,13 +6,14 @@ const mongoose = require("mongoose");
 
 const connectDB = require("./config/db");
 const bcrypt = require("bcryptjs");
-// const mongoose = require('mongoose');
+const jwt = require("jsonwebtoken");
 const { Batch } = require("./Schema");
 const { Employee } = require("./Schema");
 const { Certificate } = require("./Schema");
 
 // Assuming Schema.js contains User schema
-const Admin = require('./models/Admin');
+const Admin = require("./models/Admin");
+const Operator = require("./models/OperatorSchema");
 
 const {
   remove,
@@ -22,6 +23,7 @@ const {
 } = require("./candidateServices/candidate");
 
 const authRoutes = require("./routes/auth");
+const authenticateToken = require("./middleware/authMiddleware");
 const app = express();
 dotenv.config();
 
@@ -272,40 +274,123 @@ app.get("/employees/:batchCode", async (req, res) => {
     res.status(500).send("Failed to fetch candidates.");
   }
 });
+/***********************************Batch Updation  */
 
-
-// **************************************
-// New signUp route
-// Sign-up route
-app.post('/api/auth/signup', async (req, res) => {
-  const { email, password, center, rememberMe } = req.body;
+// Route to fetch batch details by batch code
+app.get("/batch/details/:batchCode", async (req, res) => {
+  const batchCode = req.params.batchCode;
   try {
-    // Check if user already exists
-    const existingUser = await Admin.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+    const batchDetails = await Batch.findOne({ batchCode: batchCode });
+    if (batchDetails) {
+      res.status(200).json(batchDetails);
+    } else {
+      res.status(404).json({ message: "Batch not found" });
     }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    // Create new user
-    const newUser = new Admin({
-      email,
-      password: hashedPassword,
-      center,
-      rememberMe
-    });
-    
-    await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to register user' });
+    res.status(500).json({ message: "Error fetching batch details" });
   }
 });
 
+// Route to update batch details by batchcode
+app.put("/batch/update/:batchCode", async (req, res) => {
+  const batchCode = req.params.batchCode;
+  const updatedData = req.body;
+  try {
+    const updatedBatch = await Batch.findOneAndUpdate(
+      { batchCode: batchCode },
+      updatedData,
+      { new: true }
+    );
+    if (updatedBatch) {
+      res.status(200).json(updatedBatch);
+    } else {
+      res.status(404).json({ message: "Batch not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error updating batch details" });
+  }
+});
 
+// **************************************
+// Sign-up route for admin
+app.post("/api/auth/register", async (req, res) => {
+  const { center, email, password, rememberMe } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = new Admin({
+      center,
+      email,
+      password: hashedPassword,
+      rememberMe,
+    });
+    await newAdmin.save();
+    res.status(201).json({ message: "Admin registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to register admin" });
+  }
+});
+
+// Sign-in route for admin
+app.post("/api/auth/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ message: "Login successful", token });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to login" });
+  }
+});
+
+// **************************for operator section
+
+// Sign-up route for operator
+app.post("/api/auth/Register", async (req, res) => {
+  const { center, email, password, rememberMe } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newOperator = new Operator({
+      center,
+      email,
+      password: hashedPassword,
+      rememberMe,
+    });
+    await newOperator.save();
+    res.status(201).json({ message: "Operator registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to register admin" });
+  }
+});
+
+// Sign-in route for operator
+app.post("/api/auth/Login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const operator = await Operator.findOne({ email });
+    if (!operator) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const isMatch = await bcrypt.compare(password, operator.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ message: "Login successful", token });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to login" });
+  }
+});
 
 // Start the server
 const port = process.env.PORT || 4000; // Choose any port you prefer

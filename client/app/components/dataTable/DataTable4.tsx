@@ -27,49 +27,52 @@ const DataTable = ({ batchData, employeeData, login }) => {
   console.log("tableBatchData", batchData);
   console.log("new EmployeeData", employeeData);
 
+  
   // Prepare data for the charts
-  const chartData = batchData.reduce(
-    (acc, batch) => {
-      const totalCandidates = employeeData.filter(
-        (emp) => emp.batchCode === batch.batchCode
-      ).length;
-      acc.labels.push(batch.batchCode);
-      acc.data.push(totalCandidates);
-      return acc;
+const chartData = batchData.reduce(
+  (acc, batch) => {
+    const totalCandidates = employeeData.filter(
+      (emp) => emp.batchCode === batch.batchCode
+    ).length;
+    acc.labels.push(batch.batchCode);
+    acc.data.push(totalCandidates);
+    // Generate a consistent color for each batch code
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+    acc.backgroundColor.push(`rgb(${r}, ${g}, ${b})`);
+    return acc;
+  },
+  { labels: [], data: [], backgroundColor: [] } // Include backgroundColor in the accumulator
+);
+
+const barChartData = {
+  labels: chartData.labels,
+  datasets: [
+    {
+      label: "Total Candidates",
+      data: chartData.data,
+      backgroundColor: chartData.backgroundColor, // Use the pre-generated colors
+      borderColor: chartData.backgroundColor.map(color => {
+        // Optionally, you can darken the border color or use a different logic
+        return color.replace('rgb', 'rgba').replace(')', ', 1)');
+      }),
+      borderWidth: 1,
     },
-    { labels: [], data: [] }
-  );
+  ],
+};
 
-  const barChartData = {
-    labels: chartData.labels,
-    datasets: [
-      {
-        label: "Total Candidates",
-        data: chartData.data,
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const pieChartData = {
-    labels: chartData.labels,
-    datasets: [
-      {
-        label: "Total Candidates",
-        data: chartData.data,
-        backgroundColor: chartData.labels.map((_, index) => {
-          // Generate a random color for each batch code
-          const r = Math.floor(Math.random() * 255);
-          const g = Math.floor(Math.random() * 255);
-          const b = Math.floor(Math.random() * 255);
-          return `rgb(${r}, ${g}, ${b})`;
-        }),
-        hoverOffset: 4,
-      },
-    ],
-  };
+const pieChartData = {
+  labels: chartData.labels,
+  datasets: [
+    {
+      label: "Total Candidates",
+      data: chartData.data,
+      backgroundColor: chartData.backgroundColor, // Use the same colors as in the bar chart
+      hoverOffset: 4,
+    },
+  ],
+};
 
   // Function to find smallest and largest certificate numbers for a given batchCode
   function countEmployeesWithBatchCode(

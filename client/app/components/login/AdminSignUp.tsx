@@ -13,34 +13,24 @@ export default function Component() {
   const [center, setCenter] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/signup",
-        {
-          center,
-          email,
-          password,
-        }
-      );
-
-      if (response.status === 201) {
-        setMessage("Registration successful");
-      }
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage("Server error, please try again later");
-      }
+      const response = await axios.post("http://localhost:4000/api/auth/register", {
+        center,
+        email,
+        password,
+      });
+      setMessage(response.data.message);
+      setError("");
+    } catch (err) {
+      setError(err.response.data.message);
+      setMessage("");
     }
   };
-
-
   return (
     <>
       <Header />
@@ -59,6 +49,7 @@ export default function Component() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="center">Choose Centre:</label>
@@ -118,31 +109,10 @@ export default function Component() {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Checkbox
-                    id="remember-me"
-                    name="remember-me"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  <label
-                    className="ml-2 block text-sm text-gray-900"
-                    htmlFor="remember-me"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <a
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                    href="#"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-              </div>
+             
               <div>
+                
+                
                 <Button
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   type="submit"
@@ -150,23 +120,23 @@ export default function Component() {
                   Sign Up
                 </Button>
               </div>
-              <p>
+              <p className=" text-center">
+                
                 <Link
                   href="/login/admin"
-                  className="font-medium text-[#080808c5] flex justify-center"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Login
+                  Already have an account? Login
                 </Link>
               </p>
             </form>
             {message && (
-              <div className="mt-4 text-center text-red-500">{message}</div>
+              <div className="mt-4 text-center text-green-600">{message}</div>
             )}
+             {error && <p className="mt-2 text-center text-red-600">{error}</p>}
           </div>
         </div>
       </div>
-
-      
 
       <Footer />
     </>

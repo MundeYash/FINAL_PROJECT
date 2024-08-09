@@ -1,11 +1,36 @@
+"use client";
+
+import { useState } from "react";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import Link from "next/link";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import Link from "next/link";
+import axios from "axios"; // Import axios for HTTP requests
 
-export default function OperatorSignUp() {
+export default function Component() {
+  const [center, setCenter] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:4000/api/auth/Register", {
+        center,
+        email,
+        password,
+      });
+      setMessage(response.data.message);
+      setError("");
+    } catch (err) {
+      setError(err.response.data.message);
+      setMessage("");
+    }
+  };
   return (
     <>
       <Header />
@@ -17,32 +42,32 @@ export default function OperatorSignUp() {
             className="mx-auto h-12 w-auto"
             src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
           />
-
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {" "}
             Register Operator
           </h2>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form action="#" className="space-y-6" method="POST">
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="option">Choose Centre :- </label>
-
+                <label htmlFor="center">Choose Centre:</label>
                 <select
-                  name="option"
-                  id="option"
+                  name="center"
+                  id="center"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  value={center}
+                  onChange={(e) => setCenter(e.target.value)}
+                  required
                 >
-                  <option value="select">Select</option>
-                  <option value="nielit_karkardooma" className="">
-                    NIELIT Karkardooma
-                  </option>
-                  <option value="nielit_inderlok">NIELIT Inderlok </option>
+                  <option value="">Select</option>
+                  <option value="nielit_karkardooma">NIELIT Karkardooma</option>
+                  <option value="nielit_inderlok">NIELIT Inderlok</option>
                   <option value="nielit_janakpuri">NIELIT Janakpuri</option>
                 </select>
-
+              </div>
+              <div>
                 <label
                   className="block text-sm font-medium text-gray-700"
                   htmlFor="email"
@@ -58,6 +83,8 @@ export default function OperatorSignUp() {
                     placeholder="Enter User Name"
                     required
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -77,29 +104,15 @@ export default function OperatorSignUp() {
                     placeholder="Password"
                     required
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Checkbox id="remember-me" name="remember-me" />
-                  <label
-                    className="ml-2 block text-sm text-gray-900"
-                    htmlFor="remember-me"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <a
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                    href="#"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-              </div>
+             
               <div>
+                
+                
                 <Button
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   type="submit"
@@ -107,16 +120,20 @@ export default function OperatorSignUp() {
                   Sign Up
                 </Button>
               </div>
-
-              <p>
+              <p className=" text-center">
+                
                 <Link
                   href="/login/operator"
-                  className="font-medium  text-[#080808c5]   flex justify-center "
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Login
+                  Already have an account? Login
                 </Link>
               </p>
             </form>
+            {message && (
+              <div className="mt-4 text-center text-green-600">{message}</div>
+            )}
+             {error && <p className="mt-2 text-center text-red-600">{error}</p>}
           </div>
         </div>
       </div>

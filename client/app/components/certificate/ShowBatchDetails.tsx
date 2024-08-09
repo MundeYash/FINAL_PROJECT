@@ -47,48 +47,38 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
   return (
 
     <>
-    <div className="mb-5">
-      {batchCode && batchDetails && (
-        <div className="container my-8 mx-auto p-4 bg-white rounded shadow mb-5">
-          <h2 className="text-2xl font-bold text-center mb-6">Batch Details</h2>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border">Batch Code</th>
-                <th className="px-4 py-2 border">Batch Description</th>
-                <th className="px-4 py-2 border">Course Name</th>
-                <th className="px-4 py-2 border">Start Date</th>
-                <th className="px-4 py-2 border">End Date</th>
-              
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border px-4 py-2">{batchDetails.batchCode}</td>
-                <td className="border px-4 py-2">
-                  {batchDetails.batchDescription}
-                </td>
-                <td className="border px-4 py-2">{batchDetails.courseName}</td>
-                <td className="border px-4 py-2">
-                  {new Date(batchDetails.startDate).toLocaleDateString()}
-                </td>
-                <td className="border px-4 py-2">
-                  {new Date(batchDetails.endDate).toLocaleDateString()}
-                </td>
-               
-              </tr>
-            </tbody>
-          </table>
+   
 
-
-
-          
-        </div>
-      )}
+    <div className="mb-2">
+  {batchCode && batchDetails && (
+    <div className="container mx-auto my-2 p-2 bg-white rounded-lg shadow-lg">
+      <h2 className="mb-2 text-center text-2xl font-bold text-gray-800">Batch Details</h2>
+      <table className="w-full bg-gray-100">
+        <thead className="bg-blue-500 text-white">
+          <tr>
+            <th className="px-4 py-2 border border-gray-200 font-semibold text-left">Batch Code</th>
+            <th className="px-4 py-2 border border-gray-200 text-left">Batch Description</th>
+            <th className="px-4 py-2 border border-gray-200 text-left">Course Name</th>
+            <th className="px-4 py-2 border border-gray-200 text-left">Start Date</th>
+            <th className="px-4 py-2 border border-gray-200 text-left">End Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="hover:bg-gray-100">
+            <td className="px-4 py-2 border border-gray-200 text-lg font-bold">{batchDetails.batchCode}</td>
+            <td className="px-4 py-2 border border-gray-200 text-lg font-bold">{batchDetails.batchDescription}</td>
+            <td className="px-4 py-2 border border-gray-200 text-lg font-bold">{batchDetails.courseName}</td>
+            <td className="px-4 py-2 border border-gray-200 text-lg font-bold">{new Date(batchDetails.startDate).toLocaleDateString('en-GB')}</td>
+            <td className="px-4 py-2 border border-gray-200 text-lg font-bold">{new Date(batchDetails.endDate).toLocaleDateString('en-GB')}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  )}
+</div>
 
 
-      
+
 
       </>
 

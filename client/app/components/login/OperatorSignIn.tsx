@@ -1,15 +1,44 @@
+"use client";
+
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
+import Link from "next/link";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import Navigator from "../Navigator/Navigator";
+import axios from "axios";
 
-import Link from "next/link";
-export default function Operator() {
+
+export default function OperatorSignIn() {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+ 
+
+  
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:4000/api/auth/Login', formData);
+      console.log(response.data);
+      // Handle successful login (e.g., store token, redirect)
+   
+      window.location.href = "/login/operator/dashboard"; 
+
+ 
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
+  };
   return (
     <>
       <Header />
+
       <Navigator/>
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -19,42 +48,39 @@ export default function Operator() {
             className="mx-auto h-12 w-auto"
             src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
           />
-
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {" "}
-            Operator Sign In
+            Operator Log In
           </h2>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form action="#" className="space-y-6" method="POST">
+           
+            <form
+             onSubmit={handleSubmit}
+             className="space-y-6 ">
               <div>
-                <label
-                  htmlFor="option"
-                  className=" flex justify-center text-sm font-medium text-black "
-                >
-                  Choose Centre{" "}
-                </label>
-
+                <label htmlFor="center">Choose Centre :- </label>
                 <select
-                  name="option"
-                  id="option"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500  hover:bg-[#6262db] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  name="center"
+                  id="center"
+                  value={formData.center}
+                  onChange={handleChange}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  <option value="select">Select</option>
+                  <option value="">Select</option>
                   <option value="nielit_karkardooma">NIELIT Karkardooma</option>
-                  <option value="nielit_inderlok">NIELIT Inderlok </option>
+                  <option value="nielit_inderlok">NIELIT Inderlok</option>
                   <option value="nielit_janakpuri">NIELIT Janakpuri</option>
                 </select>
-
+              </div>
+              <div>
                 <label
                   className="block text-sm font-medium text-gray-700"
                   htmlFor="email"
                 >
                   User Name
                 </label>
-
                 <div className="mt-1">
                   <Input
                     autoComplete="email"
@@ -64,6 +90,8 @@ export default function Operator() {
                     placeholder="Enter User Name"
                     required
                     type="email"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -83,51 +111,31 @@ export default function Operator() {
                     placeholder="Password"
                     required
                     type="password"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Checkbox id="remember-me" name="remember-me" />
-                  <label
-                    className="ml-2 block text-sm text-gray-900"
-                    htmlFor="remember-me"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <a
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                    href="#"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                
+              
               </div>
               <div>
-                {/* <Button
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-[#51d193] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  type="submit"
-                >
-                  Sign in
-                </Button> */}
+               
 
-                <Link
-                  href="/login/operator/dashboard"
+                <Button
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Sign in
-                </Link>
+                  type="submit">Sign In</Button>
+              
               </div>
 
               <p>
                 <Link
                   href="/login/operator/signup"
-                  className="font-medium  text-[#080808c5]   flex justify-center "
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+               
                 >
-                  {" "}
-                  New Operator ? Register{" "}
+                  New Operator? Register
                 </Link>
               </p>
             </form>

@@ -295,7 +295,7 @@ export default function Component() {
         <ShowBatchDetails batchCode={batchCode} />
       </div>
 
-      <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-6 mb-6 bg-blue-100 shadow-lg">
+      <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-0 mb-2 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
           <img
             alt="Header Logo"
@@ -310,7 +310,7 @@ export default function Component() {
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
-                  Select Batch Code
+                  Select Batch Code 
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -375,16 +375,7 @@ export default function Component() {
                 )}
               </div>
 
-              {/* <div>
-                <Label htmlFor="certificateNumber">Certificate Number</Label>
-                <Input
-                  id="certificateNumber"
-                  placeholder="Certificate Number"
-                  value={formData.certificateNumber || ""}
-                  onChange={handleChange}
-                  className="mt-1 block w-full"
-                />
-              </div> */}
+             
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -518,7 +509,7 @@ export default function Component() {
             </tbody>
           </table>
 
-          <div className="flex justify-center space-x-2 mt-4">
+          <div className="flex justify-center space-x-2 mt-2">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i + 1}

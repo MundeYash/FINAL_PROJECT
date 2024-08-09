@@ -41,7 +41,7 @@ import OperatorDashboard3 from "./OperatorDashboard3";
 import OperatorDashboard4 from "./OperatorDashboard4";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
-
+import BatchUpdate from "../form/BatchUpdate";
 
 import CertificateGenerator from "../certificate/CertificateGenerator";
 
@@ -119,6 +119,17 @@ export default function Component() {
             >
               <LayoutGridIcon className="h-4 w-4" />
               Batch Entry
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`justify-start gap-2 text-left ${
+                activeTab === "batchUpdate" ? "font-bold bg-gray-200" : ""
+              }`}
+              onClick={() => setActiveTab("batchUpdate")}
+            >
+              <UserPlusIcon className="h-4 w-4" />
+              BatchUpdate
             </Button>
 
             <Button
@@ -227,6 +238,7 @@ export default function Component() {
           <main className="flex-1 px-4 py-6 md:px-6">
             {activeTab === "batch" && <BatchEntryForm />}
             {activeTab === "candidate" && <EmployeeForm />}
+            {activeTab === "batchUpdate" && <BatchUpdate />}
             {activeTab === "dashboard" && (
               <OperatorDashboard login="operator" />
             )}

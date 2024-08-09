@@ -8,41 +8,37 @@ import Link from "next/link";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import Navigator from "../Navigator/Navigator";
+import axios from "axios";
 
 export default function AdminSignIn() {
-  const [formData, setFormData] = useState({
-    center: "",
-    email: "",
-    password: "",
-  });
-  const handleInputChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/login",
+        formData
+      );
+      console.log(response.data);
+      // Handle successful login (e.g., store token, redirect)
 
-    const data = await response.json();
-    if (data.message === "saved") {
-      // Redirect to login page or show a success message
-    } else {
-      // Handle error
-      console.error(data.message);
+      window.location.href = "/login/admin/dashboard";
+    } catch (error) {
+      console.error("Error logging in:", error);
     }
   };
-
   return (
     <>
       <Header />
 
-      <Navigator/>
+      <Navigator />
 
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center  sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
             alt="Header Logo"
@@ -54,16 +50,16 @@ export default function AdminSignIn() {
           </h2>
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 ">
               <div>
-                <label htmlFor="option">Choose Centre :- </label>
+                <label htmlFor="center">Choose Centre :- </label>
                 <select
-                  name="option"
-                  id="option"
-                  value={formData.option}
-                  onChange={handleInputChange}
+                  name="center"
+                  id="center"
+                  value={formData.center}
+                  onChange={handleChange}
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   <option value="">Select</option>
@@ -89,7 +85,7 @@ export default function AdminSignIn() {
                     required
                     type="email"
                     value={formData.email}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -110,48 +106,24 @@ export default function AdminSignIn() {
                     required
                     type="password"
                     value={formData.password}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Checkbox
-                    id="remember-me"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleInputChange}
-                  />
-
-                  <label
-                    className="ml-2 block text-sm text-gray-900"
-                    htmlFor="remember-me"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <a
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                    href="#"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-              </div>
+              <div className="flex items-center justify-between"></div>
               <div>
-                <Link
-                  href="/login/admin/dashboard"
+                <Button
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  type="submit"
                 >
-                  Sign in
-                </Link>
+                  Sign In
+                </Button>
               </div>
 
               <p>
                 <Link
                   href="/login/admin/signup"
-                  className="font-medium text-[#080808c5] flex justify-center"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   New Admin? Register
                 </Link>
