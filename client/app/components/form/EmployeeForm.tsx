@@ -40,27 +40,33 @@ export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [batchDetails, setBatchDetails] = useState<any | null>(null);
 
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [candidateToDelete, setCandidateToDelete] = useState<string | null>(null);
+  const [candidateToDelete, setCandidateToDelete] = useState<string | null>(
+    null
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
+  // Filter candidates based on batchCode
+  const filteredCandidates = candidates.filter(
+    (candidate) => candidate.batchCode === batchCode
+  );
   // Calculate the total number of pages
-  const totalPages = Math.ceil(candidates.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
 
   // Calculate the slice of candidates to display
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = candidates.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredCandidates.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   // Change page handler
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-
-
-  
+  const [showCandidateUpdate, setShowCandidateUpdate] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -223,9 +229,9 @@ export default function Component() {
     setIsModalOpen(true);
     await fetchCandidateDetails(id);
     batchCode && fetchEmployeeData(batchCode);
+    setShowCandidateUpdate(true);
   };
 
- 
   const handleDelete = (id: string) => {
     setCandidateToDelete(id);
     setShowConfirmModal(true);
@@ -235,7 +241,9 @@ export default function Component() {
     if (!candidateToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:4000/candidate/delete/${candidateToDelete}`);
+      await axios.delete(
+        `http://localhost:4000/candidate/delete/${candidateToDelete}`
+      );
       fetchEmployeeData(batchCode);
       setAlert({ type: "success", message: "Candidate deleted successfully." });
       setTimeout(() => setAlert({ type: "", message: "" }), 5000); // Hide alert after 5 seconds
@@ -249,37 +257,42 @@ export default function Component() {
     }
   };
 
-
-  if (loading) return <h1>Loading...</h1>;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
- {showConfirmModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-      <p className="text-lg mb-4">Are you sure you want to delete this candidate?</p>
-      <div className="flex justify-end space-x-4">
-        <button
-          onClick={confirmDelete}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-200"
-        >
-          Confirm
-        </button>
-        <button
-          onClick={() => setShowConfirmModal(false)}
-          className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-200"
-        >
-          Cancel
-        </button>
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+            <p className="text-lg mb-4">
+              Are you sure you want to delete this candidate?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={confirmDelete}
+                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-200"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      
+
+      <div>
+        <ShowBatchDetails batchCode={batchCode} />
       </div>
-    </div>
-  </div>
-)}
 
-
-    
       {editForm && (
-        <div className="w-[700px] h-auto bg-gray-400 relative">
+        <div className="w-[700px] h-auto bg-gray-400 relative ">
           <IoCloseCircle
             className="absolute top-0 right-0 z-40 w-10 h-10 cursor-pointer"
             onClick={() => {
@@ -291,10 +304,7 @@ export default function Component() {
         </div>
       )}
 
-      <div>
-        <ShowBatchDetails batchCode={batchCode} />
-      </div>
-
+      
       <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-0 mb-2 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
           <img
@@ -310,7 +320,7 @@ export default function Component() {
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
-                  Select Batch Code 
+                  Select Batch Code
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -374,15 +384,13 @@ export default function Component() {
                   <p className="text-red-500 text-sm">{errors.rollNumber}</p>
                 )}
               </div>
-
-             
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="designation">Designation
-                <span className="text-red-500">*</span>
-                
+                <Label htmlFor="designation">
+                  Designation
+                  <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="designation"
@@ -463,6 +471,7 @@ export default function Component() {
 
       {alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
 
+       <div>
       {batchCode && (
         <div className="container my-8 mx-auto p-4 bg-white rounded shadow">
           <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
@@ -473,7 +482,6 @@ export default function Component() {
                 <th className="py-2 px-4 border">First Name</th>
                 <th className="py-2 px-4 border">Last Name</th>
                 <th className="py-2 px-4 border">Roll Number</th>
-                {/* <th className="py-2 px-4 border">Certificate Number</th> */}
                 <th className="py-2 px-4 border">Designation</th>
                 <th className="py-2 px-4 border">Employee ID</th>
                 <th className="py-2 px-4 border">Phone Number</th>
@@ -483,20 +491,19 @@ export default function Component() {
               </tr>
             </thead>
             <tbody>
-              {candidates.map((candidate, index) => (
+              {currentItems.map((candidate, index) => (
                 <tr key={candidate._id}>
-                  <td className="border px-4 py-2">{index + 1}</td>
+                  <td className="border px-4 py-2">{index + 1 + indexOfFirstItem}</td>
                   <td className="py-2 px-4 border">{candidate.firstName}</td>
                   <td className="py-2 px-4 border">{candidate.lastName}</td>
                   <td className="py-2 px-4 border">{candidate.rollNumber}</td>
-                 
                   <td className="py-2 px-4 border">{candidate.designation}</td>
                   <td className="py-2 px-4 border">{candidate.employeeId}</td>
                   <td className="py-2 px-4 border">{candidate.phoneNumber}</td>
                   <td className="py-2 px-4 border">{candidate.email}</td>
                   <td className="py-2 px-4 border">{candidate.remarks}</td>
                   <td className="py-2 px-4 border">
-                    <div className="flex space-x-2">
+                  <div className="flex space-x-2">
                       <Button onClick={() => handleEdit(candidate._id)}>
                         Edit
                       </Button>
@@ -511,18 +518,19 @@ export default function Component() {
           </table>
 
           <div className="flex justify-center space-x-2 mt-2">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i + 1}
-            onClick={() => paginate(i + 1)}
-            className={`px-4 py-2 border ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-white'}`}
-          >
-            {i + 1}
-          </button>
-        ))}
-      </div>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={`px-4 py-2 border ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-white'}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
       )}
+    </div>
     </>
   );
 }

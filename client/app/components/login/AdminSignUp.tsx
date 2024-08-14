@@ -15,9 +15,11 @@ export default function Component() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post("http://localhost:4000/api/auth/register", {
         center,
@@ -25,10 +27,14 @@ export default function Component() {
         password,
       });
       setMessage(response.data.message);
+      setMessage("Registration Successful! Click ON Login");
       setError("");
     } catch (err) {
-      setError(err.response.data.message);
+      setError("Registration Failed: " + err.response.data.message);
       setMessage("");
+    }
+    finally {
+      setLoading(false);
     }
   };
   return (
@@ -110,14 +116,53 @@ export default function Component() {
                 </div>
               </div>
              
-              <div>
-                
-                
+              
+              {/* <div>
                 <Button
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                    loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-green-700"
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
                   type="submit"
+                  disabled={loading}
                 >
-                  Sign Up
+                  {loading ? "Registering..." : "Sign Up"}
+                </Button>
+              </div> */}
+              <div>
+                <Button
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                    loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-green-700"
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                  type="submit"
+                  disabled={loading}
+                >
+                 {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 mr-3 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                      </svg>
+                      Registering ...
+                    </>
+                  ) : (
+                    "Sign Up"
+                  )}
                 </Button>
               </div>
               <p className=" text-center">

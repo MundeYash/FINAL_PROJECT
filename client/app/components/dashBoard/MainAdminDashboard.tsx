@@ -43,6 +43,15 @@ import Header from "../header/Header";
 export default function Component() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [candidates, setCandidates] = useState();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    setTimeout(() => {
+      // Redirect to the logout page or perform logout action
+      window.location.href = "/login/admin";
+    }, 1000); // Adjust the timeout duration as needed
+  };
   return (
     <>
       <header className="bg-[#1f316e]  text-white py-4 px-6 flex items-center justify-between">
@@ -131,10 +140,6 @@ export default function Component() {
           </nav> */}
 
           <nav className="flex flex-col gap-1 px-4 py-6">
-           
-
-        
-
             <Button
               variant="ghost"
               size="sm"
@@ -189,7 +194,6 @@ export default function Component() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
-                    
                     <LogOutIcon className="h-5 w-5 mr-2  text-black  bg-[#ebebf9]" />
                     <span className="sr-only">Toggle user menu</span>
                   </Button>
@@ -199,12 +203,13 @@ export default function Component() {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem>
-                    <Link
-                      href="/login/admin"
-                      className="font-medium text-[#080808c5] flex justify-center"
+                    
+                    <Button
+                      onClick={handleLogout}
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300"
                     >
                       Logout
-                    </Link>
+                    </Button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -13,6 +13,9 @@ import axios from "axios";
 
 export default function OperatorSignIn() {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
  
 
   
@@ -23,16 +26,23 @@ export default function OperatorSignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:4000/api/auth/Login', formData);
       console.log(response.data);
       // Handle successful login (e.g., store token, redirect)
+      setMessage("Login Successful! Wait Redirecting to Dashboard");
+      setError("");
    
       window.location.href = "/login/operator/dashboard"; 
 
  
     } catch (error) {
-      console.error('Error logging in:', error);
+      setError("Login Failed: " + error.response.data.message);
+      setMessage("");
+    }
+    finally {
+      setLoading(false);
     }
   };
   return (
@@ -124,8 +134,38 @@ export default function OperatorSignIn() {
                
 
                 <Button
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  type="submit">Sign In</Button>
+                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-green-700"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`} type="submit"
+                  disabled={loading}>
+                    {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 mr-3 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                      </svg>
+                      Signing In...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                  </Button>
               
               </div>
 
@@ -139,6 +179,16 @@ export default function OperatorSignIn() {
                 </Link>
               </p>
             </form>
+            {message && (
+              <div className="mt-4 text-center text-green-600 animate-bounce">
+                {message}
+              </div>
+            )}
+            {error && (
+              <p className="mt-2 text-center text-red-600 animate-bounce">
+                {error}
+              </p>
+            )}
           </div>
         </div>
       </div>

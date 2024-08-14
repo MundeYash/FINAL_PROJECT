@@ -50,6 +50,15 @@ export default function Component() {
   const [candidates, setCandidates] = useState();
   const [isCreateUpdateVisible, setCreateUpdateVisible] = useState(true);
   const [isViewVisible, setViewVisible] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    setTimeout(() => {
+      // Redirect to the logout page or perform logout action
+      window.location.href = "/login/operator";
+    }, 1000); // Adjust the timeout duration as needed
+  };
 
   const toggleCreateUpdate = () => {
     setCreateUpdateVisible(!isCreateUpdateVisible);
@@ -257,14 +266,20 @@ export default function Component() {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem>
-                    <Link
+                    {/* <Link
                       href="/login/operator"
                       className={`font-medium text-[#080808c5] flex justify-center ${
                         activeTab === "logout" ? "font-bold" : ""
                       }`}
                     >
                       Logout
-                    </Link>
+                    </Link> */}
+                    <Button
+                      onClick={handleLogout}
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300"
+                    >
+                      Logout
+                    </Button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
