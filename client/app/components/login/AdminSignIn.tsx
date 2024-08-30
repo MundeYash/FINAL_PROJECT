@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
+
 import { Button } from "../ui/button";
 import Link from "next/link";
 import Footer from "../footer/Footer";
@@ -10,18 +10,19 @@ import Header from "../header/Header";
 import Navigator from "../Navigator/Navigator";
 import axios from "axios";
 
+
 export default function AdminSignIn() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "", center: ""  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async ( e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -35,7 +36,11 @@ export default function AdminSignIn() {
         window.location.href = "/login/admin/dashboard";
       }, 500);
     } catch (error) {
-      setError("Login Failed: " + error.response.data.message);
+      if (axios.isAxiosError(error)) {
+        setError("Login Failed: " + error.response?.data.message);
+      } else {
+        setError("Login Failed: An unexpected error occurred");
+      }
       setMessage("");
     } finally {
       setLoading(false);
@@ -120,14 +125,7 @@ export default function AdminSignIn() {
                 </div>
               </div>
               <div className="flex items-center justify-between"></div>
-              {/* <div>
-                <Button
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  type="submit"
-                >
-                  Sign In
-                </Button>
-              </div> */}
+             
               <div>
                 <Button
                   className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${

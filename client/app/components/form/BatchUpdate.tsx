@@ -1,16 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import CryptoJS from "crypto-js";
+
 import Alert from "@mui/material/Alert";
-import {
-  CardTitle,
-  CardDescription,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  Card,
-} from "../ui/card";
+import { CardHeader, CardContent, CardFooter, Card } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -20,10 +13,16 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { IoCloseCircle } from "react-icons/io5";
-import ShowBatchDetails from "../certificate/ShowBatchDetails";
 
-import { FormData, Candidate } from "../form/lib/types";
+import ShowBatchDetails from "../certificate/ShowBatchDetails";
+import { SelectChangeEvent } from '@mui/material';
+
+type AlertType = "error" | "info" | "success" | "warning" | "";
+
+interface AlertState {
+  type: AlertType;
+  message: string;
+}
 
 interface FormData {
   batchDescription: string;
@@ -70,12 +69,11 @@ export default function Component() {
 
   const [batchCode, setBatchCode] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
+
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [alert, setAlert] = React.useState<AlertState>({ type: '', message: '' });
 
   const [errors, setErrors] = useState<FormData>({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -118,7 +116,7 @@ export default function Component() {
     }
   };
 
-  const handleCodeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleCodeChange = (event: SelectChangeEvent<string | null>) => {
     setBatchCode(event.target.value as string);
   };
 
@@ -263,7 +261,7 @@ export default function Component() {
                       onChange={handleCodeChange}
                     >
                       {data &&
-                        data.code.sort().map((item, index) => (
+                        data.code.sort().map((item: string, index: number)=> (
                           <MenuItem key={index} value={item}>
                             {item}
                           </MenuItem>
@@ -360,15 +358,17 @@ export default function Component() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2 w-3/4 max-w-xs">
-                    <Label htmlFor="venueOfTraining w-3/4 max-w-xs">
-                      Venue of Training <span className="text-red-500">*</span>
-                    </Label>
+               
+                    <label id="venueOfTrainingLabel"className="w-3/4 max-w-xs"  htmlFor="venueOfTraining">Venue of Training <span className="text-red-500">*</span></label>
+                      
+                    
                     <select
                       id="venueOfTraining"
                       name="venueOfTraining" // Added name attribute
                       className="select-field"
                       value={formData.venueOfTraining}
                       onChange={handleInputChange}
+                       aria-labelledby="venueOfTrainingLabel"
                     >
                       <option value="NIELIT">NIELIT</option>
                       <option value="outside">Outside NIELIT</option>
@@ -458,9 +458,9 @@ export default function Component() {
                 </div>
 
                 <div className="space-y-2 w-3/4 max-w-xs">
-                  <Label htmlFor="courseDuration" className="w-3/4 max-w-xs">
+                  <label htmlFor="courseDurationFormat" className="w-3/4 max-w-xs">
                     Course Duration <span className="text-red-500">*</span>
-                  </Label>
+                  </label>
                   <div className="flex space-x-2">
                     <Input
                       name="courseDurationValue"
@@ -477,6 +477,7 @@ export default function Component() {
                       className="select-field"
                       value={formData.courseDuration.format}
                       onChange={handleInputChange}
+                      
                     >
                       <option value="weeks">Weeks</option>
                       <option value="months">Months</option>
@@ -485,7 +486,7 @@ export default function Component() {
                     </select>
                   </div>
                   {errors.courseDuration && (
-                    <Alert severity="error">{errors.courseDuration}</Alert>
+                    <Alert severity="error">{errors.courseDuration.value} {errors.courseDuration.format}</Alert>
                   )}
                 </div>
               </div>
@@ -560,10 +561,9 @@ export default function Component() {
         </Card>
       </div>
 
-     
       {alert.message && (
         <Alert
-          severity={alert.type}
+          severity={alert.type || undefined}
           onClose={() => setAlert({ type: "", message: "" })}
         >
           {alert.message}

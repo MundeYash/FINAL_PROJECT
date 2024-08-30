@@ -34,7 +34,7 @@ import { useCallback, useEffect, useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
 
-export default function Admin() {
+export default function Admin({ login }) {
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [candidatesData, setCandidatesData] = useState([]);

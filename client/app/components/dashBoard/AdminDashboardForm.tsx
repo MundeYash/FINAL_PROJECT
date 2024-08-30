@@ -1,14 +1,9 @@
 "use client";
-import jsPDF from "jspdf";
 
-import html2canvas from "html2canvas";
-
-import * as XLSX from "xlsx";
-import ExcelExportButton from "../format/ExcelExportButton";
 import DataTable from "../dataTable/DataTable";
 
 import { Button } from "../ui/button";
-import Link from "next/link";
+
 import {
   SelectValue,
   SelectTrigger,
@@ -18,23 +13,24 @@ import {
   Select,
 } from "../ui/select";
 import { Input } from "../ui/input";
-import { CardTitle, CardHeader, CardContent, Card } from "../ui/card";
-import { ResponsiveBar } from "@nivo/bar";
-import { ResponsivePie } from "@nivo/pie";
-import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableCell,
-  TableBody,
-  Table,
-} from "../ui/table";
-import { useCallback, useEffect, useRef } from "react";
+
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
-import Title from "../Title/Title";
 
-export default function Admin() {
+interface BatchDataItem {
+  batchCode: string;
+  batchDescription: string;
+  courseName: string;
+  courseDuration: {
+    value: number;
+    format: string;
+  };
+  startDate: string;
+  endDate: string;
+}
+
+export default function Admin({ login }) {
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [candidatesData, setCandidatesData] = useState([]);
@@ -59,17 +55,17 @@ export default function Admin() {
   }, []);
 
   console.log(candidatesData);
-  const handleBatchCodeChange = (value) =>
+  const handleBatchCodeChange = (value: string | null) =>
     setSelectedBatchCode(value || defaultSelectValue);
-  const handleBatchDescriptionChange = (value) =>
+  const handleBatchDescriptionChange = (value: string | null) =>
     setSelectedBatchDescription(value || defaultSelectValue);
-  const handleCourseNameChange = (value) =>
+  const handleCourseNameChange = (value: string | null) =>
     setSelectedCourseName(value || defaultSelectValue);
-  const handleDurationChange = (value) =>
+  const handleDurationChange = (value: string | null) =>
     setSelectedDuration(value || defaultSelectValue);
-  const handleStartDateChange = (e) =>
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setStartDate(e.target.value || defaultSelectValue);
-  const handleEndDateChange = (e) =>
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEndDate(e.target.value || defaultSelectValue);
 
   async function fetchCandidatesData() {
@@ -89,7 +85,7 @@ export default function Admin() {
     console.log(`endDate`, endDate);
 
     const filteredBatchCodes = filteredData.batchData
-      ?.filter((item) => {
+      ?.filter((item: BatchDataItem) => {
         const batchCodeMatch = selectedBatchCode
           ? item.batchCode === selectedBatchCode
           : true;
@@ -119,7 +115,8 @@ export default function Admin() {
           endDateMatch
         );
       })
-      .map((item) => item.batchCode);
+      .map((item: BatchDataItem) => item.batchCode);
+
     const filteredCandidates = filteredData.employeeData.filter(
       (candidate) =>
         // filteredBatchCodes.includes(candidate.batchCode)
@@ -155,10 +152,9 @@ export default function Admin() {
   return (
     <div className="flex flex-col min-h-screen  mb-8">
       <h2 className="text-2xl font-bold text-center">Candidate Report </h2>
-      
+
       <section className="bg-gray-100 py-8 px-8 flex flex-col gap-6 mt-8 mb-8 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <label className="font-semibold text-gray-700 mb-1">
@@ -199,7 +195,7 @@ export default function Admin() {
               <SelectGroup>
                 {data &&
                   data?.code?.sort().map(
-                    (item, index) =>
+                    (item: string, index: number) =>
                       item && (
                         <SelectItem key={index} value={item}>
                           {item}
@@ -222,7 +218,7 @@ export default function Admin() {
               <SelectGroup>
                 {data &&
                   data?.description?.sort().map(
-                    (item, index) =>
+                    (item: string, index: number) =>
                       item && (
                         <SelectItem key={index} value={item}>
                           {item}
@@ -245,7 +241,7 @@ export default function Admin() {
               <SelectGroup className="w-full">
                 {data &&
                   data?.name?.sort().map(
-                    (item, index) =>
+                    (item: string, index: number) =>
                       item && (
                         <SelectItem key={index} value={item}>
                           {item}
@@ -268,7 +264,7 @@ export default function Admin() {
               <SelectGroup>
                 {data &&
                   data?.duration?.sort().map(
-                    (item, index) =>
+                    (item: string, index: number) =>
                       item && (
                         <SelectItem key={index} value={item}>
                           {item.value + " " + item.format}
@@ -286,12 +282,7 @@ export default function Admin() {
             >
               Apply
             </Button>
-            <Button
-              onClick={clearFilters}
-             
-            >
-              Clear
-            </Button>
+            <Button onClick={clearFilters}>Clear</Button>
           </div>
         </div>
       </section>
@@ -300,49 +291,9 @@ export default function Admin() {
 
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4">
-          <DataTable candidatesData={candidatesData} />
+          <DataTable candidatesData={candidatesData} login={login} />
         </div>
       </section>
     </div>
-  );
-}
-
-function LogOutIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" x2="9" y1="12" y2="12" />
-    </svg>
-  );
-}
-
-function MountainIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-    </svg>
   );
 }

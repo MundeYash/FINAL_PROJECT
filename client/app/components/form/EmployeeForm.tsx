@@ -5,7 +5,7 @@ import CryptoJS from "crypto-js";
 import Alert from "@mui/material/Alert";
 import {
   CardTitle,
-  CardDescription,
+  
   CardHeader,
   CardContent,
   CardFooter,
@@ -25,8 +25,8 @@ import CandidateUpdate from "./CandidateUpdate";
 
 import { FormData, Candidate } from "./lib/types";
 import ShowBatchDetails from "../certificate/ShowBatchDetails";
-import BatchLabel from "../certificate/BatchLabel";
-import BatchDetailsCard from "../certificate/ShowBatchDetails";
+
+
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({});

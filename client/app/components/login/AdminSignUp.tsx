@@ -8,6 +8,7 @@ import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import Link from "next/link";
 import axios from "axios"; // Import axios for HTTP requests
+import Navigator from "../Navigator/Navigator";
 
 export default function Component() {
   const [center, setCenter] = useState("");
@@ -27,10 +28,18 @@ export default function Component() {
         password,
       });
       setMessage(response.data.message);
-      setMessage("Registration Successful! Click ON Login");
+      setMessage("Registration Successful! Move to Login ");
       setError("");
-    } catch (err) {
-      setError("Registration Failed: " + err.response.data.message);
+    } catch (error) {
+      
+     
+      if (error instanceof Error && (error as any).response && (error as any).response.data) {
+     
+        setError("Registration Failed: " + (error as any).response.data.message);
+      } else {
+        setError("Registration Failed: An unknown error occurred.");
+      }
+      
       setMessage("");
     }
     finally {
@@ -40,6 +49,7 @@ export default function Component() {
   return (
     <>
       <Header />
+      <Navigator/>
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
