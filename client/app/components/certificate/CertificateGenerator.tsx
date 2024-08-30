@@ -1,29 +1,24 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import CryptoJS from "crypto-js";
+
 import Alert from "@mui/material/Alert";
 import {
   CardTitle,
-  CardDescription,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  Card,
+
+  CardHeader
 } from "../ui/card";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+
 import { Button } from "../ui/button";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { IoCloseCircle } from "react-icons/io5";
+
 import ShowBatchDetails from "./ShowBatchDetails";
 
-import { FormData, Candidate } from "../form/lib/types";
+
 
 interface Candidate {
   _id: string;
@@ -43,14 +38,13 @@ interface FormData {
 
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
-  const [formData, setFormData] = useState<FormData>({});
+  
   const [data, setData] = useState<any>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [alert, setAlert] = useState({ type: "", message: "" });
 
-  const [errors, setErrors] = useState<FormData>({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
   // State to manage the visibility of the exemption reason dropdown and the selected reason
   const [showExemptionReason, setShowExemptionReason] = useState(false);

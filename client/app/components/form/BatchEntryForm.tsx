@@ -3,8 +3,7 @@
 import Alert from "@mui/material/Alert";
 import { useEffect, useState } from "react";
 import {
-  CardTitle,
-  CardDescription,
+ 
   CardHeader,
   CardContent,
   CardFooter,
@@ -12,29 +11,57 @@ import {
 } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import {
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectContent,
-  Select,
-} from "../ui/select";
-import ShowBatchDetails from "../certificate/ShowBatchDetails";
-import BatchLabel from "../certificate/BatchLabel";
+
+
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-import GenerateBatchTable from "../certificate/GenerateBatchTable";
-import BatchTable from "../dataTable/BatchTable";
 
+interface FormData {
+  batchDescription: string;
+  departmentAddress: string;
+  trainingMode: string;
+  venueOfTraining: string;
+  venueDetails?: string;
+  courseName: string;
+  technologyName: string;
+  revenueOfBatch: string;
+  courseDuration: {
+    value: string;
+    format: string;
+  };
+  startDate: string;
+  endDate: string;
+  participantsNo: string;
+  remarks: string ;
+}
+interface Errors {
+  batchDescription: string;
+  departmentAddress: string;
+  trainingMode: string;
+  venueOfTraining: string;
+  venueDetails?: string;
+  courseName: string;
+  technologyName: string;
+  revenueOfBatch: string;
+  courseDuration: {
+    value: string;
+    format: string;
+  };
+  startDate: string;
+  endDate: string;
+  participantsNo: string;
+  remarks: string ;
+}
 export default function Component() {
   const [alert2, setAlert2] = useState(false);
   const [batchCode, setBatchCode] = useState<number | null>(null);
-  const [batchCodes, setBatchCodes] = useState([]);
+  
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  
+  const [formData, setFormData] = useState<FormData>({
     batchDescription: "",
     departmentAddress: "",
     trainingMode: "offline",
@@ -52,7 +79,7 @@ export default function Component() {
     remarks: "",
     venueDetails: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Errors>({});
   const [data, setData] = useState([]);
   const [revenueOfBatchUnit, setRevenueOfBatchUnit] = useState("thousands");
 
@@ -69,7 +96,7 @@ export default function Component() {
     fetchBatchCode();
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     if (id === "courseDurationValue" || id === "courseDurationFormat") {
       setFormData((prevFormData) => ({
@@ -90,7 +117,7 @@ export default function Component() {
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: { [key: string]: string } = {};
     if (!formData.batchDescription)
       newErrors.batchDescription = "Batch description is required.";
     if (!formData.departmentAddress)
@@ -324,9 +351,9 @@ export default function Component() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2 w-3/4 max-w-xs">
-                    <Label htmlFor="venueOfTraining w-3/4 max-w-xs">
+                    <label htmlFor="venueOfTraining"className=" w-3/4 max-w-xs">
                       Venue of Training <span className="text-red-500">*</span>
-                    </Label>
+                    </label>
                     <select
                       id="venueOfTraining"
                       className="select-field"
@@ -417,9 +444,9 @@ export default function Component() {
                 </div>
 
                 <div className="space-y-2 w-3/4 max-w-xs">
-                  <Label htmlFor="courseDuration" className="w-3/4 max-w-xs">
+                  <label htmlFor="courseDurationFormat" className="w-3/4 max-w-xs">
                     Course Duration <span className="text-red-500">*</span>
-                  </Label>
+                  </label>
                   <div className="flex space-x-2">
                     <Input
                       id="courseDurationValue"
@@ -442,7 +469,7 @@ export default function Component() {
                     </select>
                   </div>
                   {errors.courseDuration && (
-                    <Alert severity="error">{errors.courseDuration}</Alert>
+                    <Alert severity="error">{errors.courseDuration.value + errors.courseDuration.format}</Alert>
                   )}
                 </div>
               </div>

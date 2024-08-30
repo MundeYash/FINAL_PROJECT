@@ -367,7 +367,7 @@ app.post("/api/auth/Register", async (req, res) => {
     await newOperator.save();
     res.status(201).json({ message: "Operator registered successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to register admin" });
+    res.status(500).json({ message: "Failed to register Operator" });
   }
 });
 
@@ -383,7 +383,7 @@ app.post("/api/auth/Login", async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: operator._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
     res.json({ message: "Login successful", token });

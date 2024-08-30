@@ -10,28 +10,26 @@ import {
 } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import {
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectContent,
-  SelectGroup,
-} from "../ui/select";
-import Link from "next/link";
+
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
+
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-// import "../app/EmployeeForm.css"
+
 import CryptoJS from "crypto-js";
 import axios from "axios";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
-export default function CandidateUpdate({ children }) {
+interface CandidateUpdateProps {
+  children: ReactNode;
+}
+
+export default function CandidateUpdate({ children }: CandidateUpdateProps) {
   const [alert, setAlert] = useState(false);
   const [batchCode, setBatchCode] = useState("");
   const [formData, setFormData] = useState(children);
@@ -60,11 +58,6 @@ export default function CandidateUpdate({ children }) {
     console.log(response);
   }
 
-  async function fetchData() {
-    const response = await axios.get("http://localhost:4000/data");
-    console.log(response.data);
-    setData(response.data);
-  }
   function handleChange(e) {
     setFormData({
       ...formData,

@@ -11,35 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "../ui/drop-down";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "../ui/table";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "../ui/card";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Select } from "../ui/select";
-import { Textarea } from "../ui/textarea";
 
-import ShowBatchDetails from "../certificate/ShowBatchDetails";
 import BatchEntryForm from "../form/BatchEntryForm";
 import EmployeeForm from "../form/EmployeeForm";
 import OperatorDashboard from "./OperatorDashboard";
 import OperatorDashboard2 from "./OperatorDashboard2";
 import OperatorDashboard3 from "./OperatorDashboard3";
 import OperatorDashboard4 from "./OperatorDashboard4";
-import Header from "../header/Header";
+
 import Footer from "../footer/Footer";
 import BatchUpdate from "../form/BatchUpdate";
 
@@ -47,13 +26,11 @@ import CertificateGenerator from "../certificate/CertificateGenerator";
 
 export default function Component() {
   const [activeTab, setActiveTab] = useState("batch");
-  const [candidates, setCandidates] = useState();
+
   const [isCreateUpdateVisible, setCreateUpdateVisible] = useState(true);
   const [isViewVisible, setViewVisible] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = () => {
-    setIsLoggingOut(true);
     setTimeout(() => {
       // Redirect to the logout page or perform logout action
       window.location.href = "/login/operator";
@@ -119,7 +96,6 @@ export default function Component() {
 
       <div className="flex min-h-screen w-full">
         <div className="hidden w-64 shrink-0 border-r bg-gray-100 dark:border-gray-800 dark:bg-gray-950 md:block">
-          
           <div className="flex h-16 items-center justify-between px-6">
             <Link
               href="#"
@@ -134,8 +110,8 @@ export default function Component() {
           <nav className="flex flex-col gap-1 px-4 py-6">
             <div className="mb-4">
               <h2
-               className="font-extrabold text-xl cursor-pointer text-blue-600 hover:text-white hover:bg-violet-600 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out px-4 py-2 rounded-md"
-               onClick={toggleCreateUpdate}
+                className="font-extrabold text-xl cursor-pointer text-blue-600 hover:text-white hover:bg-violet-600 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out px-4 py-2 rounded-md"
+                onClick={toggleCreateUpdate}
               >
                 Create & Update
               </h2>
@@ -192,9 +168,9 @@ export default function Component() {
             </div>
 
             <div className="mb-4">
-            <h2
-               className="font-extrabold text-xl cursor-pointer text-blue-600 hover:text-white hover:bg-violet-600 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out px-4 py-2 rounded-md"
-               onClick={toggleView}
+              <h2
+                className="font-extrabold text-xl cursor-pointer text-blue-600 hover:text-white hover:bg-violet-600 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out px-4 py-2 rounded-md"
+                onClick={toggleView}
               >
                 View
               </h2>
@@ -266,14 +242,6 @@ export default function Component() {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem>
-                    {/* <Link
-                      href="/login/operator"
-                      className={`font-medium text-[#080808c5] flex justify-center ${
-                        activeTab === "logout" ? "font-bold" : ""
-                      }`}
-                    >
-                      Logout
-                    </Link> */}
                     <Button
                       onClick={handleLogout}
                       className="bg-green-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300"
@@ -313,7 +281,7 @@ export default function Component() {
   );
 }
 
-function BarChartIcon(props) {
+function BarChartIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -334,27 +302,7 @@ function BarChartIcon(props) {
   );
 }
 
-function ClipboardIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-    </svg>
-  );
-}
-
-function LayoutGridIcon(props) {
+function LayoutGridIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -376,28 +324,7 @@ function LayoutGridIcon(props) {
   );
 }
 
-function MoveHorizontalIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="18 8 22 12 18 16" />
-      <polyline points="6 8 2 12 6 16" />
-      <line x1="2" x2="22" y1="12" y2="12" />
-    </svg>
-  );
-}
-
-function Package2Icon(props) {
+function Package2Icon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -418,7 +345,7 @@ function Package2Icon(props) {
   );
 }
 
-function UserPlusIcon(props) {
+function UserPlusIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -440,29 +367,7 @@ function UserPlusIcon(props) {
   );
 }
 
-function UsersIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
-function LogOutIcon(props) {
+function LogOutIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

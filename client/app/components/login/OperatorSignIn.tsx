@@ -12,7 +12,7 @@ import axios from "axios";
 
 
 export default function OperatorSignIn() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' , center: "" });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function OperatorSignIn() {
 
   
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -38,10 +38,14 @@ export default function OperatorSignIn() {
 
  
     } catch (error) {
-      setError("Login Failed: " + error.response.data.message);
+      // Type guard to check if error is an instance of Error and has a response property
+      if (error instanceof Error && (error as any).response && (error as any).response.data) {
+        setError("Login Failed: " + (error as any).response.data.message);
+      } else {
+        setError("Login Failed: An unknown error occurred.");
+      }
       setMessage("");
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
