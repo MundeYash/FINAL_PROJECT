@@ -121,7 +121,7 @@ export default function Admin({ login }) {
       (candidate) =>
         // filteredBatchCodes.includes(candidate.batchCode)
         filteredBatchCodes.includes(candidate.batchCode) &&
-        candidate.certificateNumber
+        candidate.certificateNumber,
     );
 
     setCandidatesData(filteredCandidates);
@@ -200,7 +200,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -223,7 +223,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -246,7 +246,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -269,7 +269,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item.value + " " + item.format}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -291,7 +291,7 @@ export default function Admin({ login }) {
 
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4">
-          <DataTable candidatesData={candidatesData}  />
+          <DataTable candidatesData={candidatesData} />
         </div>
       </section>
     </div>

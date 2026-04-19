@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -9,9 +9,9 @@ const AuthProvider = ({ children }) => {
   const loadUser = async () => {
     if (localStorage.token) {
       setAuth({ ...auth, token: localStorage.token });
-      axios.defaults.headers.common['x-auth-token'] = localStorage.token;
+      axios.defaults.headers.common["x-auth-token"] = localStorage.token;
       try {
-        const res = await axios.get('/api/auth/user');
+        const res = await axios.get("/api/auth/user");
         setAuth({ token: localStorage.token, user: res.data });
       } catch (err) {
         console.error(err);

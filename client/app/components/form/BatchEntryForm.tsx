@@ -2,22 +2,14 @@
 
 import Alert from "@mui/material/Alert";
 import { useEffect, useState } from "react";
-import {
- 
-  CardHeader,
-  CardContent,
-  CardFooter,
-  Card,
-} from "../ui/card";
+import { CardHeader, CardContent, CardFooter, Card } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-
 
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import axios from "axios";
 import CryptoJS from "crypto-js";
-
 
 interface FormData {
   batchDescription: string;
@@ -35,7 +27,7 @@ interface FormData {
   startDate: string;
   endDate: string;
   participantsNo: string;
-  remarks: string ;
+  remarks: string;
 }
 interface Errors {
   batchDescription: string;
@@ -53,14 +45,14 @@ interface Errors {
   startDate: string;
   endDate: string;
   participantsNo: string;
-  remarks: string ;
+  remarks: string;
 }
 export default function Component() {
   const [alert2, setAlert2] = useState(false);
   const [batchCode, setBatchCode] = useState<number | null>(null);
-  
+
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState<FormData>({
     batchDescription: "",
     departmentAddress: "",
@@ -96,7 +88,11 @@ export default function Component() {
     fetchBatchCode();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { id, value } = e.target;
     if (id === "courseDurationValue" || id === "courseDurationFormat") {
       setFormData((prevFormData) => ({
@@ -212,7 +208,7 @@ export default function Component() {
     console.log(dataToSubmit);
     const encryptedData = CryptoJS.AES.encrypt(
       JSON.stringify(dataToSubmit),
-      "secretKey"
+      "secretKey",
     ).toString();
 
     try {
@@ -285,7 +281,9 @@ export default function Component() {
               </div>
 
               <div className="space-y-2 w-3/4 ">
-                <Label htmlFor="departmentAddress">Address of Department <span className="text-red-500">*</span></Label>
+                <Label htmlFor="departmentAddress">
+                  Address of Department <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="departmentAddress"
                   type="text"
@@ -351,7 +349,10 @@ export default function Component() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2 w-3/4 max-w-xs">
-                    <label htmlFor="venueOfTraining"className=" w-3/4 max-w-xs">
+                    <label
+                      htmlFor="venueOfTraining"
+                      className=" w-3/4 max-w-xs"
+                    >
                       Venue of Training <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -444,7 +445,10 @@ export default function Component() {
                 </div>
 
                 <div className="space-y-2 w-3/4 max-w-xs">
-                  <label htmlFor="courseDurationFormat" className="w-3/4 max-w-xs">
+                  <label
+                    htmlFor="courseDurationFormat"
+                    className="w-3/4 max-w-xs"
+                  >
                     Course Duration <span className="text-red-500">*</span>
                   </label>
                   <div className="flex space-x-2">
@@ -469,7 +473,10 @@ export default function Component() {
                     </select>
                   </div>
                   {errors.courseDuration && (
-                    <Alert severity="error">{errors.courseDuration.value + errors.courseDuration.format}</Alert>
+                    <Alert severity="error">
+                      {errors.courseDuration.value +
+                        errors.courseDuration.format}
+                    </Alert>
                   )}
                 </div>
               </div>

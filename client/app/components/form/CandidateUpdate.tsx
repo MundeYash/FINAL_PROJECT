@@ -11,7 +11,6 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 
-
 import * as React from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -37,14 +36,13 @@ export default function CandidateUpdate({ children }: CandidateUpdateProps) {
   const [candidates, setCandidates] = useState();
   const [isCandidateUpdateOpen, setIsCandidateUpdateOpen] = useState(false); // State to control visibility
 
-
   async function handleSubmit() {
     // console.log("submit");
     setFormData({ batchCode: batchCode, ...formData });
     console.log(formData);
     const encryptedData = CryptoJS.AES.encrypt(
       JSON.stringify(formData),
-      "secretKey"
+      "secretKey",
     ).toString();
     console.log(encryptedData);
 
@@ -69,7 +67,7 @@ export default function CandidateUpdate({ children }: CandidateUpdateProps) {
       // setLoading(true);
       if (id !== "") {
         const response = await axios.get(
-          `http://localhost:4000/employees/${id}`
+          `http://localhost:4000/employees/${id}`,
         );
         // console.log(response.data);
         setCandidates(response.data);
@@ -85,7 +83,6 @@ export default function CandidateUpdate({ children }: CandidateUpdateProps) {
   };
   return (
     <>
-    
       <Card className="w-full max-w-lg mx-auto py-8 px-6 absolute z-10 right-0 mt-2 ml-auto bg-gray-100 shadow-lg ">
         <CardHeader className="text-center">
           <img
@@ -133,87 +130,85 @@ export default function CandidateUpdate({ children }: CandidateUpdateProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="rollNumber">
-                    Roll Number <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="rollNumber"
-                    placeholder="Roll Number"
-                    value={formData.rollNumber || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                  />
-                </div>
-              </div>
-
-           
-
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="designation">
-                    Designation
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="designation"
-                    placeholder="Designation"
-                    value={formData.designation || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="employeeId">Employee ID</Label>
-                  <Input
-                    id="employeeId"
-                    placeholder="Employee ID"
-                    value={formData.employeeId || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="phoneNumber">
-                    Phone Number <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="phoneNumber"
-                    placeholder="Phone Number"
-                    value={formData.phoneNumber || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="email">
-                    Email <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="email"
-                    placeholder="Email"
-                    value={formData.email || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                  />
-                </div>
-              </div>
-
               <div>
-                <Label htmlFor="remarks">Remarks</Label>
-                <Textarea
-                  id="remarks"
-                  placeholder="Remarks"
-                  value={formData.remarks || ""}
+                <Label htmlFor="rollNumber">
+                  Roll Number <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="rollNumber"
+                  placeholder="Roll Number"
+                  value={formData.rollNumber || ""}
                   onChange={handleChange}
                   className="mt-1 block w-full"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="designation">
+                  Designation
+                  <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="designation"
+                  placeholder="Designation"
+                  value={formData.designation || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="employeeId">Employee ID</Label>
+                <Input
+                  id="employeeId"
+                  placeholder="Employee ID"
+                  value={formData.employeeId || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="phoneNumber">
+                  Phone Number <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="phoneNumber"
+                  placeholder="Phone Number"
+                  value={formData.phoneNumber || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="email">
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="email"
+                  placeholder="Email"
+                  value={formData.email || ""}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="remarks">Remarks</Label>
+              <Textarea
+                id="remarks"
+                placeholder="Remarks"
+                value={formData.remarks || ""}
+                onChange={handleChange}
+                className="mt-1 block w-full"
+              />
+            </div>
           </div>
         </CardContent>
 
@@ -227,7 +222,6 @@ export default function CandidateUpdate({ children }: CandidateUpdateProps) {
             >
               Update
             </Button>
-
           </div>
         </CardFooter>
 
@@ -240,8 +234,6 @@ export default function CandidateUpdate({ children }: CandidateUpdateProps) {
           </Alert>
         )}
       </Card>
-
-
     </>
   );
 }

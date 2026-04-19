@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const DataTable = () => {
   const [data, setData] = useState([]);
-  
+
   useEffect(() => {
     // Fetch the data when the component mounts
     const fetchData = async () => {
@@ -20,7 +20,7 @@ const DataTable = () => {
 
   // Helper function to format duration
   const formatDuration = (duration) => {
-    return duration.map(d => `${d.value} ${d.format}`).join(', ');
+    return duration.map((d) => `${d.value} ${d.format}`).join(", ");
   };
 
   // Render the table
@@ -39,17 +39,24 @@ const DataTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data.code && data.code.map((code, index) => (
-            <tr key={index}>
-              <td className="px-4 py-2 border">{index + 1}</td>
-              <td className="px-4 py-2 border">{data.code}</td>
-              <td className="px-4 py-2 border">{data.description[index]}</td>
-              <td className="px-4 py-2 border">{data.name[index]}</td>
-              <td className="px-4 py-2 border">{new Date(data.startDate[index]).toLocaleDateString()}</td>
-              <td className="px-4 py-2 border">{new Date(data.endDate[index]).toLocaleDateString()}</td>
-              <td className="px-4 py-2 border">{formatDuration(data.duration)}</td>
-            </tr>
-          ))}
+          {data.code &&
+            data.code.map((code, index) => (
+              <tr key={index}>
+                <td className="px-4 py-2 border">{index + 1}</td>
+                <td className="px-4 py-2 border">{data.code}</td>
+                <td className="px-4 py-2 border">{data.description[index]}</td>
+                <td className="px-4 py-2 border">{data.name[index]}</td>
+                <td className="px-4 py-2 border">
+                  {new Date(data.startDate[index]).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2 border">
+                  {new Date(data.endDate[index]).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2 border">
+                  {formatDuration(data.duration)}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

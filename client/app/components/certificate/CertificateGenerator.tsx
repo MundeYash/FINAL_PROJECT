@@ -3,11 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import Alert from "@mui/material/Alert";
-import {
-  CardTitle,
-
-  CardHeader
-} from "../ui/card";
+import { CardTitle, CardHeader } from "../ui/card";
 
 import { Button } from "../ui/button";
 import Box from "@mui/material/Box";
@@ -17,8 +13,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 import ShowBatchDetails from "./ShowBatchDetails";
-
-
 
 interface Candidate {
   _id: string;
@@ -38,13 +32,11 @@ interface FormData {
 
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
-  
+
   const [data, setData] = useState<any>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [alert, setAlert] = useState({ type: "", message: "" });
-
-  
 
   // State to manage the visibility of the exemption reason dropdown and the selected reason
   const [showExemptionReason, setShowExemptionReason] = useState(false);
@@ -84,12 +76,12 @@ export default function Component() {
     try {
       if (id) {
         const response = await axios.get(
-          `http://localhost:4000/employees/${id}`
+          `http://localhost:4000/employees/${id}`,
         );
         setCandidates(
           response.data.filter(
-            (candidate: Candidate) => !candidate.certificateNumber
-          )
+            (candidate: Candidate) => !candidate.certificateNumber,
+          ),
         );
       }
     } catch (err) {
@@ -106,7 +98,7 @@ export default function Component() {
         reason: selectedReason,
       });
       setCandidates(
-        candidates.filter((candidate) => candidate._id !== candidateId)
+        candidates.filter((candidate) => candidate._id !== candidateId),
       );
       setSelectedCandidateForExemption(null);
       setSelectedReason("");
@@ -131,7 +123,7 @@ export default function Component() {
     try {
       // Fetch the last certificate number assigned for the given batchCode
       const response = await axios.get(
-        `http://localhost:4000/certificate/${batchCode}`
+        `http://localhost:4000/certificate/${batchCode}`,
       );
       let maxCertNumber = response.data.lastCertificateNumber;
 
@@ -150,7 +142,7 @@ export default function Component() {
       //send the updated candidate data to the server
       const res = await axios.post(
         `http://localhost:4000/assignCertificates/${batchCode}`,
-        updatedCandidates
+        updatedCandidates,
       );
 
       setAlert({
@@ -182,7 +174,9 @@ export default function Component() {
           className="mx-auto h-12 w-auto"
           src="https://www.itvoice.in/wp-content/uploads/2013/12/NIELIT-Logo.png"
         />
-        <CardTitle className="text-2xl text-center">Assign Certificate Numbers </CardTitle>
+        <CardTitle className="text-2xl text-center">
+          Assign Certificate Numbers{" "}
+        </CardTitle>
       </CardHeader>
 
       <div className="mt-0 mb-4">

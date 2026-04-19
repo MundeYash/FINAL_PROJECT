@@ -15,7 +15,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 import ShowBatchDetails from "../certificate/ShowBatchDetails";
-import { SelectChangeEvent } from '@mui/material';
+import { SelectChangeEvent } from "@mui/material";
 
 type AlertType = "error" | "info" | "success" | "warning" | "";
 
@@ -71,7 +71,10 @@ export default function Component() {
   const [data, setData] = useState<any>(null);
 
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = React.useState<AlertState>({ type: '', message: '' });
+  const [alert, setAlert] = React.useState<AlertState>({
+    type: "",
+    message: "",
+  });
 
   const [errors, setErrors] = useState<FormData>({});
 
@@ -97,7 +100,7 @@ export default function Component() {
   const fetchBatchDetails = async (code: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/batch/details/${code}`
+        `http://localhost:4000/batch/details/${code}`,
       );
       const batchData = response.data;
 
@@ -124,7 +127,7 @@ export default function Component() {
   const handleInputChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = event.target;
 
@@ -208,7 +211,7 @@ export default function Component() {
     try {
       await axios.put(
         `http://localhost:4000/batch/update/${batchCode}`,
-        updatedFormData
+        updatedFormData,
       );
       setAlert({
         type: "success",
@@ -261,7 +264,7 @@ export default function Component() {
                       onChange={handleCodeChange}
                     >
                       {data &&
-                        data.code.sort().map((item: string, index: number)=> (
+                        data.code.sort().map((item: string, index: number) => (
                           <MenuItem key={index} value={item}>
                             {item}
                           </MenuItem>
@@ -358,17 +361,21 @@ export default function Component() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2 w-3/4 max-w-xs">
-               
-                    <label id="venueOfTrainingLabel"className="w-3/4 max-w-xs"  htmlFor="venueOfTraining">Venue of Training <span className="text-red-500">*</span></label>
-                      
-                    
+                    <label
+                      id="venueOfTrainingLabel"
+                      className="w-3/4 max-w-xs"
+                      htmlFor="venueOfTraining"
+                    >
+                      Venue of Training <span className="text-red-500">*</span>
+                    </label>
+
                     <select
                       id="venueOfTraining"
                       name="venueOfTraining" // Added name attribute
                       className="select-field"
                       value={formData.venueOfTraining}
                       onChange={handleInputChange}
-                       aria-labelledby="venueOfTrainingLabel"
+                      aria-labelledby="venueOfTrainingLabel"
                     >
                       <option value="NIELIT">NIELIT</option>
                       <option value="outside">Outside NIELIT</option>
@@ -458,7 +465,10 @@ export default function Component() {
                 </div>
 
                 <div className="space-y-2 w-3/4 max-w-xs">
-                  <label htmlFor="courseDurationFormat" className="w-3/4 max-w-xs">
+                  <label
+                    htmlFor="courseDurationFormat"
+                    className="w-3/4 max-w-xs"
+                  >
                     Course Duration <span className="text-red-500">*</span>
                   </label>
                   <div className="flex space-x-2">
@@ -477,7 +487,6 @@ export default function Component() {
                       className="select-field"
                       value={formData.courseDuration.format}
                       onChange={handleInputChange}
-                      
                     >
                       <option value="weeks">Weeks</option>
                       <option value="months">Months</option>
@@ -486,7 +495,10 @@ export default function Component() {
                     </select>
                   </div>
                   {errors.courseDuration && (
-                    <Alert severity="error">{errors.courseDuration.value} {errors.courseDuration.format}</Alert>
+                    <Alert severity="error">
+                      {errors.courseDuration.value}{" "}
+                      {errors.courseDuration.format}
+                    </Alert>
                   )}
                 </div>
               </div>

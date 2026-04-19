@@ -126,7 +126,7 @@ export default function Admin({ login }) {
     setfilteredBatchData(filteredBatchData);
     const filteredCandidates = filteredData.employeeData.filter((candidate) =>
       // filteredBatchData.includes(candidate.batchCode)
-      filteredBatchData.includes(candidate.batchCode)
+      filteredBatchData.includes(candidate.batchCode),
     );
     console.log("batchFilter", filteredBatchData);
     console.log("filter", filteredCandidates);
@@ -134,7 +134,7 @@ export default function Admin({ login }) {
 
     // After filtering batch codes, find the corresponding batch details
     const filteredBatchDetails = filteredData.batchData.filter((batch) =>
-      filteredBatchData.includes(batch.batchCode)
+      filteredBatchData.includes(batch.batchCode),
     );
 
     // Assuming you have a state to hold the filtered batch details for the DataTable2 component
@@ -185,7 +185,7 @@ export default function Admin({ login }) {
 
         // Save the PDF
         doc.save("table.pdf");
-      }
+      },
     );
   };
 
@@ -256,7 +256,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -279,7 +279,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -302,7 +302,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -325,7 +325,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item.value + " " + item.format}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>

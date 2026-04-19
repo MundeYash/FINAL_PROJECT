@@ -5,7 +5,6 @@ import CryptoJS from "crypto-js";
 import Alert from "@mui/material/Alert";
 import {
   CardTitle,
-  
   CardHeader,
   CardContent,
   CardFooter,
@@ -26,7 +25,6 @@ import CandidateUpdate from "./CandidateUpdate";
 import { FormData, Candidate } from "./lib/types";
 import ShowBatchDetails from "../certificate/ShowBatchDetails";
 
-
 export default function Component() {
   const [batchCode, setBatchCode] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({});
@@ -42,7 +40,7 @@ export default function Component() {
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [candidateToDelete, setCandidateToDelete] = useState<string | null>(
-    null
+    null,
   );
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +48,7 @@ export default function Component() {
 
   // Filter candidates based on batchCode
   const filteredCandidates = candidates.filter(
-    (candidate) => candidate.batchCode === batchCode
+    (candidate) => candidate.batchCode === batchCode,
   );
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
@@ -60,7 +58,7 @@ export default function Component() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCandidates.slice(
     indexOfFirstItem,
-    indexOfLastItem
+    indexOfLastItem,
   );
 
   // Change page handler
@@ -169,7 +167,7 @@ export default function Component() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [id]: value }));
@@ -180,7 +178,7 @@ export default function Component() {
     try {
       if (id) {
         const response = await axios.get(
-          `http://localhost:4000/employees/${id}`
+          `http://localhost:4000/employees/${id}`,
         );
         setCandidates(response.data);
       }
@@ -206,7 +204,7 @@ export default function Component() {
     const updatedFormData = { batchCode, ...formData };
     const encryptedData = CryptoJS.AES.encrypt(
       JSON.stringify(updatedFormData),
-      "secretKey"
+      "secretKey",
     ).toString();
 
     try {
@@ -242,7 +240,7 @@ export default function Component() {
 
     try {
       await axios.delete(
-        `http://localhost:4000/candidate/delete/${candidateToDelete}`
+        `http://localhost:4000/candidate/delete/${candidateToDelete}`,
       );
       fetchEmployeeData(batchCode);
       setAlert({ type: "success", message: "Candidate deleted successfully." });
@@ -285,8 +283,6 @@ export default function Component() {
         </div>
       )}
 
-      
-
       <div>
         <ShowBatchDetails batchCode={batchCode} />
       </div>
@@ -304,7 +300,6 @@ export default function Component() {
         </div>
       )}
 
-      
       <Card className="w-full max-w-lg mx-auto py-8 px-6 mt-0 mb-2 bg-blue-100 shadow-lg">
         <CardHeader className="text-center">
           <img
@@ -471,66 +466,72 @@ export default function Component() {
 
       {alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
 
-       <div>
-      {batchCode && (
-        <div className="container my-8 mx-auto p-4 bg-white rounded shadow">
-          <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border">S. No.</th>
-                <th className="py-2 px-4 border">First Name</th>
-                <th className="py-2 px-4 border">Last Name</th>
-                <th className="py-2 px-4 border">Roll Number</th>
-                <th className="py-2 px-4 border">Designation</th>
-                <th className="py-2 px-4 border">Employee ID</th>
-                <th className="py-2 px-4 border">Phone Number</th>
-                <th className="py-2 px-4 border">Email</th>
-                <th className="py-2 px-4 border">Remarks</th>
-                <th className="py-2 px-4 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((candidate, index) => (
-                <tr key={candidate._id}>
-                  <td className="border px-4 py-2">{index + 1 + indexOfFirstItem}</td>
-                  <td className="py-2 px-4 border">{candidate.firstName}</td>
-                  <td className="py-2 px-4 border">{candidate.lastName}</td>
-                  <td className="py-2 px-4 border">{candidate.rollNumber}</td>
-                  <td className="py-2 px-4 border">{candidate.designation}</td>
-                  <td className="py-2 px-4 border">{candidate.employeeId}</td>
-                  <td className="py-2 px-4 border">{candidate.phoneNumber}</td>
-                  <td className="py-2 px-4 border">{candidate.email}</td>
-                  <td className="py-2 px-4 border">{candidate.remarks}</td>
-                  <td className="py-2 px-4 border">
-                  <div className="flex space-x-2">
-                      <Button onClick={() => handleEdit(candidate._id)}>
-                        Edit
-                      </Button>
-                      <Button onClick={() => handleDelete(candidate._id)}>
-                        Delete
-                      </Button>
-                    </div>
-                  </td>
+      <div>
+        {batchCode && (
+          <div className="container my-8 mx-auto p-4 bg-white rounded shadow">
+            <h2 className="text-2xl font-bold text-center mb-6">Candidates</h2>
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 border">S. No.</th>
+                  <th className="py-2 px-4 border">First Name</th>
+                  <th className="py-2 px-4 border">Last Name</th>
+                  <th className="py-2 px-4 border">Roll Number</th>
+                  <th className="py-2 px-4 border">Designation</th>
+                  <th className="py-2 px-4 border">Employee ID</th>
+                  <th className="py-2 px-4 border">Phone Number</th>
+                  <th className="py-2 px-4 border">Email</th>
+                  <th className="py-2 px-4 border">Remarks</th>
+                  <th className="py-2 px-4 border">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentItems.map((candidate, index) => (
+                  <tr key={candidate._id}>
+                    <td className="border px-4 py-2">
+                      {index + 1 + indexOfFirstItem}
+                    </td>
+                    <td className="py-2 px-4 border">{candidate.firstName}</td>
+                    <td className="py-2 px-4 border">{candidate.lastName}</td>
+                    <td className="py-2 px-4 border">{candidate.rollNumber}</td>
+                    <td className="py-2 px-4 border">
+                      {candidate.designation}
+                    </td>
+                    <td className="py-2 px-4 border">{candidate.employeeId}</td>
+                    <td className="py-2 px-4 border">
+                      {candidate.phoneNumber}
+                    </td>
+                    <td className="py-2 px-4 border">{candidate.email}</td>
+                    <td className="py-2 px-4 border">{candidate.remarks}</td>
+                    <td className="py-2 px-4 border">
+                      <div className="flex space-x-2">
+                        <Button onClick={() => handleEdit(candidate._id)}>
+                          Edit
+                        </Button>
+                        <Button onClick={() => handleDelete(candidate._id)}>
+                          Delete
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="flex justify-center space-x-2 mt-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => paginate(i + 1)}
-                className={`px-4 py-2 border ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-white'}`}
-              >
-                {i + 1}
-              </button>
-            ))}
+            <div className="flex justify-center space-x-2 mt-2">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => paginate(i + 1)}
+                  className={`px-4 py-2 border ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white"}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </>
   );
 }

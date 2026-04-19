@@ -17,7 +17,10 @@ export default function Navigator() {
           <Link href="https://nielit.gov.in/" legacyBehavior>
             <a className="hover:underline">About</a>
           </Link>
-          <Link href="https://nielit.gov.in/content/contact-us-1" legacyBehavior>
+          <Link
+            href="https://nielit.gov.in/content/contact-us-1"
+            legacyBehavior
+          >
             <a className="hover:underline">Contact Us</a>
           </Link>
         </nav>

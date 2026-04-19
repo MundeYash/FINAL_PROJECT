@@ -65,9 +65,9 @@ const BatchCodeSelector = () => {
             <div className="flex justify-between items-center text-gray-700">
               <strong className="font-semibold">Duration:</strong>
               <span>{`${new Date(
-                batchDetails.startDate
+                batchDetails.startDate,
               ).toLocaleDateString()} - ${new Date(
-                batchDetails.endDate
+                batchDetails.endDate,
               ).toLocaleDateString()}`}</span>
             </div>
           </div>

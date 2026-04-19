@@ -1,4 +1,3 @@
-
 import React from "react";
 import MaterialTable from "@material-table/core";
 import { Button, Stack } from "@mui/material";
@@ -52,93 +51,94 @@ const DataTable = ({ candidatesData, login }) => {
   const handleExportToPDF = async () => {
     const doc = new jsPDF();
 
-     
-      // Fetch image from URL and convert to base64
-  const imageUrl = 'https://upload.wikimedia.org/wikipedia/en/b/b4/NIELIT_Logo.jpg';
-  const imageResponse = await fetch(imageUrl);
-  const imageBlob = await imageResponse.blob();
-  const reader = new FileReader();
+    // Fetch image from URL and convert to base64
+    const imageUrl =
+      "https://upload.wikimedia.org/wikipedia/en/b/b4/NIELIT_Logo.jpg";
+    const imageResponse = await fetch(imageUrl);
+    const imageBlob = await imageResponse.blob();
+    const reader = new FileReader();
 
-  reader.readAsDataURL(imageBlob); 
-  reader.onloadend = function() {
-    const base64data = reader.result;  
-    // Add image to PDF at top left corner
-    doc.addImage(base64data, 'JPEG', 10, 9, 23, 20); // Adjust position and size as needed
+    reader.readAsDataURL(imageBlob);
+    reader.onloadend = function () {
+      const base64data = reader.result;
+      // Add image to PDF at top left corner
+      doc.addImage(base64data, "JPEG", 10, 9, 23, 20); // Adjust position and size as needed
 
-       // Set the position for the organization name to ensure it does not overlap with the logo
-       const orgNameXPosition = 10 + 30 + 10; // Image width + 10 units for padding
-       const orgNameYPosition = 9;  // Adjust based on the height of your logo
+      // Set the position for the organization name to ensure it does not overlap with the logo
+      const orgNameXPosition = 10 + 30 + 10; // Image width + 10 units for padding
+      const orgNameYPosition = 9; // Adjust based on the height of your logo
 
+      doc.setTextColor(0, 0, 128); // Dark blue
 
-    doc.setTextColor(0, 0, 128); // Dark blue
+      // Adjust font size and position for English translation
+      doc.setFontSize(13);
+      doc.text(
+        "National Institute of Electronics and Information Technology (NIELIT)",
+        40,
+        20,
+      );
 
-    // Adjust font size and position for English translation
-    doc.setFontSize(13);
-    doc.text(
-      "National Institute of Electronics and Information Technology (NIELIT)",
-      40,
-      20
-    );
+      // Set font for additional information
+      doc.setFontSize(10);
+      doc.setFont("times", "normal");
+      doc.text(
+        "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
+        32,
+        28,
+      );
 
-    // Set font for additional information
-    doc.setFontSize(10);
-    doc.setFont("times", "normal");
-    doc.text(
-      "(An Autonomous Scientific Society of Ministry of Electronics and Information Technology. MeitY, Govt. of India)",
-      32,
-      28
-    );
+      // Add space between header and table
+      const headerHeight = 70; // Adjust as needed
 
-    // Add space between header and table
-    const headerHeight = 70; // Adjust as needed
-
-    // Set text color to dark blue and font style to bold for the header
-    const tableColumn = [
-      "Batch Code",
-      "Roll No",
-      "Certificate Number",
-      "Name",
-      "Designation",
-    ];
-    const tableRows = [];
-
-    sortedCandidatesData.forEach((candidate) => {
-      const candidateData = [
-        candidate.batchCode,
-        candidate.rollNumber,
-        candidate.certificateNumber,
-        `${candidate.firstName} ${candidate.lastName}`,
-        candidate.designation,
+      // Set text color to dark blue and font style to bold for the header
+      const tableColumn = [
+        "Batch Code",
+        "Roll No",
+        "Certificate Number",
+        "Name",
+        "Designation",
       ];
-      tableRows.push(candidateData);
-    });
+      const tableRows = [];
 
-    // Set draw color to blue for borders
-  doc.setDrawColor(0, 0, 255); // Blue color
+      sortedCandidatesData.forEach((candidate) => {
+        const candidateData = [
+          candidate.batchCode,
+          candidate.rollNumber,
+          candidate.certificateNumber,
+          `${candidate.firstName} ${candidate.lastName}`,
+          candidate.designation,
+        ];
+        tableRows.push(candidateData);
+      });
 
-  // Example: Draw a border around the header
-  // Adjust x, y, width, and height as needed
-  doc.rect(10, 10, 190, 20, 'S'); // Draws a rectangle (border only)
+      // Set draw color to blue for borders
+      doc.setDrawColor(0, 0, 255); // Blue color
 
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 40,
-      didDrawPage: (data) => {
-        // Draw a border around the table or the entire page
-        // For the entire page, you might use the full width and height
-        // For example, for an A4 page:
-        doc.rect(10, 10, doc.internal.pageSize.getWidth() - 20, doc.internal.pageSize.getHeight() - 20, 'S');
-      },
+      // Example: Draw a border around the header
+      // Adjust x, y, width, and height as needed
+      doc.rect(10, 10, 190, 20, "S"); // Draws a rectangle (border only)
 
-    });
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        didDrawPage: (data) => {
+          // Draw a border around the table or the entire page
+          // For the entire page, you might use the full width and height
+          // For example, for an A4 page:
+          doc.rect(
+            10,
+            10,
+            doc.internal.pageSize.getWidth() - 20,
+            doc.internal.pageSize.getHeight() - 20,
+            "S",
+          );
+        },
+      });
 
-    doc.save("candidates_Report.pdf");
-
+      doc.save("candidates_Report.pdf");
+    };
   };
-  };
-
-  
 
   return (
     <>

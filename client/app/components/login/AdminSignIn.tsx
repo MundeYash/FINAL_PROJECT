@@ -10,25 +10,29 @@ import Header from "../header/Header";
 import Navigator from "../Navigator/Navigator";
 import axios from "axios";
 
-
 export default function AdminSignIn() {
-  const [formData, setFormData] = useState({ email: "", password: "", center: ""  });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    center: "",
+  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  
-  const handleSubmit = async ( e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:4000/api/auth/login",
-        formData
+        formData,
       );
       setMessage("Login Successful! Wait Redirecting to Dashboard");
       setError("");
@@ -125,7 +129,7 @@ export default function AdminSignIn() {
                 </div>
               </div>
               <div className="flex items-center justify-between"></div>
-             
+
               <div>
                 <Button
                   className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
@@ -134,7 +138,7 @@ export default function AdminSignIn() {
                   type="submit"
                   disabled={loading}
                 >
-                 {loading ? (
+                  {loading ? (
                     <>
                       <svg
                         className="animate-spin h-5 w-5 mr-3 text-white"

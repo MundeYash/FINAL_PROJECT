@@ -10,17 +10,19 @@ import Header from "../header/Header";
 import Navigator from "../Navigator/Navigator";
 import axios from "axios";
 
-
 export default function OperatorSignIn() {
-  const [formData, setFormData] = useState({ email: '', password: '' , center: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    center: "",
+  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
- 
 
-  
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -28,18 +30,23 @@ export default function OperatorSignIn() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/Login', formData);
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/Login",
+        formData,
+      );
       console.log(response.data);
       // Handle successful login (e.g., store token, redirect)
       setMessage("Login Successful! Wait Redirecting to Dashboard");
       setError("");
-   
-      window.location.href = "/login/operator/dashboard"; 
 
- 
+      window.location.href = "/login/operator/dashboard";
     } catch (error) {
       // Type guard to check if error is an instance of Error and has a response property
-      if (error instanceof Error && (error as any).response && (error as any).response.data) {
+      if (
+        error instanceof Error &&
+        (error as any).response &&
+        (error as any).response.data
+      ) {
         setError("Login Failed: " + (error as any).response.data.message);
       } else {
         setError("Login Failed: An unknown error occurred.");
@@ -53,7 +60,7 @@ export default function OperatorSignIn() {
     <>
       <Header />
 
-      <Navigator/>
+      <Navigator />
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -69,10 +76,7 @@ export default function OperatorSignIn() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-           
-            <form
-             onSubmit={handleSubmit}
-             className="space-y-6 ">
+            <form onSubmit={handleSubmit} className="space-y-6 ">
               <div>
                 <label htmlFor="center">Choose Centre :- </label>
                 <select
@@ -130,19 +134,16 @@ export default function OperatorSignIn() {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                
-              
-              </div>
+              <div className="flex items-center justify-between"></div>
               <div>
-               
-
                 <Button
-                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-green-700"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`} type="submit"
-                  disabled={loading}>
-                    {loading ? (
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                    loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-green-700"
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? (
                     <>
                       <svg
                         className="animate-spin h-5 w-5 mr-3 text-white"
@@ -169,15 +170,13 @@ export default function OperatorSignIn() {
                   ) : (
                     "Sign In"
                   )}
-                  </Button>
-              
+                </Button>
               </div>
 
               <p>
                 <Link
                   href="/login/operator/signup"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-               
                 >
                   New Operator? Register
                 </Link>

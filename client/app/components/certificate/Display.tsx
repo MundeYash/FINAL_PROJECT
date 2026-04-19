@@ -15,21 +15,22 @@ interface BatchCodeSelectorProps {
 }
 
 const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
-  
   const [batchDetails, setBatchDetails] = useState(null);
 
   const fetchBatchDetails = async (batchId) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/batch/${batchId}`);
+      const response = await axios.get(
+        `http://localhost:4000/api/batch/${batchId}`,
+      );
       setBatchDetails(response.data);
     } catch (error) {
-      console.error('Error fetching batch details', error);
+      console.error("Error fetching batch details", error);
     }
   };
 
   useEffect(() => {
     // Assuming you have a way to get the current batch ID
-    const currentBatchId = 'someBatchId';
+    const currentBatchId = "someBatchId";
     fetchBatchDetails(currentBatchId);
   }, []);
 

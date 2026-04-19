@@ -131,7 +131,7 @@ export default function Operator({ login }) {
       (candidate) =>
         // filteredBatchCodes.includes(candidate.batchCode)
         filteredBatchCodes.includes(candidate.batchCode) &&
-        candidate.certificateNumber
+        candidate.certificateNumber,
     );
 
     setCandidatesData(filteredCandidates);
@@ -197,12 +197,7 @@ export default function Operator({ login }) {
             >
               Apply Filters
             </Button>
-            <Button
-              onClick={clearFilters}
-             
-            >
-              Clear
-            </Button>
+            <Button onClick={clearFilters}>Clear</Button>
           </div>
         </div>
 

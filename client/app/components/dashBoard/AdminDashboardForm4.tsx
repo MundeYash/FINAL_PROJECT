@@ -127,7 +127,7 @@ export default function Admin({ login }) {
     setfilteredBatchData(filteredBatchData);
     const filteredCandidates = filteredData.employeeData.filter((candidate) =>
       // filteredBatchData.includes(candidate.batchCode)
-      filteredBatchData.includes(candidate.batchCode)
+      filteredBatchData.includes(candidate.batchCode),
     );
     console.log("batchFilter", filteredBatchData);
     console.log("filter", filteredCandidates);
@@ -135,7 +135,7 @@ export default function Admin({ login }) {
 
     // After filtering batch codes, find the corresponding batch details
     const filteredBatchDetails = filteredData.batchData.filter((batch) =>
-      filteredBatchData.includes(batch.batchCode)
+      filteredBatchData.includes(batch.batchCode),
     );
 
     // Assuming you have a state to hold the filtered batch details for the DataTable2 component
@@ -186,7 +186,7 @@ export default function Admin({ login }) {
 
         // Save the PDF
         doc.save("table.pdf");
-      }
+      },
     );
   };
 
@@ -206,11 +206,12 @@ export default function Admin({ login }) {
 
   return (
     <div className="flex flex-col min-h-screen mt-2 mb-8">
-      <h2 className="text-2xl font-bold text-center">Batch Master Data Report </h2>
-      
+      <h2 className="text-2xl font-bold text-center">
+        Batch Master Data Report{" "}
+      </h2>
+
       <section className="bg-gray-100 py-8 px-8 flex flex-col gap-6 mt-8 mb-8 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <label className="font-semibold text-gray-700 mb-1">
@@ -256,7 +257,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -279,7 +280,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -302,7 +303,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -325,7 +326,7 @@ export default function Admin({ login }) {
                         <SelectItem key={index} value={item}>
                           {item.value + " " + item.format}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -338,16 +339,10 @@ export default function Admin({ login }) {
             >
               Apply
             </Button>
-            <Button
-              onClick={clearFilters}
-             
-            >
-              Clear
-            </Button>
+            <Button onClick={clearFilters}>Clear</Button>
           </div>
         </div>
       </section>
-
 
       {/* Report Printing options  */}
 
@@ -356,7 +351,6 @@ export default function Admin({ login }) {
           <DataTable4
             batchData={filteredBatchData}
             employeeData={filteredData.employeeData}
-           
           />
         </div>
       </section>

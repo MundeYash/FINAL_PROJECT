@@ -6,7 +6,5 @@ export default function admin() {
     <div>
       <AdminSignIn />
     </div>
-
-   
   );
 }

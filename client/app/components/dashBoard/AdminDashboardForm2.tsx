@@ -130,7 +130,7 @@ export default function Admin({ login }) {
       (candidate) =>
         // filteredBatchCodes.includes(candidate.batchCode)
         filteredBatchCodes.includes(candidate.batchCode) &&
-        candidate.certificateNumber
+        candidate.certificateNumber,
     );
 
     setCandidatesData(filteredCandidates);
@@ -162,13 +162,9 @@ export default function Admin({ login }) {
     <div className="flex flex-col min-h-screen  ">
       <h2 className="text-2xl font-bold text-center">Batch Report </h2>
 
-  
-
-
       <section className="bg-gray-100 py-8 px-8 flex flex-col gap-6 mt-8 mb-8 rounded-lg shadow-md">
         <div className="flex items-center justify-start space-x-8">
-          
-        <Select
+          <Select
             ref={batchCodeSelectRef}
             onValueChange={handleBatchCodeChange}
             value={selectedBatchCode}
@@ -194,25 +190,19 @@ export default function Admin({ login }) {
             </SelectContent>
           </Select>
           <div className="flex space-x-2">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded-lg transition duration-300 shadow-md"
-            onClick={applyFilters}>Apply Filters</Button>
-           <Button
-              onClick={clearFilters}
-             
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded-lg transition duration-300 shadow-md"
+              onClick={applyFilters}
             >
-              Clear
+              Apply Filters
             </Button>
+            <Button onClick={clearFilters}>Clear</Button>
           </div>
         </div>
 
-        
-
-       
         <div>
           <ShowBatchDetails batchCode={selectedBatchCode} />
         </div>
-        
-       
       </section>
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4">

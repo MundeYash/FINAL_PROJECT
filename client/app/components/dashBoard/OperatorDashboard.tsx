@@ -124,7 +124,7 @@ export default function Operator({ login }) {
       (candidate) =>
         // filteredBatchCodes.includes(candidate.batchCode)
         filteredBatchCodes.includes(candidate.batchCode) &&
-        candidate.certificateNumber
+        candidate.certificateNumber,
     );
 
     setCandidatesData(filteredCandidates);
@@ -203,7 +203,7 @@ export default function Operator({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -226,7 +226,7 @@ export default function Operator({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -249,7 +249,7 @@ export default function Operator({ login }) {
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -272,7 +272,7 @@ export default function Operator({ login }) {
                         <SelectItem key={index} value={item}>
                           {item.value + " " + item.format}
                         </SelectItem>
-                      )
+                      ),
                   )}
               </SelectGroup>
             </SelectContent>

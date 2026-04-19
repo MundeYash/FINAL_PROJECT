@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -22,9 +20,7 @@ const BatchCodeSelector: React.FC<BatchCodeSelectorProps> = ({ batchCode }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/batch`
-        );
+        const response = await axios.get(`http://localhost:4000/batch`);
         const data = response.data;
         console.log(data);
         setBatchDetails({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const SegmentedControl = ({ name, options, value, onChange }) => (
   <div className="flex">
@@ -12,7 +12,9 @@ const SegmentedControl = ({ name, options, value, onChange }) => (
           onChange={onChange}
           className="hidden"
         />
-        <div className={`p-2 text-center cursor-pointer ${value === option.value ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+        <div
+          className={`p-2 text-center cursor-pointer ${value === option.value ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+        >
           {option.label}
         </div>
       </label>
