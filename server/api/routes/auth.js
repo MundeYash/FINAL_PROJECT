@@ -40,14 +40,16 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
-
 // Sign-up route for operator
 router.post("/register2", async (req, res) => {
   const { center, email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newOperator = new Operator({ center, email, password: hashedPassword });
+    const newOperator = new Operator({
+      center,
+      email,
+      password: hashedPassword,
+    });
     await newOperator.save();
     res.status(201).send("Operator registered successfully");
   } catch (error) {

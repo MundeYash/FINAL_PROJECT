@@ -48,7 +48,7 @@ app.post("/submit/batch", async (req, res) => {
   // Decrypt data
   const decryptedData = CryptoJS.AES.decrypt(
     formdata.encryptedData,
-    "secretKey"
+    "secretKey",
   ).toString(CryptoJS.enc.Utf8);
   const decryptedObj = JSON.parse(decryptedData);
   // Process the decrypted data
@@ -132,7 +132,7 @@ app.post("/submit/employee", async (req, res) => {
   // Decrypt data
   const decryptedData = CryptoJS.AES.decrypt(
     formdata.encryptedData,
-    "secretKey"
+    "secretKey",
   ).toString(CryptoJS.enc.Utf8);
   const decryptedObj = JSON.parse(decryptedData);
 
@@ -206,13 +206,13 @@ app.post("/assignCertificates/:batchCode", async (req, res) => {
         if (candidate.exemptionReason) {
           await Certificate.updateOne(
             { _id: existingCertificate._id },
-            { status: candidate.exemptionReason }
+            { status: candidate.exemptionReason },
           );
         } else if (
           existingCertificate.certificateNumber !== candidate.certificateNumber
         ) {
           throw new Error(
-            `Duplicate certificate assignment detected for candidate ${candidate.firstName} ${candidate.lastName} with different certificate numbers.`
+            `Duplicate certificate assignment detected for candidate ${candidate.firstName} ${candidate.lastName} with different certificate numbers.`,
           );
         }
         return existingCertificate;
@@ -234,7 +234,7 @@ app.post("/assignCertificates/:batchCode", async (req, res) => {
       // Update the employee with the certificate number
       await Employee.updateOne(
         { _id: candidate._id },
-        { certificateNumber: candidate.certificateNumber }
+        { certificateNumber: candidate.certificateNumber },
       );
 
       return newCertificate;
@@ -299,7 +299,7 @@ app.put("/batch/update/:batchCode", async (req, res) => {
     const updatedBatch = await Batch.findOneAndUpdate(
       { batchCode: batchCode },
       updatedData,
-      { new: true }
+      { new: true },
     );
     if (updatedBatch) {
       res.status(200).json(updatedBatch);

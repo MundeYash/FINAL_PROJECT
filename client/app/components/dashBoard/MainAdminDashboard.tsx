@@ -12,21 +12,16 @@ import {
   DropdownMenuItem,
 } from "../ui/drop-down";
 
-
-
 import AdminDashboardForm from "./AdminDashboardForm";
 import AdminDashboardForm2 from "./AdminDashboardForm2";
 import AdminDashboardForm3 from "./AdminDashboardForm3";
 import AdminDashboardForm4 from "./AdminDashboardForm4";
 import Footer from "../footer/Footer";
 
-
 export default function Component() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  
 
   const handleLogout = () => {
-    
     setTimeout(() => {
       // Redirect to the logout page or perform logout action
       window.location.href = "/login/admin";
@@ -78,8 +73,6 @@ export default function Component() {
               <span className="sr-only">Acme Inc</span>
             </Link>
           </div>
-
-
 
           <nav className="flex flex-col gap-1 px-4 py-6">
             <Button
@@ -145,7 +138,6 @@ export default function Component() {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem>
-                    
                     <Button
                       onClick={handleLogout}
                       className="bg-green-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300"
@@ -203,10 +195,6 @@ function BarChartIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-
-
-
-
 function Package2Icon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -227,10 +215,6 @@ function Package2Icon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
-
-
-
 
 function LogOutIcon(props: React.SVGProps<SVGSVGElement>) {
   return (

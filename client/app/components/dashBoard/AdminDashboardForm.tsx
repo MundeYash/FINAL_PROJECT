@@ -291,7 +291,7 @@ export default function Admin({ login }) {
 
       <section className="bg-gray-100 py-6 px-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4">
-          <DataTable candidatesData={candidatesData} login={login} />
+          <DataTable candidatesData={candidatesData}  />
         </div>
       </section>
     </div>
